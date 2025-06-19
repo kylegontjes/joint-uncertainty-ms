@@ -55,7 +55,7 @@ p1 <-  gheatmap(p0.1,dat %>% select(best_joint_asr_cluster_renamed) %>% `colname
 p1.1 <- gheatmap(p1,dat %>% select(any_of(paste0(JR_variables,"_asr_cluster_renamed"))) %>% `colnames<-`(paste0("Phenotype Axis ",1:number_clusters)),offset =0.00005,width=0.1*number_clusters,color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + cluster_scale  + ylim(NA,625)
 ```
 
-```{r ,fig.height=7,fig.width=11}
+```{r ,fig.height=7,fig.width=7}
 p1.2 <- p1.1 + ggnewscale::new_scale_fill()
 clustered_heatmap <- ComplexHeatmap::Heatmap(genotypes %>% select(-isolate_no) %>% mutate_all(as.numeric))
 column_order_ <- colnames(genotypes %>% select(-isolate_no))[ComplexHeatmap::column_order(clustered_heatmap)]
@@ -64,7 +64,7 @@ rownames(genotypes) <- genotypes$isolate_no
 p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.00015 ),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.25)  + factor_scale + ylim(NA,725) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')))
 p2 
 
-ggsave("./figures/empirical/phylogeny_with_resistance_genotypes.png",dpi = 600,bg = 'white',plot = p2,width=11,height=7)
+ggsave("./figures/empirical/phylogeny_with_resistance_genotypes.png",dpi = 600,bg = 'white',plot = p2,width=7,height=7)
 ```
 
 
