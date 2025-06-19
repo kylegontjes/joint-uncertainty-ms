@@ -1,0 +1,71 @@
+---
+title: "Figure phylogeny with resistance and genotypes"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'corHMM','phyloAMR','ggtree') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Source functions
+source("./lib/consistent_themes.R")
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+# Load data
+## Dataset
+```{r} 
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+phy <- read.tree("./data/empirical/tree/tree.treefile") 
+genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes.RDS") 
+```
+
+```{r} 
+phyloAMR_cluster_df <- readRDS("./data/empirical/phyloAMR/representative_joint_uncertainty_asr_clustering_df.RDS")
+cluster_stats <- readRDS("./data/empirical/phyloAMR/representative_joint_uncertainty_asr_clustering_analyses.RDS")
+dat <- left_join(dat,phyloAMR_cluster_df)
+rownames(dat) <- dat$isolate_no
+```
+
+## Phylogenetic tree 
+```{r} 
+number_clusters <- nrow(cluster_stats)-1
+p0 <- gheatmap(ggtree(phy),dat %>% select(blbli_dich_num) %>% mutate_all(as.factor) %>% `colnames<-`("BL/BLI Resistance"),color=NULL,width=0.1,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + Resistance_scale
+p0.1 <- p0 + ggnewscale::new_scale_fill()
+
+JR_variables <- cluster_stats$phenotype_axis %>% subset(.!='best_joint')
+p1 <-  gheatmap(p0.1,dat %>% select(best_joint_asr_cluster_renamed) %>% `colnames<-`("Focal Joint Reconstruction"),offset =0.000025,width=0.1,color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + cluster_scale  + ylim(NA,635)
+
+p1.1 <- gheatmap(p1,dat %>% select(any_of(paste0(JR_variables,"_asr_cluster_renamed"))) %>% `colnames<-`(paste0("Phenotype Axis ",1:number_clusters)),offset =0.00005,width=0.1*number_clusters,color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + cluster_scale  + ylim(NA,625)
+```
+
+```{r ,fig.height=7,fig.width=11}
+p1.2 <- p1.1 + ggnewscale::new_scale_fill()
+clustered_heatmap <- ComplexHeatmap::Heatmap(genotypes %>% select(-isolate_no) %>% mutate_all(as.numeric))
+column_order_ <- colnames(genotypes %>% select(-isolate_no))[ComplexHeatmap::column_order(clustered_heatmap)]
+
+rownames(genotypes) <- genotypes$isolate_no
+p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.0002075 ),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.25)  + factor_scale + ylim(NA,725) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')))
+p2 
+
+ggsave("./figures/empirical/phylogeny_with_resistance_genotypes.png",dpi = 600,bg = 'white',plot = p2,width=11,height=7)
+```
+
+
+

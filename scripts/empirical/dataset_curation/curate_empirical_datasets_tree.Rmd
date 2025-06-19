@@ -1,0 +1,61 @@
+---
+title: "Curate dataset for empirical case study"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'ape') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+
+```{r}
+df <- readRDS("../../Combination_resistance/pre-intro-blbli-resistance-ms/data/dataset/df.RDS")
+tr <- read.tree("../../Combination_resistance/pre-intro-blbli-resistance-ms/data/tree/tree.treefile")  
+```
+
+# Curate dataset with isolate_no, patient_id, date of collection, and our resistance variable
+```{r}
+df <- df %>% select(isolate_no,Patient_ID,Cx_date,blbli_dich_num)
+
+df <- df[match(tr$tip.label, df[['isolate_no']]), ]
+```
+
+# Genotypes
+```{r}
+genotypes <- readRDS("../../Combination_resistance/pre-intro-blbli-resistance-ms/data/carbapenem_resistance_panel/carbapenem_resistance_panel_matrix.RDS") %>% select(-`OmpK35-25%`,-OmpK36_non_syn,-OmpK36_intergenic,-OmpK36_L3_mutations,-PBP_any)
+plasmids <- readRDS("../../Combination_resistance/pre-intro-blbli-resistance-ms/data/KPC_plasmid/KPC_containing_clusters_mat.RDS") %>% select(AA552,AA018) %>% {ifelse(.=="KPC Plasmid",1,0)} %>% as.data.frame %>% mutate(isolate_no = rownames(.))
+
+final_genotypes <- left_join(genotypes,plasmids) %>% .[match(tr$tip.label,.[['isolate_no']]),]
+```
+
+# Save files
+```{r}
+# Tree
+write.tree(tr,"./data/empirical/tree/tree.treefile")
+
+# Dataframe
+saveRDS(df,"./data/empirical/dataset/df.RDS")
+write_csv(df,"./data/empirical/dataset/df.csv")
+
+# Genotypes
+saveRDS(final_genotypes,"./data/empirical/resistance_genotypes/resistance_genotypes.RDS")
+write_csv(final_genotypes,"./data/empirical/resistance_genotypes/resistance_genotypes.csv")
+```

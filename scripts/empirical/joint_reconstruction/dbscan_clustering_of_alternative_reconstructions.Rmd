@@ -1,0 +1,170 @@
+---
+title: "dbscan_clustering_of_alternative_reconstructions"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+# Load data
+```{r}  
+phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
+```
+
+```{r}
+focal <- readRDS("./data/empirical/joint_reconstruction/focal_asr.RDS")
+joint_ci <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr.RDS")
+state_df_matrix <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_state_matrix.RDS")
+```
+
+```{r}
+phy <- ladderize(focal$phy)
+tmp_phy <- phy
+tmp_phy$edge.length <- rep(1, length(tmp_phy$edge.length))
+phy_dist <- ape::dist.nodes(tmp_phy)[-(1:Ntip(tmp_phy)),-(1:Ntip(tmp_phy))]
+```
+
+```{r} 
+Rcpp::cppFunction('
+double phylo_aware_dist_local_cpp(LogicalVector mismatch, NumericMatrix phylo_dist) {
+  int n = mismatch.size();
+  std::vector<int> indices;
+  for(int i = 0; i < n; i++) {
+    if(mismatch[i]) indices.push_back(i);
+  }
+  int m = indices.size();
+  if(m <= 1) return 0.0;
+  double sum = 0.0;
+  for(int i = 0; i < m-1; i++) {
+    for(int j = i+1; j < m; j++) {
+      sum += exp(1.0 / phylo_dist(indices[i], indices[j]));
+    }
+  }
+  return sum;
+}')
+
+phylo_aware_dist_local <- function(graph_labels_x, graph_labels_y, phylo_dist) {
+  mismatch <- graph_labels_x != graph_labels_y
+  return(phylo_aware_dist_local_cpp(mismatch, phylo_dist))
+}
+
+#pr_DB$delete_entry("PhyloSpreadDistLocal")
+try(pr_DB$set_entry(FUN = phylo_aware_dist_local, names = "PhyloSpreadDistLocal"),silent = TRUE)
+phylo_dist_mat_local <- proxy::dist(state_df_matrix, method = "PhyloSpreadDistLocal",
+  phylo_dist = phy_dist) 
+
+saveRDS(phylo_dist_mat_local,"./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")
+```
+
+# Visualize distance heatmap
+```{r}
+ComplexHeatmap::Heatmap(as.matrix(phylo_dist_mat_local),show_column_names = F,show_row_names = F,
+  name = "Phylo Weighted Distance",
+  cluster_columns = T, cluster_rows = T,
+  row_dend_side = "left", column_dend_side = "top",
+  row_title = "Reconstruction", column_title = "Reconstruction") 
+```
+
+# Generate clustering data
+```{r}
+# ⁠eps:⁠ A suitable neighborhood size parameter eps given a fixed value for minPts
+# can be found visually by inspecting the kNNdistplot() of the data using 
+# k = minPts−1, k=minPts−1 (minPts includes the point itself, 
+# while the k-nearest neighbors distance does not). 
+# The k-nearest neighbor distance plot sorts all data points by their k-nearest 
+# neighbor distance. A sudden increase of the kNN distance (a knee) indicates 
+# that the points to the right are most likely outliers. 
+# Choose eps for DBSCAN where the knee is.
+# min points is ~2.5% of the number of reconstructions
+par(mfrow=c(1,1), mar=c(4, 4, 4, 4)) 
+tsne_res <- Rtsne(phylo_dist_mat_local)
+
+saveRDS(tsne_res,"./data/empirical/joint_reconstruction/alternative_reconstruction_tsne.RDS")
+
+n_recons <- length(joint_ci$lnliks) 
+min_pts <-  min(max(round(.01 * n_recons), 15), 40)
+distances <- kNNdist(tsne_res$Y, k = min_pts - 1)
+sorted_distances <- sort(distances)
+```
+
+## Identify using empirical route second derivative
+### Second derivate suggested 
+```{r}
+second_deriv <- diff(diff(sorted_distances))
+elbow_id <- which.max(second_deriv) + 1
+eps <- sorted_distances[elbow_id] 
+paste0("Chosen eps using second-derivative method: ",eps)
+reduced_eps <- eps * .925
+paste0("Chose to left shift eps (eps *.925): ",reduced_eps)
+
+kNNdistplot(tsne_res$Y, k = min_pts - 1, minPts = min_pts)
+abline(h=eps, lty=3, col = "red")
+abline(h=reduced_eps, lty=3, col = "blue")
+```
+
+## Iterations
+```{r,fig.width=15}  
+# Run iterations of eps
+iterations <- seq(.5, 7, by = 0.05)
+dbres <- c()
+
+dbres_iterations <- lapply(iterations, function(i) {
+ dbscan(tsne_res$Y, eps = i, minPts = min_pts) 
+})  
+names(dbres_iterations) <- iterations
+ 
+dbres_clusters <- lapply(dbres_iterations, function(x) {
+  x$cluster
+})
+dbres_clusters <- do.call(cbind.data.frame,dbres_clusters)
+colnames(dbres_clusters) <- paste0("eps_", iterations) 
+
+saveRDS(dbres_iterations,"./data/empirical/joint_reconstruction/joint_uncertainty_asr_dbres_iterations.RDS")
+```
+
+```{r,fig.width=35,fig.height=6} 
+# dbres stats
+dbres_stats <- apply(dbres_clusters, 2, function(x) {
+  data.frame( 
+    n_clusters = length(unique(subset(x,x!=0))),
+    n_noise = sum(x == 0),
+    n_assigned = sum(x > 0)
+  )
+}) 
+dbres_stats <-  do.call(rbind.data.frame,dbres_stats)
+dbres_stats$eps = as.numeric(gsub("eps_","",colnames(dbres_clusters)) )  
+  
+
+A <- ggplot2::ggplot(data=dbres_stats,ggplot2::aes(x=eps,y=n_clusters)) + ggplot2::geom_bar(stat='identity',colour = 'white',fill='black') + ggplot2::ylab("Number clusters")  +ggplot2::theme_bw() + ggplot2::scale_x_continuous(breaks = seq(0.5, 7, by = .2)) + ggplot2::geom_text(ggplot2::aes(label=n_clusters), vjust=-0.5, size=3) + ggplot2::geom_vline(xintercept = eps,colour = 'red',linetype = 3) + ggplot2::geom_vline(xintercept = reduced_eps,colour = 'blue',linetype = 3)
+B <- ggplot2::ggplot(data=dbres_stats,ggplot2::aes(x=eps,y=n_noise)) + ggplot2::geom_bar(stat='identity',colour = 'white',fill='black') + ggplot2::ylab("Number noise points")  + ggplot2::theme_bw()  + ggplot2::scale_x_continuous(breaks = seq(0.5, 7, by = .2)) + ggplot2::geom_text(ggplot2::aes(label=n_noise), vjust=-0.5, size=3)+ ggplot2::geom_vline(xintercept = eps,colour = 'red',linetype = 3) + ggplot2::geom_vline(xintercept = reduced_eps,colour = 'blue',linetype = 3)
+
+cowplot::plot_grid(A,B,labels="AUTO")
+```
+
+## Optimal dbres clustering
+```{r}
+dbres <- dbscan(tsne_res$Y, eps = reduced_eps, minPts = min_pts) 
+
+saveRDS(dbres,"./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+```

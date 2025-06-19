@@ -1,0 +1,182 @@
+---
+title: "Boyko's requested figures"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+# Load data
+```{r}  
+phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
+```
+
+```{r}
+focal <- readRDS("./data/empirical/joint_reconstruction/focal_asr.RDS")
+joint_ci <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr.RDS")
+
+state_df <- joint_ci$state_df
+
+state_df_matrix <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_state_matrix.RDS")
+dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+tsne_res <- readRDS("./data/empirical/joint_reconstruction/alternative_reconstruction_tsne.RDS")
+phylo_dist_mat_local <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")
+```
+
+# Phylogeny with node states
+```{r}
+pdf("./figures/empirical/empirical_phylogeny.pdf", height = 5, width = 15)
+to_keep <- corHMM:::get_desc(phy, 417)
+to_col <- match(to_keep, phy$edge[,2])
+edge_col <- rep("grey60", dim(phy$edge)[1])
+edge_col[to_col] <- "black"
+nodes_to_col <- to_keep[to_keep > Ntip(phy)]
+plot(phy, show.tip.label = FALSE, no.margin = TRUE, direction = "downwards", edge.color = edge_col)
+nodelabels(pch = 21,  cex = 1, bg = c("white", "grey80")[focal$states], col = "grey70")
+nodelabels(pch = 21,  cex = 1, bg = c("white", "black")[focal$states], col = "black", node = c(417, nodes_to_col))
+
+dev.off()
+```
+
+# Raw ancestral reconstruction figure
+```{r}
+optimal_k_gap <- sum(as.numeric(unique(dbres$cluster)) >0)
+
+# cluster assignment
+cluster_assignments <- dbres$cluster
+clusters <- factor(cluster_assignments)
+clust_cols <- RColorBrewer::brewer.pal(sum(levels(clusters) !=0), "Set1")
+
+pdf("./figures/empirical/empirical_joint_uncertainty_reconstructions.pdf", height = 10, width = 5)
+par(mar=c(0,0,0,0))
+m <- t(state_df_matrix)[, order(cluster_assignments)]
+m <- m[, ncol(m):1]
+colors <- ifelse(m == 2, "white", "black")
+color_matrix <- matrix(colors, nrow = nrow(m), ncol = ncol(m))
+plot(1, type="n", xlim=c(1, nrow(m)), ylim=c(1, ncol(m)), axes = FALSE, xlab = "", ylab = "")
+for (i in 1:nrow(m)) {
+  for (j in 1:ncol(m)) {
+    if(color_matrix[i, j] == "white"){
+      next
+    }else{
+      rect(i - 0.5, j - 0.5, i + 0.5, j + 0.5, col = color_matrix[i, j], border = NA)
+    }
+  }
+}
+sorted_clusters <- cluster_assignments[order(cluster_assignments)]
+sorted_clusters <- rev(sorted_clusters)  # Flip to match matrix flip
+rle_clusters <- rle(sorted_clusters)
+cluster_starts <- cumsum(c(1, head(rle_clusters$lengths, -1)))
+cluster_ends <- cumsum(rle_clusters$lengths)
+cluster_ids <- rle_clusters$values
+box_colors <- clust_cols
+for (k in seq_along(cluster_ids)) {
+  cluster_id <- cluster_ids[k]
+  if (cluster_id == 0) next  # Skip cluster 0 if used for noise
+  start_row <- cluster_starts[k]
+  end_row <- cluster_ends[k]
+  rect(xleft = 0.5, 
+    ybottom = start_row - 0.5, 
+    xright = nrow(m) + 0.5, 
+    ytop = end_row + 0.5, 
+    border = "grey50", 
+    lwd = 1.5,
+    lty = 2)
+}
+dev.off()
+```
+
+# Empirical tsne
+```{r} 
+pdf("./figures/empirical/empirical_joint_uncertainty_tsne.pdf", width = 5, height = 5)
+
+plot(tsne_res$Y, pch = 21, bg = c("white", clust_cols)[cluster_assignments+1], main = "Phylo Weighted Distance", xlab = "tSNE Dimension 1", ylab = "tSNE Dimension 2")
+
+dev.off()
+```
+
+# Log likelihood distribution
+```{r}
+pdf("./figures/empirical/empirical_joint_uncertainty_lnlik_dist.pdf", width = 2.5, height = 10)
+
+corHMM:::plot_stacked_densities(joint_ci$lnliks, clusters, cols = c(clust_cols), main = "")
+
+dev.off()
+```
+
+
+# Visualize alternatives
+```{r} 
+dist_mat <- phylo_dist_mat_local 
+
+pdf("./figures/empirical/empirical_joint_uncertainty_cluster_representatives.pdf", width = 7.5, height = 15)
+to_keep <- corHMM:::get_desc(phy, 417)[corHMM:::get_desc(phy, 417) <= Ntip(phy)]
+par(mfrow=c(optimal_k_gap, 1))
+for(i in 1:optimal_k_gap){
+  clust_id = i 
+  phy_tmp <- phy
+  index_lowest_dist <- which.min(colMeans(as.matrix(dist_mat)[clusters == clust_id,clusters == clust_id]))
+  index_highest_lnlik <- which.max(joint_ci$lnliks[clusters == clust_id])
+  max_node_labels <- state_df[clusters == clust_id,][index_lowest_dist,]
+  phy_tmp$node.label <- as.numeric(max_node_labels)
+  phy_tmp <- keep.tip(phy_tmp, to_keep)
+  plot.phylo(phy_tmp, show.tip.label = FALSE, edge.width = 0.5, no.margin = TRUE, direction = "downwards")
+  nodelabels(pch = 21, bg = c("white", "black")[as.numeric(phy_tmp$node.label)], cex = 1)
+}
+dev.off()
+```
+
+# Important nodes
+```{r}
+# Calculate importance scores
+node_importance <- corHMM:::node_importance_by_cluster(state_df, clusters)
+
+# Look at top nodes for each cluster
+important_nodes <- lapply(unique(clusters), function(clust) {
+  cluster_nodes <- node_importance[node_importance$cluster == clust,]
+  cluster_nodes[(cluster_nodes$importance) > quantile((cluster_nodes$importance), 0.985),]
+})
+
+pdf("./figures/empirical/empirical_joint_uncertainty_important_nodes.pdf", width = 10, height = 10)
+par(mfrow=c(1,1))
+plot_info <- corHMM:::plot_clustered_phylo(
+  phy = phy,
+  state_df = state_df,
+  cluster_colors = clust_cols,
+  cluster_assignments = clusters,
+  node_states = focal$states,
+  important_nodes = important_nodes,
+  state_colors = c("black", "grey90"),
+  state_labels = c("S", "R"),
+  phylogram_params = list(edge.color = "grey50"),
+  point_params = list(cex = 1),
+  segment_params = list(lty = 3, lwd = 1.5),
+  outer_cex = 2, 
+  inner_rad = 3, 
+  node_offset = 12,
+  show_legend=FALSE
+)
+
+dev.off()
+```
