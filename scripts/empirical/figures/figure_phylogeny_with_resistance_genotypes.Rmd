@@ -61,7 +61,7 @@ clustered_heatmap <- ComplexHeatmap::Heatmap(genotypes %>% select(-isolate_no) %
 column_order_ <- colnames(genotypes %>% select(-isolate_no))[ComplexHeatmap::column_order(clustered_heatmap)]
 
 rownames(genotypes) <- genotypes$isolate_no
-p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.0002075 ),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.25)  + factor_scale + ylim(NA,725) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')))
+p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.00015 ),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.25)  + factor_scale + ylim(NA,725) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')))
 p2 
 
 ggsave("./figures/empirical/phylogeny_with_resistance_genotypes.png",dpi = 600,bg = 'white',plot = p2,width=11,height=7)
