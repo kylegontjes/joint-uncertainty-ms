@@ -1,0 +1,13 @@
+# Setting up conda environment
+
+conda env create -f phyloAMR.yaml
+conda activate joint_uncertainty_phyloAMR
+ 
+# DO THIS IN In R:
+
+# Install corHMM & phyloAMR from GitHub
+## corHMM - installed because the GitHub version is preferred
+devtools::install_github("thej022214/corHMM", force = TRUE, build_vignettes = FALSE)
+
+## phyloAMR
+devtools::install_github("kylegontjes/phyloAMR", force = TRUE, build_vignettes = FALSE)

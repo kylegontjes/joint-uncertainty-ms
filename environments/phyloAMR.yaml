@@ -1,0 +1,16 @@
+name: joint_uncertainty_phyloAMR
+channels:  
+  - conda-forge
+  - r
+  - bioconda
+  - defaults
+dependencies:  
+  - r-base
+  - r-tidyverse
+  - r-devtools
+  - r-phangorn
+  - r-rmpfr
+  - r-igraph
+  - r-phytools 
+  - r-pbmcapply
+  - bioconductor-ggtree 
