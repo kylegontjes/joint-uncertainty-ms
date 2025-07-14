@@ -1,7 +1,7 @@
 # Setting up conda environment
 
 conda env create -f phyloAMR.yaml
-conda activate joint_uncertainty_phyloAMR
+conda activate joint_uncertainty_corHMM_phyloAMR
  
 # DO THIS IN In R:
 

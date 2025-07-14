@@ -1,4 +1,4 @@
-name: joint_uncertainty_phyloAMR
+name: joint_uncertainty_corHMM_phyloAMR
 channels:  
   - conda-forge
   - r
