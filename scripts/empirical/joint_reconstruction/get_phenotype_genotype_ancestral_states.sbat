@@ -1,0 +1,13 @@
+#!/bin/sh
+# Job name
+#SBATCH --job-name=corHMM_joint_uncertainty
+# User info
+#SBATCH --mail-user=kgontjes@umich.edu
+#SBATCH --mail-type=BEGIN,END
+#SBATCH --export=ALL
+#SBATCH --partition=standard
+#SBATCH --account=esnitkin1 
+#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=15 --mem=75g --time=0:10:00
+#SBATCH --output=get_phenotype_genotype_ancestral_states.out
+
+Rscript -e "rmarkdown::render('get_phenotype_genotype_ancestral_states.Rmd')"

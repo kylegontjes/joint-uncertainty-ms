@@ -1,0 +1,68 @@
+---
+title: "Get ancestral states and uncertainty for BL/BLI resistance and related genotypes"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '/nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c('corHMM','tidyverse','ape') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+# Load data
+```{r}  
+phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
+```
+
+```{r}
+genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes.RDS") 
+genotypes <-  genotypes %>% .[match(phy$tip.label,.[['isolate_no']]),]
+
+df <- left_join(dat,genotypes)
+```
+
+# Get focal
+```{r}
+traits <- c("blbli_dich_num",colnames(genotypes %>% select(-isolate_no)))
+
+focal_asrs <- pbmcapply::pbmclapply(traits,FUN=function(x,dat,phy){
+  cor_dat <- data.frame(sp = dat$isolate_no, d = dat[[x]], row.names = dat$isolate_no) 
+  cor_dat <- cor_dat[match(phy$tip.label, cor_dat[['sp']]), ]
+  focal <- corHMM(phy = phy,data =  cor_dat, rate.cat = 1, model = "ER", node.states = "joint", upper.bound = 1e100, lower.bound = 1e-9, root.p = "maddfitz")
+   
+},dat=df,phy=phy,mc.cores=14)  %>% `names<-`(traits)
+
+saveRDS(focal_asrs,"./data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS")
+```
+
+# Joint uncertainty calculations 
+```{r} 
+joint_asrs <- lapply(focal_asrs,FUN=function(focal){
+  corHMM:::compute_joint_ci(
+  focal, 
+  batch_size = 100,  
+  break_threshold = 0,
+  max_samples = 1000,
+  ncores = 10)
+} )  %>% `names<-`(names(focal_asrs))
+
+saveRDS(joint_asrs,"./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
+```
