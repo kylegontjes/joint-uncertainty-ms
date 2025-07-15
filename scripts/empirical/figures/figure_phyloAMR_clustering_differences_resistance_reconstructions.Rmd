@@ -1,0 +1,98 @@
+---
+title: "figure_clustering_differences_reconstructions"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'corHMM','phyloAMR') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Source functions
+source("./lib/consistent_themes.R")
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+# Load data
+## Dataset
+```{r} 
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+phy <- read.tree("./data/empirical/tree/tree.treefile") 
+dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+```
+
+```{r}
+cluster_analysis_df <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS")
+blbli_cluster_analysis_df <- cluster_analysis_df %>% subset(trait == 'blbli_dich_num')
+ 
+dbcluster_names <- dbres$cluster %>% `names<-`(seq_len(length(.)))
+blbli_cluster_analysis_df$pheno_number <- sapply(blbli_cluster_analysis_df$reconstruction_axis,FUN=function(x){
+  if(grepl("alt_recon",x)){
+    
+  gsub("alt_recon_","",x)
+  } else {
+    x
+  } 
+})  
+
+blbli_cluster_analysis_df$pheno_cluster <- sapply(blbli_cluster_analysis_df$pheno_number,FUN=function(x){
+  if(!grepl("focal",x)){
+    dbcluster_names[names(dbcluster_names) == x]
+  } else {
+    x
+  }
+})
+ 
+```
+
+```{r}
+# Curate best
+best_joint_parent_child_clusters <- blbli_cluster_analysis_df %>% subset(pheno_cluster == 'focal_states')
+best_joint_parent_child_clusters_simple <- best_joint_parent_child_clusters %>% select(phylogenetic_events,singletons,singleton_isolates,clusters,cluster_isolates,cluster_size_median,cluster_size_mean,revertant_isolates,revertant_clusters,pheno_cluster) 
+colnames(best_joint_parent_child_clusters_simple) <- c("Phylogenetic events","Singletons","Singleton isolates","Clusters","Cluster isolates)","Cluster size (median)","Cluster size (mean)","Revertant isolates","Revertant clusters","Phenotype axis")
+
+# Curate state cluster data
+alt_recons <- blbli_cluster_analysis_df %>% subset(pheno_cluster!='focal_states') 
+cluster_data_simple <- alt_recons  %>% select(phylogenetic_events,singletons,singleton_isolates,clusters,cluster_isolates,cluster_size_median,cluster_size_mean,revertant_isolates,revertant_clusters,pheno_cluster) 
+cluster_data_simple$pheno_cluster <- as.numeric(cluster_data_simple$pheno_cluster)
+colnames(cluster_data_simple) <-  c("Phylogenetic events","Singletons","Singleton isolates","Clusters","Cluster isolates)","Cluster size (median)","Cluster size (mean)","Revertant isolates","Revertant clusters","Phenotype axis")
+```
+
+
+```{r,fig.width=7.75,fig.height=7.75}
+clustering_data <- lapply(colnames(cluster_data_simple) ,FUN=function(x){
+  num_bins = length(unique(cluster_data_simple[[x]]))
+  value_from_best <- best_joint_parent_child_clusters_simple[[x]]
+  
+  if(x == "Phenotype axis"){
+  ggplot(data=cluster_data_simple,aes(x=get(x),fill=as.factor(`Phenotype axis`))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + tnsecluster_scale_fill  + theme(legend.position = 'none')  
+    
+  } else {
+  ggplot(data=cluster_data_simple,aes(x=get(x),fill=as.factor(`Phenotype axis`))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + tnsecluster_scale_fill  + theme(legend.position = 'none')  + geom_vline(xintercept = value_from_best,linetype = 2,color = 'black') 
+    
+  }
+  
+  
+}) %>% cowplot::plot_grid(plotlist = .,labels = "AUTO",ncol=3)
+
+clustering_data
+
+ggsave("./figures/empirical/phyloAMR_phylogenetic_clustering_alternative_reconstruction_statistics.png",dpi = 900,bg = 'white',plot = clustering_data,width=7.75,height=7.75)
+```
+
+
