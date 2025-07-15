@@ -34,9 +34,43 @@ sessionInfo()
 
 # Transition data
 ```{r}
-synchronous_df <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_synchronous_transition_statistics.RDS")
-downstream_df <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_downstream_transition_statistics.RDS")
+synchronous_df <- readRDS("./data/empirical/phyloAMR/representative_phenotype_genotype_synchronous_transition_statistics.RDS")
+downstream_df <- readRDS("./data/empirical/phyloAMR/representative_phenotype_genotype_downstream_transition_statistics.RDS")
 ```
+
+# Edit
+## Synchronous
+```{r}
+synchronous_df$genotype <- factor(
+synchronous_df$genotype,levels = c("AA018","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_truncation_kleborate","OmpK36_putative_function_altering","PBP2","PBP4","AcrAB_TolC_any","RamR","RamA"))
+
+synchronous_df$genotype <- recode(synchronous_df$genotype ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
+
+synchronous_df$phenotype_axis <- recode(synchronous_df$phenotype_axis,"best_joint" ="Best joint model",
+                                             "JR_cluster_1" ="Alternative axis 1",
+                                             "JR_cluster_2" ="Alternative axis 2",
+                                             "JR_cluster_3" ="Alternative axis 3",
+                                             "JR_cluster_4" ="Alternative axis 4",
+                                             "JR_cluster_5" ="Alternative axis 5") 
+```
+
+## Downstream
+```{r}
+downstream_df$genotype <- factor(
+downstream_df$genotype,levels = c("AA018","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_truncation_kleborate","OmpK36_putative_function_altering","PBP2","PBP4","AcrAB_TolC_any","RamR","RamA"))
+
+downstream_df$genotype <- recode(downstream_df$genotype ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
+
+downstream_df$phenotype_axis <- recode(downstream_df$phenotype_axis,"best_joint" ="Best joint model",
+                                             "JR_cluster_1" ="Alternative axis 1",
+                                             "JR_cluster_2" ="Alternative axis 2",
+                                             "JR_cluster_3" ="Alternative axis 3",
+                                             "JR_cluster_4" ="Alternative axis 4",
+                                             "JR_cluster_5" ="Alternative axis 5") 
+```
+
+
+# Figure
 
 ```{r,fig.width=15,fig.height=12.25}
 ymax <- max(synchronous_df  %>% select(synchronous_gains_num,synchronous_gain_loss_num,synchronous_losses_num) %>% unlist %>% as.numeric) 
@@ -56,9 +90,10 @@ figF <- ggplot(data=downstream_df,aes(y=stretches_w_losses_num,fill=as.factor(ph
 
 legend_axes_fig <- cowplot::get_legend(D)
   
-genotype_phenotype_figure <- cowplot::plot_grid(A + theme(legend.position="none"),B + theme(legend.position="none"),E+ theme(legend.position="none"),legend_axes_fig,C + theme(legend.position="none"),D + theme(legend.position="none"),figF + theme(legend.position="none"),legend_axes_fig,labels = c("A","B","C","","D","E","F",""),rel_widths = c(1,1,1,0.25,1,1,1,0.25),ncol=4)
+genotype_phenotype_figure <- cowplot::plot_grid(A + theme(legend.position="none"),B + theme(legend.position="none"),E+ theme(legend.position="none"),C + theme(legend.position="none"),D + theme(legend.position="none"),figF + theme(legend.position="none"),labels = c("A","B","C","D","E","F"),rel_widths = c(1,1,1,1,1,1),ncol=3)
 
-genotype_phenotype_figure
+genotype_phenotype_figure_w_legend <- cowplot::plot_grid(genotype_phenotype_figure,legend_axes_fig,ncol=2,rel_widths = c(1,0.125))
+genotype_phenotype_figure_w_legend
 
-ggsave("./figures/empirical/phyloAMR_genotype_phenotype_transitions.png",dpi = 600,bg = 'white',plot = genotype_phenotype_figure,width=15,height=12.5) 
+ggsave("./figures/empirical/phyloAMR_genotype_phenotype_transitions.png",dpi = 600,bg = 'white',plot = genotype_phenotype_figure_w_legend,width=15,height=12.5) 
 ```

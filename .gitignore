@@ -1,6 +1,7 @@
 # Abset 
 ._*.*
 ._*
+*.fuse_*
 
 # History files
 .Rhistory

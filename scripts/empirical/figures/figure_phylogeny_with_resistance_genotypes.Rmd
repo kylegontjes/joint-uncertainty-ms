@@ -38,7 +38,7 @@ genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes
 
 ```{r} 
 phyloAMR_cluster_df <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_df.RDS")
-cluster_stats <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_analyses.RDS")
+cluster_stats <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_statistics.RDS")
 dat <- left_join(dat,phyloAMR_cluster_df)
 rownames(dat) <- dat$isolate_no
 ```
@@ -46,25 +46,27 @@ rownames(dat) <- dat$isolate_no
 ## Phylogenetic tree 
 ```{r} 
 number_clusters <- nrow(cluster_stats)-1
-p0 <- gheatmap(ggtree(phy),dat %>% select(blbli_dich_num) %>% mutate_all(as.factor) %>% `colnames<-`("BL/BLI Resistance"),color=NULL,width=0.1,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + Resistance_scale
+p0 <- gheatmap(ggtree(phy),dat %>% select(blbli_dich_num) %>% mutate_all(as.factor) %>% `colnames<-`("BL/BLI resistance"),color=NULL,width=0.1,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + Resistance_scale
 p0.1 <- p0 + ggnewscale::new_scale_fill()
 
 JR_variables <- cluster_stats$phenotype_axis %>% subset(.!='best_joint')
-p1 <-  gheatmap(p0.1,dat %>% select(best_joint_asr_cluster_renamed) %>% `colnames<-`("Focal Joint Reconstruction"),offset =0.000025,width=0.1,color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + cluster_scale  + ylim(NA,635)
+p1 <-  gheatmap(p0.1,dat %>% select(best_joint_asr_cluster_renamed) %>% `colnames<-`("Best joint reconstruction"),offset =0.000025,width=0.1,color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + cluster_scale  + ylim(NA,635)
 
-p1.1 <- gheatmap(p1,dat %>% select(any_of(paste0(JR_variables,"_asr_cluster_renamed"))) %>% `colnames<-`(paste0("Phenotype Axis ",1:number_clusters)),offset =0.00005,width=0.1*number_clusters,color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + cluster_scale  + ylim(NA,625)
+p1.1 <- gheatmap(p1,dat %>% select(any_of(paste0(JR_variables,"_asr_cluster_renamed"))) %>% `colnames<-`(paste0("Alterative axis ",1:number_clusters)),offset =0.00005,width=0.1*number_clusters,color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.25) + cluster_scale  + ylim(NA,625)
 ```
 
 ```{r ,fig.height=7,fig.width=7}
 p1.2 <- p1.1 + ggnewscale::new_scale_fill()
+colnames(genotypes) <-  recode(colnames(genotypes) ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
+
 clustered_heatmap <- ComplexHeatmap::Heatmap(genotypes %>% select(-isolate_no) %>% mutate_all(as.numeric))
 column_order_ <- colnames(genotypes %>% select(-isolate_no))[ComplexHeatmap::column_order(clustered_heatmap)]
 
 rownames(genotypes) <- genotypes$isolate_no
-p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.00015 ),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.25)  + factor_scale + ylim(NA,725) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')))
+p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.0001825),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.25)  + factor_scale + ylim(NA,725) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')))
 p2 
 
-ggsave("./figures/empirical/phylogeny_with_resistance_genotypes.png",dpi = 600,bg = 'white',plot = p2,width=7,height=7)
+ggsave("./figures/empirical/phylogeny_with_resistance_genotypes.png",dpi = 900,bg = 'white',plot = p2,width=7,height=7)
 ```
 
 

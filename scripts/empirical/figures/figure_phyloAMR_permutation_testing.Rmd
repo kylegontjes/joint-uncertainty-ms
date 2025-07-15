@@ -68,14 +68,14 @@ downstream_pvalue_results_df <- lapply(names(downstream_pvalue_results),FUN=func
 synchronous_pvalue_results_df$comparitor <- factor(
 synchronous_pvalue_results_df$comparitor,levels = c("AA018","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_truncation_kleborate","OmpK36_putative_function_altering","PBP2","PBP4","AcrAB_TolC_any","RamR","RamA"))
 
-synchronous_pvalue_results_df$comparitor <- recode(synchronous_pvalue_results_df$comparitor ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion','OmpK36TD'='TD loop 3 insertion','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
+synchronous_pvalue_results_df$comparitor <- recode(synchronous_pvalue_results_df$comparitor ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36 in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
 
 synchronous_pvalue_results_df$phenotype_axis <- recode(synchronous_pvalue_results_df$phenotype_axis,"best_joint" ="Best joint model",
-                                             "JR_cluster_1" ="Alternative axes 1",
-                                             "JR_cluster_2" ="Alternative axes 2",
-                                             "JR_cluster_3" ="Alternative axes 3",
-                                             "JR_cluster_4" ="Alternative axes 4",
-                                             "JR_cluster_5" ="Alternative axes 5") 
+                                             "JR_cluster_1" ="Alternative axis 1",
+                                             "JR_cluster_2" ="Alternative axis 2",
+                                             "JR_cluster_3" ="Alternative axis 3",
+                                             "JR_cluster_4" ="Alternative axis 4",
+                                             "JR_cluster_5" ="Alternative axis 5") 
 
 
 axes_fill <- scale_fill_manual(breaks = c(unique(synchronous_pvalue_results_df$phenotype_axis)%>% factor),values=c("black", "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00", "#FFFF33","gray"),name="Phenotype axes")
@@ -102,15 +102,15 @@ ggsave("./figures/empirical/phyloAMR_synchronous_permutation_test_pvalues.png",d
 downstream_pvalue_results_df$comparitor <- factor(
 downstream_pvalue_results_df$comparitor,levels = c("AA018","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_truncation_kleborate","OmpK36_putative_function_altering","PBP2","PBP4","AcrAB_TolC_any","RamR","RamA"))
 
-downstream_pvalue_results_df$comparitor <- recode(downstream_pvalue_results_df$comparitor ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion','OmpK36TD'='TD loop 3 insertion','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
+downstream_pvalue_results_df$comparitor <- recode(downstream_pvalue_results_df$comparitor ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
 
 
 downstream_pvalue_results_df$phenotype_axis <- recode(downstream_pvalue_results_df$phenotype_axis,"best_joint" ="Best joint model",
-                                             "JR_cluster_1" ="Alternative axes 1",
-                                             "JR_cluster_2" ="Alternative axes 2",
-                                             "JR_cluster_3" ="Alternative axes 3",
-                                             "JR_cluster_4" ="Alternative axes 4",
-                                             "JR_cluster_5" ="Alternative axes 5") 
+                                             "JR_cluster_1" ="Alternative axis 1",
+                                             "JR_cluster_2" ="Alternative axis 2",
+                                             "JR_cluster_3" ="Alternative axis 3",
+                                             "JR_cluster_4" ="Alternative axis 4",
+                                             "JR_cluster_5" ="Alternative axis 5") 
 
 downstream_variables <-colnames(downstream_pvalue_results_df) %>% subset(!.%in% c('comparitor','phenotype_axis'))
 

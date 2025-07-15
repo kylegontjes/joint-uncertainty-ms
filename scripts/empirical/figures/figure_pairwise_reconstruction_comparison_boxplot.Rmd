@@ -55,14 +55,14 @@ pairwise_comparisons <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_
 pairwise_comparisons$genotype <- factor(
 pairwise_comparisons$genotype,levels = rev(c("AA018","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_truncation_kleborate","OmpK36_putative_function_altering","PBP2","PBP4","AcrAB_TolC_any","RamR","RamA")))
 
-pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion','OmpK36TD'='TD loop 3 insertion','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
+pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
 
 pairwise_comparisons$pheno_cluster <- recode(pairwise_comparisons$pheno_cluster,"focal_states" ="Best joint model",
-                                             "1" ="Alternative axes 1",
-                                             "2" ="Alternative axes 2",
-                                             "3" ="Alternative axes 3",
-                                             "4" ="Alternative axes 4",
-                                             "5" ="Alternative axes 5") 
+                                             "1" ="Alternative axis 1",
+                                             "2" ="Alternative axis 2",
+                                             "3" ="Alternative axis 3",
+                                             "4" ="Alternative axis 4",
+                                             "5" ="Alternative axis 5") 
 ```
 
 
@@ -93,7 +93,7 @@ B <- ggplot(pairwise_comparisons,
 geom_boxplot(position = position_dodge(width = 0.8)) +
 labs(x = "No. discordant transitions",
      y = "",
-     fill = "Pheno Cluster") +
+     fill = "Phenotype axesr") +
 scale_fill_brewer(palette = "Set1") +
 theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw()
 
@@ -110,7 +110,7 @@ C <- ggplot(pairwise_comparisons,
 geom_boxplot(position = position_dodge(width = 0.8)) +
 labs(x = "Difference in transition type",
      y = "",
-     fill = "Pheno Cluster") +
+     fill = "Phenotype axes") +
 scale_fill_brewer(palette = "Set1") +
 theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + geom_vline(xintercept = 0,colour = "red",linetype = 2)
 

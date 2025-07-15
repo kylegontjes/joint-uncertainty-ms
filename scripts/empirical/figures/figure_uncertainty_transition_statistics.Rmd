@@ -54,7 +54,6 @@ alt_recons <- state_transition_statistics %>% subset(reconstruction!='focal_stat
 alt_recons$cluster <- dbres$cluster %>% as.numeric()
 transition_data_simple <- alt_recons %>% select(-reconstruction,-gain_frequency,-loss_frequency,-continuation_present_frequency,-continuations,-trait,-continuation_absent_frequency,-total_edges)
 colnames(transition_data_simple) <- c("Transitions","Gain Events","Gain Events (Tips)","Loss Events","Loss Events (Tips)","Continuations (Present)","Continuations (Absent)","Cluster")
-
 ```
 
 ```{r}

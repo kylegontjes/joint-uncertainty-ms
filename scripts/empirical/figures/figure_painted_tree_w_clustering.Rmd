@@ -46,8 +46,8 @@ rownames(dat) <- dat$isolate_no
 ```
 
 # Tracing states on the phylogenetic tree 
-```{r,fig.width=12.5,fig.height=10} 
-painted_trees <- lapply(best_joint_parent_child,paint_tree_with_states,tr = phy,legend_name = "Edge-based non-susceptibility")
+```{r,fig.width=12.5,fig.height=8.75} 
+painted_trees <- lapply(best_joint_parent_child,paint_tree_with_states,tr = phy,legend_name = "Edge-based resistance")
 painted_trees_wo_legend <- lapply(painted_trees,function(x){x+theme(legend.position = "none")}) 
  
 rownames(dat) <- dat$isolate_no
@@ -57,7 +57,7 @@ painted_trees_w_cluster_calls <- lapply(variables,FUN=function(x){
   p_obj <- painted_trees[[x]] 
   p1 <- gheatmap(p_obj,data=dat  %>% select(blbli_dich_num) %>% `colnames<-`("Resistance") %>% mutate_all(as.factor),width = 0.1,colnames_position = 'top',colnames_angle=90, colnames_offset_y = 0.25, hjust = 0, color = NA) + Resistance_scale
   p1.1 <- p1 + ggnewscale::new_scale_fill()
-  p2 <- gheatmap(p1.1,data=dat  %>% select(paste0(x,"_asr_cluster_renamed")) %>% `colnames<-`("Clustering"),width = 0.1,colnames_position = 'top',colnames_angle=90, colnames_offset_y = 0.25, hjust = 0, color = NA,offset=0.000025)  + cluster_scale_v + ylim(NA,540)
+  p2 <- gheatmap(p1.1,data=dat  %>% select(paste0(x,"_asr_cluster_renamed")) %>% `colnames<-`("Clustering"),width = 0.1,colnames_position = 'top',colnames_angle=90, colnames_offset_y = 0.25, hjust = 0, color = NA,offset=0.000025)  + cluster_scale_v + ylim(NA,500)
   p2
 })
 
@@ -72,5 +72,5 @@ tracing_states_on_tree <- cowplot::plot_grid(tracing_states_on_tree_wo_legend,le
 
 tracing_states_on_tree
 
-ggsave("./figures/empirical/ancestral_states_on_phylogeny.png",dpi = 900,bg = 'white',plot = tracing_states_on_tree,width=12.5,height=10)
+ggsave("./figures/empirical/ancestral_states_on_phylogeny.png",dpi = 900,bg = 'white',plot = tracing_states_on_tree,width=12.5,height=8.75)
 ```
