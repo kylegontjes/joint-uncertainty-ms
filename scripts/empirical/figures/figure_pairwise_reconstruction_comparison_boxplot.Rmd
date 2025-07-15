@@ -75,8 +75,8 @@ A <- ggplot(pairwise_comparisons,
            y = as.factor(genotype),
            fill = as.factor(pheno_cluster))) +
 geom_boxplot(position = position_dodge(width = 0.8)) +
-labs(x = "No. concordant synchronous transitions",
-     y = "Genotype",
+labs(x = "No. concordant transitions",
+     y = "",
      fill = "Phenotype axes") +
 scale_fill_brewer(palette = "Set1") +
 theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw()
@@ -91,8 +91,8 @@ B <- ggplot(pairwise_comparisons,
            y = as.factor(genotype),
            fill = as.factor(pheno_cluster))) +
 geom_boxplot(position = position_dodge(width = 0.8)) +
-labs(x = "No. discordant synchronous transitions",
-     y = "Genotype",
+labs(x = "No. discordant transitions",
+     y = "",
      fill = "Pheno Cluster") +
 scale_fill_brewer(palette = "Set1") +
 theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw()
@@ -100,15 +100,33 @@ theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw()
 B
 ```
 
+# Differences
+```{r}
+pairwise_comparisons$difference_transition_type <- pairwise_comparisons$num_concordant_transitions - pairwise_comparisons$num_discordant_transitions
+C <- ggplot(pairwise_comparisons,
+       aes(x = difference_transition_type,
+           y = as.factor(genotype),
+           fill = as.factor(pheno_cluster)))  +
+geom_boxplot(position = position_dodge(width = 0.8)) +
+labs(x = "Difference in transition type",
+     y = "",
+     fill = "Pheno Cluster") +
+scale_fill_brewer(palette = "Set1") +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + geom_vline(xintercept = 0,colour = "red",linetype = 2)
+
+C
+```
 # Merged
-```{r,fig.width=10,fig.height=10}
-AB <- cowplot::plot_grid(A + theme(legend.position = 'none'),B + theme(legend.position = 'none'),ncol=1,labels="AUTO")
+```{r,fig.width=13 ,fig.height=13}
+AB <- cowplot::plot_grid(A + theme(legend.position = 'none'),B + theme(legend.position = 'none'),ncol=2,labels="AUTO")
 legend_fig <- cowplot::get_legend(A)  %>% cowplot::plot_grid()
+
+C_legend <- cowplot::plot_grid(C + theme(legend.position = 'none'),legend_fig,ncol=2,labels=c("C",""))
   
-AB_w_legend <- cowplot::plot_grid(AB,legend_fig,ncol=2,rel_widths = c(1,0.2))
+figure <- cowplot::plot_grid(AB,C_legend,ncol=1,rel_widths = c(1,1))
 
-AB_w_legend
+figure
 
-ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",dpi = 900,bg = 'white',plot = AB,width=10,height=10)
+ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",dpi = 900,bg = 'white',plot = AB,width=13,height=12)
 ```
 
