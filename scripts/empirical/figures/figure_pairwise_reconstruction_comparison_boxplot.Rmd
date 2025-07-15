@@ -127,6 +127,6 @@ figure <- cowplot::plot_grid(AB,C_legend,ncol=1,rel_widths = c(1,1))
 
 figure
 
-ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",dpi = 900,bg = 'white',plot = AB,width=13,height=12)
+ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",dpi = 900,bg = 'white',plot = figure,width=13,height=12)
 ```
 
