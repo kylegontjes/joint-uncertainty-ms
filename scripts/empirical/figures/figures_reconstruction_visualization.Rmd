@@ -9,7 +9,7 @@ output: html_document
 require(knitr) 
 opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+knitr::opts_knit$set(root.dir = '~/joint-uncertainty-ms/') 
 ```
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
@@ -53,8 +53,8 @@ edge_col <- rep("grey60", dim(phy$edge)[1])
 edge_col[to_col] <- "black"
 nodes_to_col <- to_keep[to_keep > Ntip(phy)]
 plot(phy, show.tip.label = FALSE, no.margin = TRUE, direction = "downwards", edge.color = edge_col)
-nodelabels(pch = 21,  cex = 1, bg = c("white", "grey80")[focal$states], col = "grey70")
-nodelabels(pch = 21,  cex = 1, bg = c("white", "black")[focal$states], col = "black", node = c(417, nodes_to_col))
+nodelabels(pch = 21,  cex = 1, bg = c("grey80", "white")[focal$states], col = "grey70")
+nodelabels(pch = 21,  cex = 1, bg = c("black", "white")[focal$states], col = "black", node = c(417, nodes_to_col))
 
 dev.off()
 ```
@@ -68,11 +68,11 @@ cluster_assignments <- dbres$cluster
 clusters <- factor(cluster_assignments)
 clust_cols <- RColorBrewer::brewer.pal(sum(levels(clusters) !=0), "Set1")
 
-pdf("./figures/empirical/empirical_joint_uncertainty_reconstructions.pdf", height = 10, width = 5)
+pdf("./figures/empirical/empirical_joint_uncertainty_reconstructions.pdf", height = 15, width = 5.5)
 par(mar=c(0,0,0,0))
 m <- t(state_df_matrix)[, order(cluster_assignments)]
 m <- m[, ncol(m):1]
-colors <- ifelse(m == 2, "white", "black")
+colors <- ifelse(m == 2, "black", "white")
 color_matrix <- matrix(colors, nrow = nrow(m), ncol = ncol(m))
 plot(1, type="n", xlim=c(1, nrow(m)), ylim=c(1, ncol(m)), axes = FALSE, xlab = "", ylab = "")
 for (i in 1:nrow(m)) {
@@ -120,7 +120,7 @@ dev.off()
 ```{r}
 pdf("./figures/empirical/empirical_joint_uncertainty_lnlik_dist.pdf", width = 2.5, height = 10)
 
-corHMM:::plot_stacked_densities(joint_ci$lnliks, clusters, cols = c(clust_cols), main = "")
+corHMM:::plot_stacked_densities(joint_ci$lnliks, clusters, cols = rep("grey50", 5), main = "", xlab ="", ylab="")
 
 dev.off()
 ```
@@ -142,7 +142,7 @@ for(i in 1:optimal_k_gap){
   phy_tmp$node.label <- as.numeric(max_node_labels)
   phy_tmp <- keep.tip(phy_tmp, to_keep)
   plot.phylo(phy_tmp, show.tip.label = FALSE, edge.width = 0.5, no.margin = TRUE, direction = "downwards")
-  nodelabels(pch = 21, bg = c("white", "black")[as.numeric(phy_tmp$node.label)], cex = 1)
+  nodelabels(pch = 21, bg = c("black", "white")[as.numeric(phy_tmp$node.label)], cex = 1.5)
 }
 dev.off()
 ```
