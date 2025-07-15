@@ -110,10 +110,16 @@ transition_stats <- lapply(variable_transition_stats,get_median_min_max_values,d
   ~ left_join(.x, .y, by = "pheno_cluster")
 )
 ```
+## Number reconstructions
+```{r}
+num_recons <- blbli_transition_analysis_df %>% group_by(pheno_cluster) %>% summarise (`Reconstructions` = n())
+```
+
+
 
 # Merged table
 ```{r}
-table <- left_join(cluster_stats,transition_stats) 
+table <- left_join(num_recons,cluster_stats) %>% left_join(.,transition_stats) 
 table$pheno_cluster <- recode(table$pheno_cluster,"focal_states" ="Best joint model",
                                              "1" ="Alternative axis 1",
                                              "2" ="Alternative axis 2",
@@ -121,7 +127,7 @@ table$pheno_cluster <- recode(table$pheno_cluster,"focal_states" ="Best joint mo
                                              "4" ="Alternative axis 4",
                                              "5" ="Alternative axis 5") 
 
-colnames(table) <- c("Phenotype axis","Phylogentic events","Singletons","Singleton isolates","Clusters","Cluster isolates","Cluster size (median)","Transitions","Gain events","Gains (tip)","Loss events","Losses (tip)","Continuations of trait")
+colnames(table) <- c("Phenotype axis","Reconstructions","Phylogentic events","Singletons","Singleton isolates","Clusters","Cluster isolates","Cluster size (median)","Transitions","Gain events","Gains (tip)","Loss events","Losses (tip)","Continuations of trait")
 
 table %>% favorite_kable()
 
