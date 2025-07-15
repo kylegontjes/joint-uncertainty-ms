@@ -37,22 +37,22 @@ genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes
 ```
 
 # Transition data
-```{r}
-best_joint_parent_child <- readRDS("./data/empirical/phyloAMR/representative_joint_uncertainty_parent_child_dfs.RDS") 
-state_transition_statistics <- readRDS("./data/empirical/phyloAMR/joint_states_reconstruction_transition_statistics.RDS")
+```{r} 
+state_transition_statistics <- readRDS("./data/empirical/phyloAMR/joint_states_reconstruction_transition_statistics.RDS")  %>% .[["blbli_dich_num"]]
 dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
 ```
 
 # Figure
 ```{r}
 # Curate best
-best_joint_parent_child_transitions <- phyloAMR::asr_transition_analysis(best_joint_parent_child[['best_joint']])
+best_joint_parent_child_transitions <- state_transition_statistics %>% subset(reconstruction == 'focal_states')
 best_joint_parent_child_transitions_simple <- best_joint_parent_child_transitions %>% select(-gain_frequency,-loss_frequency,-continuation_present_frequency,-continuations,,-continuation_absent_frequency,-total_edges)
 colnames(best_joint_parent_child_transitions_simple) <- c("Transitions","Gain Events","Gain Events (Tips)","Loss Events","Loss Events (Tips)","Continuations (Present)","Continuations (Absent)")
 
 # Curate state transition data
-state_transition_statistics$cluster <- dbres$cluster %>% as.numeric()
-transition_data_simple <- state_transition_statistics %>% select(-reconstruction,-gain_frequency,-loss_frequency,-continuation_present_frequency,-continuations,,-continuation_absent_frequency,-total_edges)
+alt_recons <- state_transition_statistics %>% subset(reconstruction!='focal_states')
+alt_recons$cluster <- dbres$cluster %>% as.numeric()
+transition_data_simple <- alt_recons %>% select(-reconstruction,-gain_frequency,-loss_frequency,-continuation_present_frequency,-continuations,-trait,-continuation_absent_frequency,-total_edges)
 colnames(transition_data_simple) <- c("Transitions","Gain Events","Gain Events (Tips)","Loss Events","Loss Events (Tips)","Continuations (Present)","Continuations (Absent)","Cluster")
 
 ```
@@ -68,6 +68,6 @@ transitional_data <- lapply(colnames(transition_data_simple),FUN=function(x){
 
 transitional_data
 
-ggsave("./figures/empirical/phyloAMR_alternative_reconstructoin_transitions_statistics.png",dpi = 600,bg = 'white',plot = transitional_data,width=15,height=12.5)
+ggsave("./figures/empirical/phyloAMR_alternative_reconstructoin_transitions_statistics.png",dpi = 900,bg = 'white',plot = transitional_data,width=15,height=12.5)
 ```
 

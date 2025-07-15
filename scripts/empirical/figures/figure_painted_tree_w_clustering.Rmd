@@ -38,9 +38,9 @@ genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes
 
 # Transition data
 ```{r}
-best_joint_parent_child <- readRDS("./data/empirical/phyloAMR/representative_joint_uncertainty_parent_child_dfs.RDS")  
-phyloAMR_cluster_df <- readRDS("./data/empirical/phyloAMR/representative_joint_uncertainty_asr_clustering_df.RDS")
-clustering_stats <- readRDS("./data/empirical/phyloAMR/representative_joint_uncertainty_asr_clustering_analyses.RDS")
+best_joint_parent_child <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS")  
+phyloAMR_cluster_df <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_df.RDS")
+clustering_stats <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_statistics.RDS")
 dat <- left_join(dat,phyloAMR_cluster_df)
 rownames(dat) <- dat$isolate_no
 ```
@@ -72,6 +72,5 @@ tracing_states_on_tree <- cowplot::plot_grid(tracing_states_on_tree_wo_legend,le
 
 tracing_states_on_tree
 
-ggsave("./figures/empirical/ancestral_states_on_phylogeny.png",dpi = 600,bg = 'white',plot = tracing_states_on_tree,width=12.5,height=10)
+ggsave("./figures/empirical/ancestral_states_on_phylogeny.png",dpi = 900,bg = 'white',plot = tracing_states_on_tree,width=12.5,height=10)
 ```
-

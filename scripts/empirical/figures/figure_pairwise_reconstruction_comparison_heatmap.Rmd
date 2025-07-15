@@ -1,0 +1,124 @@
+---
+title: "Pairwise comparisons as heatmap"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR','kableExtra','ComplexHeatmap') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+ 
+# Load data
+```{r}  
+phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
+```
+
+```{r}
+genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes.RDS") 
+genotypes <-  genotypes %>% .[match(phy$tip.label,.[['isolate_no']]),]
+
+df <- left_join(dat,genotypes)
+```
+
+# Reconsctructions
+```{r}
+focals <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS")
+joint_uncs <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
+dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+```
+
+# Pairwise phyloAMR data
+```{r}
+pairwise_comparisons <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_transitions_comparisons.RDS")  %>% subset(genotype_reconstruction != 'focal_states')
+```
+
+## Recode genotypes
+```{r}
+pairwise_comparisons$genotype <- factor(
+pairwise_comparisons$genotype,levels = rev(c("AA018","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_truncation_kleborate","OmpK36_putative_function_altering","PBP2","PBP4","AcrAB_TolC_any","RamR","RamA")))
+
+pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion','OmpK36TD'='TD loop 3 insertion','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
+```
+
+```{r} 
+pairwise_comparisons_ordered <- pairwise_comparisons %>% arrange(genotype,pheno_cluster)
+pairwise_comparisons_ordered$genotype_reconstruction_axes <- paste0(pairwise_comparisons_ordered$genotype,"_",pairwise_comparisons_ordered$genotype_reconstruction)
+
+# Pivot wide
+dbcluster_names <- dbres$cluster %>% `names<-`(seq_len(length(.)))
+matrix_of_vals <- pairwise_comparisons_ordered %>%
+    group_by(genotype_reconstruction_axes, phenotype_reconstruction) %>%
+    summarise(value = synchronous_transitions_num) %>%  # or median(), sum(), etc
+    pivot_wider(names_from = genotype_reconstruction_axes, values_from = value) 
+
+matrix_of_vals$cluster <- sapply(matrix_of_vals$phenotype_reconstruction,FUN=function(x){
+  if(!grepl("focal",x)){
+    dbcluster_names[names(dbcluster_names) == gsub("alt_recon_","",x)]
+  } else {
+    x
+  }
+})
+
+matrix_of_vals$cluster <- recode(matrix_of_vals$cluster,"focal_states" ="Best joint model",
+                                             "1" ="Alternative axes 1",
+                                             "2" ="Alternative axes 2",
+                                             "3" ="Alternative axes 3",
+                                             "4" ="Alternative axes 4",
+                                             "5" ="Alternative axes 5") 
+
+matrix_of_vals <- matrix_of_vals %>% arrange(cluster) 
+rowsplit_pheno <- factor(matrix_of_vals$cluster,levels = unique(sort(matrix_of_vals$cluster)))
+
+gene <- factor(colnames(matrix_of_vals %>% select(-cluster, -phenotype_reconstruction)) %>% str_split(.,"_",simplify=T) %>% .[,1:2] %>% apply(.,1,paste0,collapse="_")  %>% gsub("_alt|_focal","",.)) 
+
+rowannots <- ComplexHeatmap::rowAnnotation(`Phenotype axes` = factor(matrix_of_vals$cluster),
+  annotation_name_gp = gpar(fontsize = 0))
+colannots <- ComplexHeatmap::columnAnnotation(`Genotype` = gene,
+  annotation_name_gp = gpar(fontsize = 0))
+
+ht <- Heatmap(
+  matrix_of_vals %>% select(-cluster, -phenotype_reconstruction) %>% as.matrix(),
+  row_split = rowsplit_pheno,
+  column_split = gene,
+  cluster_rows = FALSE,
+  cluster_row_slices = TRUE,
+  cluster_columns = FALSE,
+  cluster_column_slices = TRUE,
+  col = c("white", "red"),
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  show_row_dend = FALSE,
+  row_title = NULL,
+  column_title = NULL,
+  right_annotation = rowannots,
+  top_annotation = colannots,
+  name = "No. synchronous transitions"
+) 
+```
+
+```{r}
+png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_heatmap.png", width=12, height=8, units="in", res=900)
+draw(ht, merge_legends = TRUE, heatmap_legend_side = "right", annotation_legend_side = "right")
+dev.off()
+```
+

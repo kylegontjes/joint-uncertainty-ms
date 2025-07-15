@@ -33,12 +33,12 @@ dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
 ```
 
 ```{r}
-focal <- readRDS("./data/empirical/joint_reconstruction/focal_asr.RDS")
-joint_ci <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr.RDS")
+focal <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS") %>% .[["blbli_dich_num"]]
+joint_ci <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS") %>% .[["blbli_dich_num"]]
 
 state_df <- joint_ci$state_df
-
-state_df_matrix <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_state_matrix.RDS")
+ 
+state_df_matrix <- as.matrix(state_df)
 dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
 tsne_res <- readRDS("./data/empirical/joint_reconstruction/alternative_reconstruction_tsne.RDS")
 phylo_dist_mat_local <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")

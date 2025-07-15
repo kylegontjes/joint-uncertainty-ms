@@ -32,11 +32,18 @@ dat <- readRDS("./data/empirical/dataset/df.RDS")
 dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
 ```
 
-```{r}
-focal <- readRDS("./data/empirical/joint_reconstruction/focal_asr.RDS")
-joint_ci <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr.RDS")
-state_df_matrix <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_state_matrix.RDS")
+# Reconsctructions
+```{r} 
+focals <- readRDS("~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS")
+joint_uncs <- readRDS("~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
 ```
+
+## BL/BLI Reconstruction
+```{r} 
+focal <- focals$blbli_dich_num
+joint_ci <- joint_uncs$blbli_dich_num
+state_df_matrix <- as.matrix(joint_ci$state_df)
+``` 
 
 ```{r}
 phy <- ladderize(focal$phy)
@@ -79,11 +86,12 @@ saveRDS(phylo_dist_mat_local,"./data/empirical/joint_reconstruction/joint_uncert
 
 # Visualize distance heatmap
 ```{r}
-ComplexHeatmap::Heatmap(as.matrix(phylo_dist_mat_local),show_column_names = F,show_row_names = F,
+dist_heatmap <- ComplexHeatmap::Heatmap(as.matrix(phylo_dist_mat_local),show_column_names = F,show_row_names = F,
   name = "Phylo Weighted Distance",
   cluster_columns = T, cluster_rows = T,
   row_dend_side = "left", column_dend_side = "top",
   row_title = "Reconstruction", column_title = "Reconstruction") 
+dist_heatmap
 ```
 
 # Generate clustering data

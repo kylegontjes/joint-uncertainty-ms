@@ -1,0 +1,67 @@
+---
+title: "PhyloAMR transition comparisons of representative genotype focal ASR in comparison to phenotype data"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'corHMM','phyloAMR','ape') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+# Data
+```{r}
+representative_parent_child_dfs <- readRDS('./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS')
+genotype_parent_child_dfs_all_recons <- readRDS('./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS') %>% subset(names(.) != "blbli_dich_num") 
+genotype_parent_child_dfs <- lapply(genotype_parent_child_dfs_all_recons,FUN=function(x){x[["focal_states"]]}) %>% `names<-`(names(genotype_parent_child_dfs_all_recons)) 
+phy <- read.tree("./data/empirical/tree/tree.treefile") 
+```
+
+# Synchronous transitions
+```{r}  
+synchronous_transitions <- lapply(genotype_parent_child_dfs,FUN=function(x){
+   lapply(representative_parent_child_dfs, FUN=function(axis){
+     synchronous_transitions(comparitor_parent_child_df = x, trait_parent_child_df = axis)
+   }) %>% do.call(rbind,.) %>% mutate(phenotype_axis = names(representative_parent_child_dfs)) 
+})  %>% `names<-`(names(genotype_parent_child_dfs))
+
+synchronous_transitions_df <- lapply(names(synchronous_transitions), function(name) {
+  df <- synchronous_transitions[[name]]
+  df$genotype <- name
+  return(df)
+}) %>% do.call(rbind,.)
+
+saveRDS(synchronous_transitions_df,'./data/empirical/phyloAMR/representative_phenotype_genotype_synchronous_transition_statistics.RDS')
+```
+
+# Downstream transitions
+```{r} 
+downstream_transitions <-  pbmcapply::pbmclapply(genotype_parent_child_dfs,FUN=function(x){
+   lapply(representative_parent_child_dfs, FUN=function(axis){
+     downstream_transitions(comparitor_parent_child_df = x,trait_parent_child_df = axis, tr = phy)
+   }) %>% do.call(rbind,.) %>% mutate(phenotype_axis = names(representative_parent_child_dfs)) 
+},mc.cores=7)  
+
+downstream_transitions_df <- lapply(names(downstream_transitions), function(name) {
+  df <- downstream_transitions[[name]]
+  df$genotype <- name
+  return(df)
+}) %>% do.call(rbind,.)
+
+saveRDS(downstream_transitions_df,'./data/empirical/phyloAMR/representative_phenotype_genotype_downstream_transition_statistics.RDS')
+```

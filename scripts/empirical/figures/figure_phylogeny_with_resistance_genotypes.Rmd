@@ -37,8 +37,8 @@ genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes
 ```
 
 ```{r} 
-phyloAMR_cluster_df <- readRDS("./data/empirical/phyloAMR/representative_joint_uncertainty_asr_clustering_df.RDS")
-cluster_stats <- readRDS("./data/empirical/phyloAMR/representative_joint_uncertainty_asr_clustering_analyses.RDS")
+phyloAMR_cluster_df <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_df.RDS")
+cluster_stats <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_analyses.RDS")
 dat <- left_join(dat,phyloAMR_cluster_df)
 rownames(dat) <- dat$isolate_no
 ```

@@ -37,6 +37,7 @@ genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes
 genotypes <-  genotypes %>% .[match(phy$tip.label,.[['isolate_no']]),]
 
 df <- left_join(dat,genotypes)
+rownames(df) <- df$isolate_no
 ```
 
 # Get focal
@@ -46,9 +47,11 @@ traits <- c("blbli_dich_num",colnames(genotypes %>% select(-isolate_no)))
 focal_asrs <- pbmcapply::pbmclapply(traits,FUN=function(x,dat,phy){
   cor_dat <- data.frame(sp = dat$isolate_no, d = dat[[x]], row.names = dat$isolate_no) 
   cor_dat <- cor_dat[match(phy$tip.label, cor_dat[['sp']]), ]
-  focal <- corHMM(phy = phy,data =  cor_dat, rate.cat = 1, model = "ER", node.states = "joint", upper.bound = 1e100, lower.bound = 1e-9, root.p = "maddfitz")
+  focal <- corHMM(phy = phy, data =  cor_dat, rate.cat = 1, model = "ER", node.states = "joint", upper.bound = 1e100, lower.bound = 1e-9, root.p = "maddfitz")
    
-},dat=df,phy=phy,mc.cores=14)  %>% `names<-`(traits)
+},dat=df,phy=phy,mc.cores=14)  
+
+names(focal_asrs) <- traits 
 
 saveRDS(focal_asrs,"./data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS")
 ```
@@ -62,7 +65,20 @@ joint_asrs <- lapply(focal_asrs,FUN=function(focal){
   break_threshold = 0,
   max_samples = 1000,
   ncores = 10)
-} )  %>% `names<-`(names(focal_asrs))
+} )
+
+names(joint_asrs) <- names(focal_asrs)
 
 saveRDS(joint_asrs,"./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
+```
+
+# Number of reconstructions 
+```{r}
+joint_unc_stats <- function(name,joint_uncs){
+  trait = name
+  n_reconstructions = length(joint_uncs[[name]]$lnliks)
+  return(  data.frame(trait = name, n_reconstructions = n_reconstructions))
+}
+
+lapply(names(joint_asrs),joint_unc_stats,joint_asrs) %>% do.call(rbind,.) %>% `names<-`(c("trait","n_reconstructions"))
 ```

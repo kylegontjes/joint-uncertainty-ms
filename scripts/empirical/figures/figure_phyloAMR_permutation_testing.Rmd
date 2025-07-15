@@ -74,7 +74,7 @@ synchronous_pvalue_plots <- cowplot::plot_grid(plotlist = synchronous_pval_figs,
 
 synchronous_pvalue_plots
 
-ggsave("./figures/empirical/phyloAMR_synchronous_permutation_test_pvalues.png",dpi = 600,bg = 'white',plot = synchronous_pvalue_plots,width=12.5,height=17.5) 
+ggsave("./figures/empirical/phyloAMR_synchronous_permutation_test_pvalues.png",dpi = 900,bg = 'white',plot = synchronous_pvalue_plots,width=12.5,height=17.5) 
 ```
 
 # Downstream p-values 
@@ -91,5 +91,5 @@ downstream_pvalue_plots <- cowplot::plot_grid(plotlist = downstream_pval_figs,nc
 
 downstream_pvalue_plots
 
-ggsave("./figures/empirical/phyloAMR_downstream_permutation_test_pvalues.png",dpi = 600,bg = 'white',plot = downstream_pvalue_plots,width=12.5,height=17.5) 
+ggsave("./figures/empirical/phyloAMR_downstream_permutation_test_pvalues.png",dpi = 900,bg = 'white',plot = downstream_pvalue_plots,width=12.5,height=17.5) 
 ```

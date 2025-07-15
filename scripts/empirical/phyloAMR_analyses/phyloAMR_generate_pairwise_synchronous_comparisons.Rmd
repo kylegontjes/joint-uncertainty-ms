@@ -1,0 +1,96 @@
+---
+title: "Generate pairwise comparisons"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'corHMM','phyloAMR') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+ 
+# Load data
+```{r}  
+phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
+```
+
+```{r}
+joint_uncs <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
+dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+parent_child_dfs <- readRDS("./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS")
+```
+
+```{r} 
+names_of_uncs <- names(joint_uncs)
+genotype_names <- subset(names_of_uncs,names_of_uncs != "blbli_dich_num")
+
+# For each genotype's parent child dataframe (parent_child_dfs[[genotype]]), run it through all reconstructions found in the list parent_child_dfs[["blbli_dich_num"]]
+pairwise_comps_sync <- lapply(genotype_names,FUN=function(genotype){
+  # Get the parent child dataframe for the genotype
+  genotype_pcdfs <- parent_child_dfs[[genotype]]
+  geno_names <- names(genotype_pcdfs)
+  # Get the parent child dataframe for the focal reconstruction
+  pheno_pcdf <- parent_child_dfs[["blbli_dich_num"]] 
+  pheno_names <- names(pheno_pcdf) 
+  
+  # For each alternative reconstruction, calculate the synchronous transitions
+  pairwise_comps <- lapply(geno_names,FUN=function(geno_recon_name){
+    sync_hit <- pbmcapply::pbmclapply(pheno_names,FUN=function(pheno_recon_name){
+      sync_finding <- phyloAMR::synchronous_transitions(comparitor_parent_child_df = genotype_pcdfs[[geno_recon_name]],trait_parent_child_df = pheno_pcdf[[pheno_recon_name]],node_states = "joint",confidence=NULL) 
+      sync_finding[["phenotype_reconstruction"]] <- pheno_recon_name
+      sync_finding[['genotype_reconstruction']] <- geno_recon_name
+      return(sync_finding)
+    },mc.cores=7) 
+    sync_hit <- do.call(rbind,sync_hit)
+    return(sync_hit) 
+  })
+  pairwise_comps <- do.call(rbind,pairwise_comps)
+  pairwise_comps$genotype = genotype
+  return(pairwise_comps)
+}) 
+
+pairwise_comps_sync_all <- do.call(rbind,pairwise_comps_sync)
+
+pairwise_comps_sync_all$num_concordant_transitions <- pairwise_comps_sync_all$synchronous_gains_num + pairwise_comps_sync_all$synchronous_losses_num
+pairwise_comps_sync_all$num_discordant_transitions <- pairwise_comps_sync_all$synchronous_gain_loss_num + pairwise_comps_sync_all$synchronous_loss_gain_num
+pairwise_comps_sync_all$pheno_number <- sapply(pairwise_comps_sync_all$phenotype_reconstruction,FUN=function(x){
+  if(grepl("alt_recon",x)){
+    
+  gsub("alt_recon_","",x)
+  } else {
+    x
+  } 
+})  
+
+dbcluster_names <- dbres$cluster %>% `names<-`(seq_len(length(.)))
+
+pairwise_comps_sync_all$pheno_cluster <- sapply(pairwise_comps_sync_all$pheno_number,FUN=function(x){
+  if(!grepl("focal",x)){
+    dbcluster_names[names(dbcluster_names) == x]
+  } else {
+    x
+  }
+})
+
+saveRDS(pairwise_comps_sync_all,"./data/empirical/phyloAMR/pairwise_synchronous_transitions_comparisons.RDS")
+```
+```
+

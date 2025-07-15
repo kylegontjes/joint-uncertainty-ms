@@ -1,0 +1,82 @@
+---
+title: "phyloAMR generate and analyze reconstruction clustering calls"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'corHMM','phyloAMR') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Source functions
+source("./lib/consistent_themes.R")
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+# Load data
+## Dataset
+```{r} 
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+phy <- read.tree("./data/empirical/tree/tree.treefile")  
+```
+
+## Joint unc data
+```{r} 
+representative_parent_child_dfs <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS")
+```
+
+
+# Perform clustering analysis
+```{r} 
+## Perform analyses
+cluster_detects <- c()
+clusters <- names(representative_parent_child_dfs)
+
+for(i in clusters){
+  cluster_detects[[i]] <- asr_cluster_detection(df = dat,tr = phy,tip_name_variable  = 'isolate_no',patient_id = 'Patient_ID',parent_child_df = representative_parent_child_dfs[[i]],node_states = 'joint',confidence = NULL,simplify_faux_clusters = T,simplify_revertant = T,collapse_cluster = T)
+}
+
+names(cluster_detects) <- clusters
+
+saveRDS(cluster_detects,"./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering.RDS")
+
+
+clustering_df <- lapply(names(cluster_detects),FUN=function(x){
+  cluster_detects[[x]] %>% select(tip_name,asr_cluster,asr_cluster_renamed,asr_cluster_collapsed) %>% `colnames<-`(c("isolate_no",paste0(x,"_",colnames(.)[2:4]))) 
+})
+
+clustering_df <- reduce(clustering_df, left_join, by = "isolate_no")
+
+saveRDS(clustering_df,"./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_df.RDS")
+```
+
+# Clustering statistics
+```{r} 
+cluster_analysis <- c()
+for(i in clusters){
+  cluster_analysis[[i]] <- asr_cluster_analysis(cluster_detects[[i]])
+}
+
+cluster_analysis_df <- do.call(rbind,cluster_analysis)
+
+cluster_analysis_df <- cluster_analysis_df %>% mutate(phenotype_axis = rownames(cluster_analysis_df))
+
+saveRDS(cluster_analysis_df,"./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_statistics.RDS")
+```
+ 
