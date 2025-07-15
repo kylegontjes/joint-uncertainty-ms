@@ -71,6 +71,7 @@ get_median_min_max_values <- function(variable,dataset){
   mutate(
     summary_string = sprintf("%.1f (%.1f - %.1f)", median_value, min_value, max_value)
   ) %>% ungroup %>% select(pheno_cluster,summary_string) %>% `colnames<-`(c("pheno_cluster",paste0(variable))) 
+ return(variable_summary)
 }
 
 variable_cluster_stats  <- c("phylogenetic_events","singletons","singleton_isolates","clusters","cluster_isolates","cluster_size_median")

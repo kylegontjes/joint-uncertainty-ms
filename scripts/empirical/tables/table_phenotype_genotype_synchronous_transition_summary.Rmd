@@ -1,0 +1,108 @@
+---
+title: "table_phenotype_genotype_synchronous_transition_summary"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'corHMM','phyloAMR','gontjesr','kableExtra') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Source functions
+source("./lib/consistent_themes.R")
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+# Load data
+## Dataset
+```{r} 
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+phy <- read.tree("./data/empirical/tree/tree.treefile") 
+dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+```
+
+## Genotype phenotype data
+```{r}
+synchronous_statistics <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_transitions_comparisons.RDS")
+
+dbcluster_names <- dbres$cluster %>% `names<-`(seq_len(length(.)))
+synchronous_statistics$pheno_number <- sapply(synchronous_statistics$phenotype_reconstruction,FUN=function(x){
+  if(grepl("alt_recon",x)){
+    
+  gsub("alt_recon_","",x)
+  } else {
+    x
+  } 
+})  
+
+synchronous_statistics$pheno_cluster <- sapply(synchronous_statistics$pheno_number,FUN=function(x){
+  if(!grepl("focal",x)){
+    dbcluster_names[names(dbcluster_names) == x]
+  } else {
+    x
+  }
+})
+
+get_median_min_max_values <- function(variable,dataset){
+ variable_summary <- dataset %>%
+  group_by(genotype,pheno_cluster)  %>% 
+  summarise(
+    median_value = median(get(variable), na.rm = TRUE),
+    min_value = min(get(variable), na.rm = TRUE),
+    max_value = max(get(variable), na.rm = TRUE)
+  ) %>%
+  mutate(
+    summary_string = sprintf("%.1f (%.1f - %.1f)", median_value, min_value, max_value)
+  ) %>% ungroup %>% select(pheno_cluster,genotype,summary_string) %>% `colnames<-`(c("pheno_cluster","genotype",paste0(variable))) 
+ return(variable_summary)
+}
+
+variable_transitionstats  <- c("num_concordant_transitions","num_discordant_transitions" )
+
+transition_stats <- lapply(variable_transitionstats,get_median_min_max_values,dataset=synchronous_statistics) %>% reduce(
+  .,
+  ~ left_join(.x, .y, by = c("pheno_cluster","genotype"))
+)
+
+# Pivot wide, rows should be pheno cluster and the two columns per genotype are num_concordant transitions and num_discordant_transitions
+transition_stats_wide <- transition_stats %>%
+  pivot_wider(
+    names_from = genotype,
+    values_from = c(num_concordant_transitions, num_discordant_transitions),
+    names_glue = "{genotype}_{.value}"
+  ) %>%
+  select(pheno_cluster, sort(tidyselect::peek_vars()))
+
+
+transition_stats_wide$pheno_cluster <- recode(transition_stats_wide$pheno_cluster,"focal_states" ="Best joint model",
+                                             "1" ="Alternative axis 1",
+                                             "2" ="Alternative axis 2",
+                                             "3" ="Alternative axis 3",
+                                             "4" ="Alternative axis 4",
+                                             "5" ="Alternative axis 5") 
+
+colnames(transition_stats_wide) <- gsub("_num_concordant_transitions"," concordant transitions",colnames(transition_stats_wide)) %>% gsub("_num_discordant_transitions"," discordant transitions",.) %>% gsub("pheno_cluster","Phenotype axis",.)
+```
+ 
+
+# Merged table
+```{r} 
+transition_stats_wide %>% favorite_kable()
+
+write_csv(transition_stats_wide,"./tables/empirical/table_phenotype_genotype_pairwise_synchronous_transitions_summary.csv")
+```
