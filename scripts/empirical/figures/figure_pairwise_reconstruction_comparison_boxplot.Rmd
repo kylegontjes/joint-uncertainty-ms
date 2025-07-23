@@ -9,7 +9,7 @@ output: html_document
 require(knitr) 
 opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+knitr::opts_knit$set(root.dir = '~/joint-uncertainty-ms/') 
 ```
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
@@ -55,14 +55,14 @@ pairwise_comparisons <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_
 pairwise_comparisons$genotype <- factor(
 pairwise_comparisons$genotype,levels = rev(c("AA018","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_truncation_kleborate","OmpK36_putative_function_altering","PBP2","PBP4","AcrAB_TolC_any","RamR","RamA")))
 
-pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
+pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid") 
 
 pairwise_comparisons$pheno_cluster <- recode(pairwise_comparisons$pheno_cluster,"focal_states" ="Best joint model",
-                                             "1" ="Alternative axis 1",
-                                             "2" ="Alternative axis 2",
-                                             "3" ="Alternative axis 3",
-                                             "4" ="Alternative axis 4",
-                                             "5" ="Alternative axis 5") 
+                                             "1" ="Reconstruction axis 1",
+                                             "2" ="Reconstruction axis 2",
+                                             "3" ="Reconstruction axis 3",
+                                             "4" ="Reconstruction axis 4",
+                                             "5" ="Reconstruction axis 5") 
 ```
 
 
@@ -117,16 +117,69 @@ theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + geom_vli
 C
 ```
 # Merged
-```{r,fig.width=13 ,fig.height=13}
-AB <- cowplot::plot_grid(A + theme(legend.position = 'none'),B + theme(legend.position = 'none'),ncol=2,labels="AUTO")
-legend_fig <- cowplot::get_legend(A)  %>% cowplot::plot_grid()
+```{r,fig.width=13 ,fig.height=6}
+library(patchwork)
 
-C_legend <- cowplot::plot_grid(C + theme(legend.position = 'none'),legend_fig,ncol=2,labels=c("C",""))
-  
-figure <- cowplot::plot_grid(AB,C_legend,ncol=1,rel_widths = c(1,1))
+# Define a single, consistent legend title.
+legend_title <- ""
+
+# Apply the same title to all plots and specify a horizontal layout for the legend.
+# Patchwork will use this structure when it collects the guides.
+A <- A + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
+B <- B + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
+C <- C + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
+
+# 1. Create a dedicated y-axis plot (this part is now correct).
+y_axis_plot <- ggplot(A$data, aes(y = !!A$mapping$y)) +
+  theme_void() +
+  theme(
+    axis.text.y = element_text(
+      size = 11, # Match font size to your main plot
+      hjust = 1, # Right-align the text
+      colour = "black"
+    ),
+    # The right margin on the plot now solely controls the gap
+    plot.margin = margin(0, 5, 0, 0) # Units are in 'pt'
+  )
+
+# 2. Modify plots A, B, and C to remove their y-axes and legends.
+A_main <- A + labs(tag = "a)") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none")
+
+B_main <- B + labs(tag = "b)") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none")
+
+C_main <- C + labs(tag = "c)") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none")
+
+
+# 3. Assemble the final figure with patchwork.
+figure <- y_axis_plot + A_main + B_main + C_main +
+  plot_layout(
+    guides = 'collect', # This will now find one single, standardized legend
+    # --- KEY FIX 2: Adjust Relative Widths ---
+    # Reduce the first value to shrink the space for the y-axis labels.
+    # A value of 0.3 or less is likely what you need. Adjust as necessary.
+    widths = c(0.01, 1, 1, 1) 
+  ) &
+  # Position the single, collected legend at the bottom.
+  theme(legend.position = 'bottom')
 
 figure
-
-ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",dpi = 900,bg = 'white',plot = figure,width=13,height=12)
+ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",
+       dpi = 900,
+       bg = 'white',
+       plot = figure,
+       width = 13,
+       height = 6)
 ```
 
