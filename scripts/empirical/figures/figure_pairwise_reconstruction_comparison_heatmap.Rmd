@@ -15,7 +15,7 @@ knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-un
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
-packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR','kableExtra','ComplexHeatmap') 
+packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR','kableExtra','ComplexHeatmap','RColorBrewer') 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
@@ -49,19 +49,19 @@ dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_cl
 
 # Pairwise phyloAMR data
 ```{r}
-pairwise_comparisons <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_transitions_comparisons.RDS")  %>% subset(genotype_reconstruction != 'focal_states')
+pairwise_comparisons <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_transitions_comparisons.RDS")  %>% subset(genotype_reconstruction != 'focal_states') %>% subset(genotype %in% c("AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA"))
 ```
 
 ## Recode genotypes
 ```{r}
 pairwise_comparisons$genotype <- factor(
-pairwise_comparisons$genotype,levels = rev(c("AA018","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_truncation_kleborate","OmpK36_putative_function_altering","PBP2","PBP4","AcrAB_TolC_any","RamR","RamA")))
+pairwise_comparisons$genotype,levels = rev(c("AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
 
-pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype ,'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Non-synonymous mutations in penicillin-binding-proteins','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA551 blaKPC-containing plasmid") 
+pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
 ```
 
 # Synchronous
-```{r} 
+```{r,fig.width=12, fig.height=8,results='hide',echo=FALSE}
 pairwise_comparisons_ordered <- pairwise_comparisons %>% arrange(genotype,pheno_cluster)
 pairwise_comparisons_ordered$genotype_reconstruction_axes <- paste0(pairwise_comparisons_ordered$genotype,"_",pairwise_comparisons_ordered$genotype_reconstruction)
 
@@ -80,29 +80,28 @@ matrix_of_vals$cluster <- sapply(matrix_of_vals$phenotype_reconstruction,FUN=fun
   }
 })
 
-matrix_of_vals$cluster <- recode(matrix_of_vals$cluster,"focal_states" ="Best joint model",
-                                             "1" ="Alternative axis 1",
-                                             "2" ="Alternative axis 2",
-                                             "3" ="Alternative axis 3",
-                                             "4" ="Alternative axis 4",
-                                             "5" ="Alternative axis 5") 
+matrix_of_vals$cluster <- recode(matrix_of_vals$cluster,"focal_states" ="Best joint reconstruction",
+                                             "1" ="Reconstruction axis 1",
+                                             "2" ="Reconstruction axis 2",
+                                             "3" ="Reconstruction axis 3",
+                                             "4" ="Reconstruction axis 4",
+                                             "5" ="Reconstruction axis 5") 
 
 matrix_of_vals <- matrix_of_vals %>% arrange(cluster) 
 rowsplit_pheno <- factor(matrix_of_vals$cluster,levels = unique(sort(matrix_of_vals$cluster)))
 
 gene <- factor(colnames(matrix_of_vals %>% select(-cluster, -phenotype_reconstruction)) %>% str_split(.,"_",simplify=T) %>% .[,1:2] %>% apply(.,1,paste0,collapse="_")  %>% gsub("_alt|_focal","",.)) 
 
-
-library(RColorBrewer)
 phen_colors <- setNames(
-  brewer.pal(length(unique(dbcluster_names)) +1, "Set1"),
+  c("black", brewer.pal(length(unique(dbcluster_names)), "Set1")),
   unique(factor(matrix_of_vals$cluster))
 )
 
 rowannots <- ComplexHeatmap::rowAnnotation(
   `Phenotype axes` = factor(matrix_of_vals$cluster),
   annotation_name_gp = gpar(fontsize = 0),
-  col = list(`Phenotype axes` = phen_colors)
+  col = list(`Phenotype axes` = phen_colors),
+    show_legend = FALSE 
 )
 
 genotype_levels <- unique(pairwise_comparisons$genotype  )
@@ -111,7 +110,8 @@ genotype_colors <- setNames(hues::iwanthue(length(genotype_levels)), genotype_le
 colannots <- ComplexHeatmap::columnAnnotation(
   `Genotype` = gene,
   annotation_name_gp = gpar(fontsize = 0),
-  col = list(`Genotype` = genotype_colors)
+  col = list(`Genotype` = genotype_colors),
+   show_legend = FALSE 
 )
 
 A <- Heatmap(
@@ -130,12 +130,24 @@ A <- Heatmap(
   column_title = NULL,
   right_annotation = rowannots,
   top_annotation = colannots,
-  name = "No. concordant transitions"
+  name = "Concordant transitions"
 ) 
+
+# Extract legends for each annotation
+lgd_row <- color_mapping_legend(rowannots@anno_list[["Phenotype axes"]]@color_mapping)
+lgd_col <- color_mapping_legend(colannots@anno_list[["Genotype"]]@color_mapping)
+
+
+# Pack all legends into one column
+merged_legends <- packLegend( 
+  lgd_row,
+  lgd_col,
+  direction = "vertical"
+)
 ```
 
 # Asynchronous
-```{r}
+```{r,fig.width=12, fig.height=8,results='hide',echo=FALSE}
 # Pivot wide 
 matrix_of_vals <- pairwise_comparisons_ordered %>%
     group_by(genotype_reconstruction_axes, phenotype_reconstruction) %>%
@@ -150,12 +162,12 @@ matrix_of_vals$cluster <- sapply(matrix_of_vals$phenotype_reconstruction,FUN=fun
   }
 })
 
-matrix_of_vals$cluster <- recode(matrix_of_vals$cluster,"focal_states" ="Best joint model",
-                                             "1" ="Alternative axis 1",
-                                             "2" ="Alternative axis 2",
-                                             "3" ="Alternative axis 3",
-                                             "4" ="Alternative axis 4",
-                                             "5" ="Alternative axis 5") 
+matrix_of_vals$cluster <- recode(matrix_of_vals$cluster,"focal_states" ="Best joint reconstruction",
+                                             "1" ="Reconstruction axis 1",
+                                             "2" ="Reconstruction axis 2",
+                                             "3" ="Reconstruction axis 3",
+                                             "4" ="Reconstruction axis 4",
+                                             "5" ="Reconstruction axis 5") 
 
 matrix_of_vals <- matrix_of_vals %>% arrange(cluster) 
 rowsplit_pheno <- factor(matrix_of_vals$cluster,levels = unique(sort(matrix_of_vals$cluster)))
@@ -178,18 +190,39 @@ B <- Heatmap(
   column_title = NULL,
   right_annotation = rowannots,
   top_annotation = colannots,
-  name = "No. discordant transitions"
+  name = "Discordant transitions"
 ) 
+
+
+# Extract legends for each annotation
+lgd_row <- color_mapping_legend(rowannots@anno_list[["Phenotype axes"]]@color_mapping)
+lgd_col <- color_mapping_legend(colannots@anno_list[["Genotype"]]@color_mapping)
+
+
+# Pack all legends into one column
+merged_legends_2 <- packLegend( 
+  lgd_row,
+  lgd_col,
+  direction = "vertical"
+)
 ``` 
 
 
 ```{r}
 png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_concordant_heatmap.png", width=12, height=8, units="in", res=900)
-draw(A, merge_legends = TRUE)
+draw(
+  A,
+  heatmap_legend_list = list(merged_legends),
+  annotation_legend_list = NULL
+)
 dev.off()
 
 png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_disconcordant_heatmap.png", width=12, height=8, units="in", res=900)
-draw(B, merge_legends = TRUE)
+draw(
+  B,
+  heatmap_legend_list = list(merged_legends),
+  annotation_legend_list = NULL
+)
 dev.off()
 ```
 

@@ -40,7 +40,9 @@ df <- df[match(tr$tip.label, df[['isolate_no']]), ]
 
 # Genotypes
 ```{r}
-genotypes <- readRDS("../../Combination_resistance/pre-intro-blbli-resistance-ms/data/carbapenem_resistance_panel/carbapenem_resistance_panel_matrix.RDS") %>% select(-`OmpK35-25%`,-OmpK36_non_syn,-OmpK36_intergenic,-OmpK36_L3_mutations,-PBP_any)
+genotypes <- readRDS("../../Combination_resistance/pre-intro-blbli-resistance-ms/data/carbapenem_resistance_panel/carbapenem_resistance_panel_matrix.RDS") %>% select(-`OmpK35-25%`,-OmpK36_non_syn,-OmpK36_intergenic,-AcrAB_TolC_any)
+genotypes$OmpK36_disruptive <- ifelse(genotypes$OmpK36_truncation_kleborate==1 | genotypes$OmpK36_putative_function_altering==1,1,0)
+
 plasmids <- readRDS("../../Combination_resistance/pre-intro-blbli-resistance-ms/data/KPC_plasmid/KPC_containing_clusters_mat.RDS") %>% select(AA552,AA018) %>% {ifelse(.=="KPC Plasmid",1,0)} %>% as.data.frame %>% mutate(isolate_no = rownames(.))
 
 final_genotypes <- left_join(genotypes,plasmids) %>% .[match(tr$tip.label,.[['isolate_no']]),]

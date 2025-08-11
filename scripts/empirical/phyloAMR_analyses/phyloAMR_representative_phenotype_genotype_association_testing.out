@@ -18,7 +18,7 @@ The following object is masked from ‘package:dplyr’:
                               sysname                               release 
                               "Linux"       "4.18.0-553.50.1.el8_10.x86_64" 
                               version                              nodename 
-"#1 SMP Thu Apr 10 16:09:41 EDT 2025"             "gl3301.arc-ts.umich.edu" 
+"#1 SMP Thu Apr 10 16:09:41 EDT 2025"             "gl3100.arc-ts.umich.edu" 
                               machine                                 login 
                              "x86_64"                             "unknown" 
                                  user                        effective_user 
@@ -76,9 +76,9 @@ loaded via a namespace (and not attached):
 [64] coda_0.19-4.1           gridExtra_2.3           nlme_3.1-168           
 [67] fs_1.6.6                pkgconfig_2.0.3        
 Joining with `by = join_by(isolate_no)`
-[1] "Starting trait data curation at: 2025-07-14 17:06:51.611291"
-[1] "Finished trait data curation at: 2025-07-14 17:06:51.650921"
-[1] "Started running corHMM on genotypes: 2025-07-14 17:06:51.651092"
+[1] "Starting trait data curation at: 2025-08-11 10:37:05.719959"
+[1] "Finished trait data curation at: 2025-08-11 10:37:05.759316"
+[1] "Started running corHMM on genotypes: 2025-08-11 10:37:05.759495"
 [1] "Performing model finding to use best fitting model"
 Testing equal rates (ER) model 
 [1] "Performing model finding to use best fitting model"
@@ -111,15 +111,11 @@ Counts:	402	10
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
-Counts:	410	2	
-Beginning thorough optimization search -- performing 0 random restarts 
-State distribution in data:
-States:	0	1	
 Counts:	385	27	
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
-Counts:	410	2	
+Counts:	403	9	
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
@@ -127,7 +123,7 @@ Counts:	404	8
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
-Counts:	293	119	
+Counts:	410	2	
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
@@ -135,11 +131,11 @@ Counts:	281	131
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
-Counts:	392	20	
+Counts:	404	8	
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
-Counts:	310	102	
+Counts:	392	20	
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
@@ -147,158 +143,193 @@ Counts:	388	24
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
+Counts:	288	124	
+Beginning thorough optimization search -- performing 0 random restarts 
+State distribution in data:
+States:	0	1	
 Counts:	407	5	
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
-Counts:	404	8	
+Counts:	293	119	
 Beginning thorough optimization search -- performing 0 random restarts 
 State distribution in data:
 States:	0	1	
-Counts:	386	26	
+Counts:	390	22	
 Beginning thorough optimization search -- performing 0 random restarts 
 Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ER model is: 40.7253239505537 
+AICc of ER model is: 23.2610272901382 
 Testing all rates differ (ARD) model 
 State distribution in data:
 States:	0	1	
-Counts:	281	131	
+Counts:	410	2	
 Beginning thorough optimization search -- performing 0 random restarts 
 Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ER model is: 14.6339892257295 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ER model is: 14.6339892064382 
 Testing all rates differ (ARD) model 
 State distribution in data:
 States:	0	1	
 Counts:	407	5	
 Beginning thorough optimization search -- performing 0 random restarts 
-Finished. Inferring ancestral states using joint reconstruction. 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ER model is: 77.9110741144314 
+AICc of ER model is: 109.595055478497 
 Testing all rates differ (ARD) model 
 State distribution in data:
 States:	0	1	
-Counts:	386	26	
+Counts:	390	22	
 Beginning thorough optimization search -- performing 0 random restarts 
-AICc of ER model is: 100.344037723093 
+Finished. Inferring ancestral states using joint reconstruction. 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ER model is: 50.156559752191 
+Testing all rates differ (ARD) model 
+State distribution in data:
+States:	0	1	
+Counts:	403	9	
+Beginning thorough optimization search -- performing 0 random restarts 
+AICc of ER model is: 66.7860698196809 
+Testing all rates differ (ARD) model 
+State distribution in data:
+States:	0	1	
+Counts:	288	124	
+Beginning thorough optimization search -- performing 0 random restarts 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ER model is: 100.344037826734 
 Testing all rates differ (ARD) model 
 State distribution in data:
 States:	0	1	
 Counts:	404	8	
 Beginning thorough optimization search -- performing 0 random restarts 
 Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ER model is: 42.9964105944667 
-Testing all rates differ (ARD) model 
-State distribution in data:
-States:	0	1	
-Counts:	404	8	
-Beginning thorough optimization search -- performing 0 random restarts 
-Finished. Inferring ancestral states using joint reconstruction. 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ER model is: 90.0922719889173 
+AICc of ER model is: 90.092272259274 
 Testing all rates differ (ARD) model 
 State distribution in data:
 States:	0	1	
 Counts:	392	20	
 Beginning thorough optimization search -- performing 0 random restarts 
-AICc of ER model is: 175.487555352998 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ER model is: 52.0595768510472 
 Testing all rates differ (ARD) model 
-State distribution in data:
-States:	0	1	
-Counts:	385	27	
-Beginning thorough optimization search -- performing 0 random restarts 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ARD model is: 15.8748066365601 
-Best model: ER 
-Finished. Inferring ancestral states using joint reconstruction. 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ER model is: 103.884872354809 
-Testing all rates differ (ARD) model 
-State distribution in data:
-States:	0	1	
-Counts:	310	102	
-Beginning thorough optimization search -- performing 0 random restarts 
-AICc of ER model is: 30.1181822654925 
-Testing all rates differ (ARD) model 
-State distribution in data:
-States:	0	1	
-Counts:	410	2	
-Beginning thorough optimization search -- performing 0 random restarts 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ER model is: 23.2610272878962 
-Testing all rates differ (ARD) model 
-State distribution in data:
-States:	0	1	
-Counts:	410	2	
-Beginning thorough optimization search -- performing 0 random restarts 
-Finished. Inferring ancestral states using joint reconstruction. 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ER model is: 62.2801034126862 
-Testing all rates differ (ARD) model 
-State distribution in data:
-States:	0	1	
-Counts:	293	119	
-Beginning thorough optimization search -- performing 0 random restarts 
-AICc of ER model is: 52.0595767960545 
-Testing all rates differ (ARD) model 
-Finished. Inferring ancestral states using joint reconstruction. 
 State distribution in data:
 States:	0	1	
 Counts:	402	10	
 Beginning thorough optimization search -- performing 0 random restarts 
-AICc of ARD model is: 42.6418346770657 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ER model is: 62.2801033928986 
+Testing all rates differ (ARD) model 
+State distribution in data:
+States:	0	1	
+Counts:	293	119	
+Beginning thorough optimization search -- performing 0 random restarts 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ER model is: 175.487556028154 
+Testing all rates differ (ARD) model 
+State distribution in data:
+States:	0	1	
+Counts:	385	27	
+Beginning thorough optimization search -- performing 0 random restarts 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ARD model is: 24.2327611779655 
 Best model: ER 
 Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ARD model is: 44.2320392774564 
-Best model: ER 
+AICc of ER model is: 42.9964106080431 
+Testing all rates differ (ARD) model 
+State distribution in data:
+States:	0	1	
+Counts:	404	8	
+Beginning thorough optimization search -- performing 0 random restarts 
 Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ER model is: 121.971393850964 
+AICc of ER model is: 121.971393980985 
 Testing all rates differ (ARD) model 
 State distribution in data:
 States:	0	1	
 Counts:	388	24	
 Beginning thorough optimization search -- performing 0 random restarts 
 Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ARD model is: 86.5996374315746 
-Best model: ARD 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ARD model is: 78.0064891353725 
+AICc of ARD model is: 15.8748066234693 
 Best model: ER 
 Finished. Inferring ancestral states using joint reconstruction. 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ARD model is: 90.2396571361587 
-Best model: ER 
-AICc of ARD model is: 82.6317699758529 
-Best model: ARD 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ARD model is: 24.2327611569217 
+AICc of ARD model is: 51.4107993461587 
 Best model: ER 
 Finished. Inferring ancestral states using joint reconstruction. 
-Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ARD model is: 166.048385558707 
-Best model: ARD 
-AICc of ARD model is: 56.5117166069564 
+AICc of ARD model is: 105.967681846732 
 Best model: ARD 
 Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ER model is: 40.72532391014 
+Testing all rates differ (ARD) model 
+State distribution in data:
+States:	0	1	
+Counts:	281	131	
+Beginning thorough optimization search -- performing 0 random restarts 
 Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ARD model is: 53.0671778780636 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ARD model is: 62.6573764826073 
+Best model: ARD 
+AICc of ARD model is: 90.2396571321658 
 Best model: ER 
-AICc of ARD model is: 28.5199571608604 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ARD model is: 56.5117164965611 
 Best model: ARD 
 Finished. Inferring ancestral states using joint reconstruction. 
-AICc of ARD model is: 120.555890311888 
+AICc of ARD model is: 53.0671778232133 
+Best model: ER 
+[1] "Performing model finding to use best fitting model"
+Testing equal rates (ER) model 
+State distribution in data:
+States:	0	1	
+Counts:	386	26	
+Beginning thorough optimization search -- performing 0 random restarts 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ARD model is: 166.0483855303 
 Best model: ARD 
-[1] "Finished corHMM on genotypes at: 2025-07-14 17:07:34.425455"
-[1] "Started running synchronous on genotypes: 2025-07-14 17:07:34.425782"
-[1] "Done w/ running synchronous on genotypes: 2025-07-14 17:07:34.975772"
-[1] "Started running downstream on genotypes: 2025-07-14 17:07:34.976142"
-[1] "Done w/ running downstream on genotypes: 2025-07-14 17:07:35.460369"
-[1] "Started permuting features of genotypes: 2025-07-14 17:07:35.460735"
-[1] "Done w/ permuting features of genotypes: 2025-07-14 17:07:35.928678"
-[1] "Started permuting ancestral states: 2025-07-14 17:07:36.091731"
-Kicking in arbitrary precision package Rmpfr due to very low probabilities.
-[1] "Done w/ permuting ancestral states: 2025-07-14 17:16:00.614118"
-[1] "Started running syncronous pvalue testing: 2025-07-14 17:16:00.875536"
-[1] "Done w/ syncronous pvalue testing: 2025-07-14 17:16:18.185665"
-[1] "Started running downstream pvalue testing: 2025-07-14 17:16:18.186407"
-[1] "Done w/ downstream pvalue testing: 2025-07-14 17:16:34.886575"
-[1] "GWAS done at: 2025-07-14 17:16:35.464921"
+[1] "Performing model finding to use best fitting model"
+Testing equal rates (ER) model 
+State distribution in data:
+States:	0	1	
+Counts:	310	102	
+Beginning thorough optimization search -- performing 0 random restarts 
+Finished. Inferring ancestral states using joint reconstruction. 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ARD model is: 44.2320392988477 
+Best model: ER 
+AICc of ARD model is: 82.6317701020644 
+Best model: ARD 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ARD model is: 120.555890319613 
+Best model: ARD 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ER model is: 77.9110741445548 
+Testing all rates differ (ARD) model 
+State distribution in data:
+States:	0	1	
+Counts:	386	26	
+Beginning thorough optimization search -- performing 0 random restarts 
+Finished. Inferring ancestral states using joint reconstruction. 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ARD model is: 42.641834675479 
+Best model: ER 
+AICc of ER model is: 103.884872362343 
+Testing all rates differ (ARD) model 
+State distribution in data:
+States:	0	1	
+Counts:	310	102	
+Beginning thorough optimization search -- performing 0 random restarts 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ARD model is: 78.0064889377788 
+Best model: ER 
+Finished. Inferring ancestral states using joint reconstruction. 
+AICc of ARD model is: 86.5996374317306 
+Best model: ARD 
+[1] "Finished corHMM on genotypes at: 2025-08-11 10:37:55.748729"
+[1] "Started running synchronous on genotypes: 2025-08-11 10:37:55.748987"
+[1] "Done w/ running synchronous on genotypes: 2025-08-11 10:37:56.23333"
+[1] "Started running downstream on genotypes: 2025-08-11 10:37:56.233846"
+[1] "Done w/ running downstream on genotypes: 2025-08-11 10:37:56.708276"
+[1] "Started permuting features of genotypes: 2025-08-11 10:37:56.708648"
+[1] "Done w/ permuting features of genotypes: 2025-08-11 10:37:57.351284"
+[1] "Started permuting ancestral states: 2025-08-11 10:37:57.512169"
+[1] "Done w/ permuting ancestral states: 2025-08-11 10:49:20.652076"
+[1] "Started running syncronous pvalue testing: 2025-08-11 10:49:20.886255"
+[1] "Done w/ syncronous pvalue testing: 2025-08-11 10:49:39.990948"
+[1] "Started running downstream pvalue testing: 2025-08-11 10:49:39.991897"
+[1] "Done w/ downstream pvalue testing: 2025-08-11 10:49:57.645011"
+[1] "GWAS done at: 2025-08-11 10:49:58.149204"

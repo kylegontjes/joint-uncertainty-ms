@@ -9,7 +9,7 @@ output: html_document
 require(knitr) 
 opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-knitr::opts_knit$set(root.dir = '~/joint-uncertainty-ms/') 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
@@ -46,15 +46,21 @@ phylo_dist_mat_local <- readRDS("./data/empirical/joint_reconstruction/joint_unc
 
 # Phylogeny with node states
 ```{r}
-pdf("./figures/empirical/empirical_phylogeny.pdf", height = 5, width = 15)
+pdf("./figures/empirical/empirical_phylogeny.pdf", height = 5.667, width = 17)   
 to_keep <- corHMM:::get_desc(phy, 417)
 to_col <- match(to_keep, phy$edge[,2])
 edge_col <- rep("grey60", dim(phy$edge)[1])
 edge_col[to_col] <- "black"
-nodes_to_col <- to_keep[to_keep > Ntip(phy)]
+nodes_to_col <- to_keep[to_keep > Ntip(phy)] 
+nodes_number <- as.numeric(to_keep[to_keep > Ntip(phy)]  - Ntip(phy))  %>% sort
+tips_to_keep <- as.numeric(to_keep[to_keep <= Ntip(phy)]) %>% sort
+
 plot(phy, show.tip.label = FALSE, no.margin = TRUE, direction = "downwards", edge.color = edge_col)
-nodelabels(pch = 21,  cex = 1, bg = c("grey80", "white")[focal$states], col = "grey70")
-nodelabels(pch = 21,  cex = 1, bg = c("black", "white")[focal$states], col = "black", node = c(417, nodes_to_col))
+
+nodelabels(pch = 21,  cex = 0.75, bg = c("white", "grey70")[focal$states], col = "grey70") 
+tiplabels(pch = 22,  cex = 0.5, bg = c("white", "grey70")[focal$tip.states], col = "grey70",tip = c(1:Ntip(phy)))  
+nodelabels(pch = 21,  cex = 0.75, bg = c("white", "black")[focal$states][nodes_number], col = "black",node = sort(nodes_to_col))
+tiplabels(pch = 22,  cex = 0.5, bg = c("white", "black")[focal$tip.states][tips_to_keep], col = "black",tip = c(1:Ntip(phy))[tips_to_keep])  
 
 dev.off()
 ```
@@ -142,7 +148,8 @@ for(i in 1:optimal_k_gap){
   phy_tmp$node.label <- as.numeric(max_node_labels)
   phy_tmp <- keep.tip(phy_tmp, to_keep)
   plot.phylo(phy_tmp, show.tip.label = FALSE, edge.width = 0.5, no.margin = TRUE, direction = "downwards")
-  nodelabels(pch = 21, bg = c("black", "white")[as.numeric(phy_tmp$node.label)], cex = 1.5)
+  nodelabels(pch = 21, bg = c("white", "black")[as.numeric(phy_tmp$node.label)], cex = 1.5)
+  ape::tiplabels(pch = 22,  cex = 1, bg = c("white", "black")[focal$tip.states], col = "black")
 }
 dev.off()
 ```
@@ -158,7 +165,7 @@ important_nodes <- lapply(unique(clusters), function(clust) {
   cluster_nodes[(cluster_nodes$importance) > quantile((cluster_nodes$importance), 0.985),]
 })
 
-pdf("./figures/empirical/empirical_joint_uncertainty_important_nodes.pdf", width = 10, height = 10)
+pdf("./figures/empirical/empirical_joint_uncertainty_important_nodes.pdf", width = 10.5, height = 10.5)
 par(mfrow=c(1,1))
 plot_info <- corHMM:::plot_clustered_phylo(
   phy = phy,
@@ -167,7 +174,7 @@ plot_info <- corHMM:::plot_clustered_phylo(
   cluster_assignments = clusters,
   node_states = focal$states,
   important_nodes = important_nodes,
-  state_colors = c("black", "grey90"),
+  state_colors = c("grey90", "black"),
   state_labels = c("S", "R"),
   phylogram_params = list(edge.color = "grey50"),
   point_params = list(cex = 1),

@@ -123,8 +123,8 @@ second_deriv <- diff(diff(sorted_distances))
 elbow_id <- which.max(second_deriv) + 1
 eps <- sorted_distances[elbow_id] 
 paste0("Chosen eps using second-derivative method: ",eps)
-reduced_eps <- eps * .925
-paste0("Chose to left shift eps (eps *.925): ",reduced_eps)
+reduced_eps <- eps * .95
+paste0("Chose to left shift eps (eps *.95): ",reduced_eps)
 
 kNNdistplot(tsne_res$Y, k = min_pts - 1, minPts = min_pts)
 abline(h=eps, lty=3, col = "red")
@@ -134,7 +134,7 @@ abline(h=reduced_eps, lty=3, col = "blue")
 ## Iterations
 ```{r,fig.width=15}  
 # Run iterations of eps
-iterations <- seq(.5, 7, by = 0.05)
+iterations <- seq(.5, 5, by = 0.05)
 dbres <- c()
 
 dbres_iterations <- lapply(iterations, function(i) {
@@ -151,7 +151,7 @@ colnames(dbres_clusters) <- paste0("eps_", iterations)
 saveRDS(dbres_iterations,"./data/empirical/joint_reconstruction/joint_uncertainty_asr_dbres_iterations.RDS")
 ```
 
-```{r,fig.width=35,fig.height=6} 
+```{r,fig.width=17.5,fig.height=10} 
 # dbres stats
 dbres_stats <- apply(dbres_clusters, 2, function(x) {
   data.frame( 
@@ -162,17 +162,19 @@ dbres_stats <- apply(dbres_clusters, 2, function(x) {
 }) 
 dbres_stats <-  do.call(rbind.data.frame,dbres_stats)
 dbres_stats$eps = as.numeric(gsub("eps_","",colnames(dbres_clusters)) )  
-  
 
 A <- ggplot2::ggplot(data=dbres_stats,ggplot2::aes(x=eps,y=n_clusters)) + ggplot2::geom_bar(stat='identity',colour = 'white',fill='black') + ggplot2::ylab("Number clusters")  +ggplot2::theme_bw() + ggplot2::scale_x_continuous(breaks = seq(0.5, 7, by = .2)) + ggplot2::geom_text(ggplot2::aes(label=n_clusters), vjust=-0.5, size=3) + ggplot2::geom_vline(xintercept = eps,colour = 'red',linetype = 3) + ggplot2::geom_vline(xintercept = reduced_eps,colour = 'blue',linetype = 3)
 B <- ggplot2::ggplot(data=dbres_stats,ggplot2::aes(x=eps,y=n_noise)) + ggplot2::geom_bar(stat='identity',colour = 'white',fill='black') + ggplot2::ylab("Number noise points")  + ggplot2::theme_bw()  + ggplot2::scale_x_continuous(breaks = seq(0.5, 7, by = .2)) + ggplot2::geom_text(ggplot2::aes(label=n_noise), vjust=-0.5, size=3)+ ggplot2::geom_vline(xintercept = eps,colour = 'red',linetype = 3) + ggplot2::geom_vline(xintercept = reduced_eps,colour = 'blue',linetype = 3)
 
-cowplot::plot_grid(A,B,labels="AUTO")
+cowplot::plot_grid(A,B,labels="AUTO",ncol=1)
 ```
 
 ## Optimal dbres clustering
 ```{r}
 dbres <- dbscan(tsne_res$Y, eps = reduced_eps, minPts = min_pts) 
+
+paste0("Number of recons: ", length(dbres$cluster ))
+paste0("Number of clusters: ", dbres$cluster %>% subset(.!=0) %>% unique %>% length)
 
 saveRDS(dbres,"./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
 ```

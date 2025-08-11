@@ -38,7 +38,8 @@ dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_cl
 
 ## Clustering stats
 ```{r}
-cluster_analysis_df <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS")
+cluster_analysis_df <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS") 
+cluster_analysis_df$cluster_size_max <- str_split(cluster_analysis_df$cluster_size_range,"-",simplify=T) %>% .[,2] %>% as.numeric()
 blbli_cluster_analysis_df <- cluster_analysis_df %>% subset(trait == 'blbli_dich_num')
  
 dbcluster_names <- dbres$cluster %>% `names<-`(seq_len(length(.)))
@@ -74,7 +75,7 @@ get_median_min_max_values <- function(variable,dataset){
  return(variable_summary)
 }
 
-variable_cluster_stats  <- c("phylogenetic_events","singletons","singleton_isolates","clusters","cluster_isolates","cluster_size_median")
+variable_cluster_stats  <- c("phylogenetic_events","singletons","singleton_isolates","clusters","cluster_isolates","cluster_size_median",'cluster_size_max')
 
 cluster_stats <- lapply(variable_cluster_stats,get_median_min_max_values,dataset=blbli_cluster_analysis_df) %>% reduce(
   .,
@@ -111,29 +112,25 @@ transition_stats <- lapply(variable_transition_stats,get_median_min_max_values,d
   ~ left_join(.x, .y, by = "pheno_cluster")
 )
 ```
+
 ## Number reconstructions
 ```{r}
 num_recons <- blbli_transition_analysis_df %>% group_by(pheno_cluster) %>% summarise (`Reconstructions` = n())
 ```
 
-
-
 # Merged table
 ```{r}
 table <- left_join(num_recons,cluster_stats) %>% left_join(.,transition_stats) 
-table$pheno_cluster <- recode(table$pheno_cluster,"focal_states" ="Best joint model",
-                                             "1" ="Alternative axis 1",
-                                             "2" ="Alternative axis 2",
-                                             "3" ="Alternative axis 3",
-                                             "4" ="Alternative axis 4",
-                                             "5" ="Alternative axis 5") 
+table$pheno_cluster <- recode(table$pheno_cluster,"focal_states" ="Best joint reconstruction",
+                                             "1" ="Reconstruction axis 1",
+                                             "2" ="Reconstruction axis 2",
+                                             "3" ="Reconstruction axis 3",
+                                             "4" ="Reconstruction axis 4",
+                                             "5" ="Reconstruction axis 5") 
 
-colnames(table) <- c("Phenotype axis","Reconstructions","Phylogentic events","Singletons","Singleton isolates","Clusters","Cluster isolates","Cluster size (median)","Transitions","Gain events","Gains (tip)","Loss events","Losses (tip)","Continuations of trait")
+colnames(table) <- c("Phenotype axis","Reconstructions","Phylogentic events","Singletons","Singleton isolates","Clusters","Cluster isolates","Cluster size (median)","Cluster size (max)","Transitions","Gain events","Gains (tip)","Loss events","Losses (tip)","Continuations of trait")
 
 table %>% favorite_kable()
 
 write_csv(table,"./tables/empirical/table_median_stats_across_axes.csv")
 ```
-
-
-

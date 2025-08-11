@@ -1,5 +1,5 @@
 ---
-title: "Figure - Painted states and clustering"
+title: "Supplemental Figure - Painted states and phylogenetic clustering"
 author: "Kyle Gontjes"
 date: "`r Sys.Date()`"
 output: html_document
@@ -47,6 +47,7 @@ rownames(dat) <- dat$isolate_no
 
 # Tracing states on the phylogenetic tree 
 ```{r,fig.width=12.5,fig.height=8.75} 
+n_clusters <- nrow(clustering_stats) - 1
 painted_trees <- lapply(best_joint_parent_child,paint_tree_with_states,tr = phy,legend_name = "Edge-based resistance")
 painted_trees_wo_legend <- lapply(painted_trees,function(x){x+theme(legend.position = "none")}) 
  
@@ -66,7 +67,7 @@ legend_fig <- cowplot::get_legend(painted_trees_w_cluster_calls[[which.max(clust
 painted_trees_w_cluster_calls_wo_legends <- lapply(painted_trees_w_cluster_calls,FUN=function(x){x + theme(legend.position='none')
 }) 
  
-tracing_states_on_tree_wo_legend <- cowplot::plot_grid(plotlist = painted_trees_w_cluster_calls_wo_legends,nrow=2,labels ="AUTO",label_x = 0,label_size = 12)
+tracing_states_on_tree_wo_legend <- cowplot::plot_grid(plotlist = painted_trees_w_cluster_calls_wo_legends,nrow=2,labels =c("Best joint reconstruction",paste0("Reconstruction axis ",1:n_clusters)),label_x = -0.25,label_size = 14)
 
 tracing_states_on_tree <- cowplot::plot_grid(tracing_states_on_tree_wo_legend,legend_fig,ncol=2,rel_widths = c(1,0.2))
 
