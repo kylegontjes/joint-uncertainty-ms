@@ -51,20 +51,23 @@ recon_stats <- left_join(state_transition_statistics,cluster_statistics)
 ```{r}
 # Curate best
 best_joint_parent_child_transitions <- recon_stats %>% subset(reconstruction == 'focal_states')
-best_joint_parent_child_transitions_simple <- best_joint_parent_child_transitions %>% select(transitions,gains,gains_tip,losses,losses_tip,continuations_present,continuations_absent,singletons,singleton_isolates,clusters,cluster_isolates,cluster_size_median,cluster_size_max)
+best_joint_parent_child_transitions_simple <- best_joint_parent_child_transitions %>% select(transitions,gains,gains_tip,losses,losses_tip,continuations_present,continuations_absent,singletons,singleton_isolates,clusters,cluster_isolates,cluster_size_median,cluster_size_max,revertant_isolates)
    
-colnames(best_joint_parent_child_transitions_simple) <- c("Transitions","Gain Events","Gain Events (Tips)","Loss Events","Loss Events (Tips)","Continuations (Present)","Continuations (Absent)","Singletons","Singleton isolates","Clusters","Cluster isolates","Cluster size (median)","Cluster size (max)")
+colnames(best_joint_parent_child_transitions_simple) <- c("Transitions","Gain Events","Gain Events (Tips)","Loss Events","Loss Events (Tips)","Continuations (Present)","Continuations (Absent)","Resistant singletons","Singleton isolates","Resistant clusters","Cluster isolates","Cluster size (median)","Cluster size (max)","Revertant isolates")
 
 # Curate state transition data
 alt_recons <- recon_stats %>% subset(reconstruction!='focal_states')
 alt_recons$cluster <- dbres$cluster %>% as.numeric()
-transition_data_simple <- alt_recons %>% select(transitions,gains,gains_tip,losses,losses_tip,continuations_present,continuations_absent,singletons,singleton_isolates,clusters,cluster_isolates,cluster_size_median,cluster_size_max,cluster)
-colnames(transition_data_simple) <- c("Transitions","Gain Events","Gain Events (Tips)","Loss Events","Loss Events (Tips)","Continuations (Present)","Continuations (Absent)","Singletons","Singleton isolates","Clusters","Cluster isolates","Cluster size (median)","Cluster size (max)","Cluster")
+transition_data_simple <- alt_recons %>% select(transitions,gains,gains_tip,losses,losses_tip,continuations_present,continuations_absent,singletons,singleton_isolates,clusters,cluster_isolates,cluster_size_median,cluster_size_max,revertant_isolates,cluster)
+colnames(transition_data_simple) <- c("Transitions","Gain Events","Gain Events (Tips)","Loss Events","Loss Events (Tips)","Continuations (Present)","Continuations (Absent)","Resistant singletons","Singleton isolates","Resistant clusters","Cluster isolates","Cluster size (median)","Cluster size (max)","Revertant isolates","Cluster")
 ```
 
-```{r,fig.width=9.75,fig.height=7.8}
+```{r,fig.width=10.5,fig.height=8.4}
 transitional_data <- lapply(colnames(transition_data_simple),FUN=function(x){
   num_bins = length(unique(transition_data_simple[[x]]))
+  if(num_bins>20){
+    num_bins=20
+  }
   value_from_best <- best_joint_parent_child_transitions_simple[[x]]
   
   ggplot(data=transition_data_simple,aes(x=get(x),fill=as.factor(Cluster))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + tnsecluster_scale_fill  + theme(legend.position = 'none',
@@ -75,6 +78,6 @@ transitional_data <- lapply(colnames(transition_data_simple),FUN=function(x){
  
 transitional_data
 
-ggsave("./figures/empirical/phyloAMR_alternative_reconstruction_transition_statistics.png",dpi = 900,bg = 'white',plot = transitional_data,width=9.75,height=7.8)
+ggsave("./figures/empirical/phyloAMR_alternative_reconstruction_transition_statistics.png",dpi = 900,bg = 'white',plot = transitional_data,width=10.5,height=8.4)
 ```
 

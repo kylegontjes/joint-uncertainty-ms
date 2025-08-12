@@ -56,9 +56,12 @@ pairwise_comps_sync_all_geno <- readRDS("./data/empirical/phyloAMR/pairwise_sync
 ## Recode genotypes
 ## Comparison pheno
 ```{r}
+overall_row <- cbind.data.frame(pheno_cluster = NA,genotype="Overall")
+pairwise_comparisons <- bind_rows(pairwise_comparisons,overall_row)
 pairwise_comparisons$genotype <- factor(
-pairwise_comparisons$genotype,levels = rev(c("AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
+pairwise_comparisons$genotype,levels = rev(c("Overall","AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
 
+ 
 pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
 
 pairwise_comparisons$pheno_cluster <- recode(pairwise_comparisons$pheno_cluster,"focal_states" ="Best joint reconstruction",
@@ -70,9 +73,10 @@ pairwise_comparisons$pheno_cluster <- recode(pairwise_comparisons$pheno_cluster,
 ```
 ## Comparison genotype
 ```{r}
+pairwise_comps_sync_all_geno <- bind_rows(pairwise_comps_sync_all_geno,overall_row)
 pairwise_comps_sync_all_geno$genotype <- factor(
-pairwise_comps_sync_all_geno$genotype,levels = rev(c("AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
-
+pairwise_comps_sync_all_geno$genotype,levels = rev(c("Overall","AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
+ 
 pairwise_comps_sync_all_geno$genotype <- recode(pairwise_comps_sync_all_geno$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
 
 pairwise_comps_sync_all_geno$pheno_cluster <- recode(pairwise_comps_sync_all_geno$pheno_cluster,"focal_states" ="Best joint reconstruction",
@@ -99,19 +103,19 @@ theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + scale_x_
 
 A
 ```
-
-## B. Proportion of phenotype gain events with genotype gain events 
+ 
+# Get proportion of genotypes with gain event of phenotype
 ```{r,fig.width=9,fig.height=7.5} 
-B <- ggplot(pairwise_comparisons,
+B <- ggplot(pairwise_comps_sync_all_geno,
        aes(x = synchronous_gains_prop,
            y = as.factor(genotype),
            fill = as.factor(pheno_cluster))) +
 geom_boxplot(position = position_dodge(width = 0.8)) +
-labs(x = "Proportion of phenotype gain events with genotype gain",
+labs(x = "Proportion of genotype gains with a phenotype gain",
      y = "",
      fill = "Phenotype axes") +
 scale_fill_brewer(palette = "Set1",guide = guide_legend(nrow=1)) +
-theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw()  + scale_x_continuous(breaks = c(0,0.05,0.1,0.15,0.20,0.25)) + xlim(NA,0.251) + theme(legend.position = 'bottom')
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + theme(legend.position = 'bottom')
 
 B
 ```
@@ -137,7 +141,6 @@ pheno_gain_explanation <- pbmcapply::pbmclapply(pheno_recons,FUN=function(x){
     perc_pheno_gains_w_geno_gain <- prop_pheno_gains_w_geno_gain*100
     data.frame(genotype = geno,pheno_reconstruction = x,pheno_recon_gains = paste0(pheno_recon_gains,collapse = ','),num_pheno_gain,geno_recon_gains = paste0(geno_recon_gains,collapse=','),num_nodes_w_geno_gains,prop_pheno_gains_w_geno_gain,perc_pheno_gains_w_geno_gain)
     
-    
   }) %>% do.call(rbind,.)
 },mc.cores = 7)
 
@@ -161,8 +164,6 @@ overall_row <- pbmcapply::pbmclapply(pheno_recons,FUN=function(x){
     prop_pheno_gains_w_geno_gain <- num_pheno_gain_nodes_w_geno_gains /     num_pheno_gain
     perc_pheno_gains_w_geno_gain <- prop_pheno_gains_w_geno_gain*100
     data.frame(genotype = "Overall",pheno_reconstruction = x,pheno_recon_gains = paste0(pheno_recon_gains,collapse = ','),num_pheno_gain,geno_recon_gains = paste0(geno_recon_gains,collapse=','),num_nodes_w_geno_gains,prop_pheno_gains_w_geno_gain,perc_pheno_gains_w_geno_gain)
-    
-    
   },mc.cores = 7) %>% do.call(rbind,.) 
 
 pheno_gain_explanation_df <- rbind(pheno_gain_explanation_df,overall_row)
@@ -204,108 +205,77 @@ C<- ggplot(pheno_gain_explanation_df,
            y = as.factor(genotype),
            fill = as.factor(pheno_cluster))) +
 geom_boxplot(position = position_dodge(width = 0.8)) +
-labs(x = "Proportion of phenotype gain events with >=1 genotype gain",
+labs(x = "Proportion of phenotype gains with >=1 genotype gain",
      y = "",
      fill = "Phenotype axes") +
-scale_fill_brewer(palette = "Set1") +
+scale_fill_brewer(palette = "Set1",guide = guide_legend(nrow=1)) +
 theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + theme(legend.position = 'bottom') + xlim(NA,0.601)  + scale_x_continuous(breaks = c(0,0.1,0.20,0.3,0.4,0.5,0.6))
 
 C
 ```
-
-# Get proportion of genotypes with gain event of phenotype
-```{r,fig.width=9,fig.height=7.5} 
-D <- ggplot(pairwise_comps_sync_all_geno,
-       aes(x = synchronous_gains_prop,
-           y = as.factor(genotype),
-           fill = as.factor(pheno_cluster))) +
-geom_boxplot(position = position_dodge(width = 0.8)) +
-labs(x = "Proportion of genotype gain events with phenotype gain",
-     y = "",
-     fill = "Phenotype axes") +
-scale_fill_brewer(palette = "Set1",guide = guide_legend(nrow=1)) +
-theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + theme(legend.position = 'bottom')
-
-D
-```
-
-```{r,fig.width=14 ,fig.height=10}
-legend_fig <- gontjesr::get_legend(A + theme(legend.positoin = 'bottom'))
-
-data_fig <- cowplot::plot_grid(A + theme(legend.position = 'none'),B + theme(legend.position = 'none'),C + theme(legend.position = 'none'),D + theme(legend.position = 'none'),ncol=2)
-figure <- cowplot::plot_grid(data_fig,legend_fig,ncol=1,rel_heights = c(1,0.1))
-
-ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",
-        dpi = 900,
-        bg = 'white',
-        plot = figure,
-        width = 14,
-        height = 11)
-```
-
-```{r,fig.width=13 ,fig.height=6}
 # Merged
-# library(patchwork)
-# 
-# # Define a single, consistent legend title.
-# legend_title <- ""
-# 
-# # Apply the same title to all plots and specify a horizontal layout for the legend.
-# # Patchwork will use this structure when it collects the guides.
-# A <- A + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
-# B <- B + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
-# C <- C + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
-# 
-# # 1. Create a dedicated y-axis plot (this part is now correct).
-# y_axis_plot <- ggplot(A$data, aes(y = !!A$mapping$y)) +
-#   theme_void() +
-#   theme(
-#     axis.text.y = element_text(
-#       size = 11, # Match font size to your main plot
-#       hjust = 1, # Right-align the text
-#       colour = "black"
-#     ),
-#     # The right margin on the plot now solely controls the gap
-#     plot.margin = margin(0, 5, 0, 0) # Units are in 'pt'
-#   )
-# 
-# # 2. Modify plots A, B, and C to remove their y-axes and legends.
-# A_main <- A + labs(tag = "a)") +
-#   theme(axis.title.y = element_blank(),
-#         axis.text.y = element_blank(),
-#         axis.ticks.y = element_blank(),
-#         legend.position = "none")
-# 
-# B_main <- B + labs(tag = "b)") +
-#   theme(axis.title.y = element_blank(),
-#         axis.text.y = element_blank(),
-#         axis.ticks.y = element_blank(),
-#         legend.position = "none")
-# 
-# C_main <- C + labs(tag = "c)") +
-#   theme(axis.title.y = element_blank(),
-#         axis.text.y = element_blank(),
-#         axis.ticks.y = element_blank(),
-#         legend.position = "none")
-# 
-# 
-# # 3. Assemble the final figure with patchwork.
-# figure <- y_axis_plot + A_main + B_main + C_main +
-#   plot_layout(
-#     guides = 'collect', # This will now find one single, standardized legend
-#     # --- KEY FIX 2: Adjust Relative Widths ---
-#     # Reduce the first value to shrink the space for the y-axis labels.
-#     # A value of 0.3 or less is likely what you need. Adjust as necessary.
-#     widths = c(0.01, 1, 1, 1) 
-#   ) &
-#   # Position the single, collected legend at the bottom.
-#   theme(legend.position = 'bottom')
-# 
-# figure
-# ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",
-#        dpi = 900,
-#        bg = 'white',
-#        plot = figure,
-#        width = 13,
-#        height = 6)
+```{r,fig.width=15.5 ,fig.height=6.5}
+library(patchwork)
+
+# Define a single, consistent legend title.
+legend_title <- ""
+
+# Apply the same title to all plots and specify a horizontal layout for the legend.
+# Patchwork will use this structure when it collects the guides.
+A <- A + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
+B <- B + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
+C <- C + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
+
+# 1. Create a dedicated y-axis plot (this part is now correct).
+y_axis_plot <- ggplot(A$data, aes(y = !!A$mapping$y)) +
+  theme_void() +
+  theme(
+    axis.text.y = element_text(
+      size = 11, # Match font size to your main plot
+      hjust = 1, # Right-align the text
+      colour = "black"
+    ),
+    # The right margin on the plot now solely controls the gap
+    plot.margin = margin(0, 5, 0, 0) # Units are in 'pt'
+  )
+
+# 2. Modify plots A, B, and C to remove their y-axes and legends.
+A_main <- A + labs(tag = "A") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none")
+
+B_main <- B + labs(tag = "B") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none")
+
+C_main <- C + labs(tag = "C") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none")
+
+
+# 3. Assemble the final figure with patchwork.
+figure <- y_axis_plot + A_main + B_main + C_main +
+  plot_layout(
+    guides = 'collect', # This will now find one single, standardized legend
+    # --- KEY FIX 2: Adjust Relative Widths ---
+    # Reduce the first value to shrink the space for the y-axis labels.
+    # A value of 0.3 or less is likely what you need. Adjust as necessary.
+    widths = c(0.01, 1, 1, 1),
+  ) &
+  # Position the single, collected legend at the bottom.
+  theme(legend.position = 'bottom',legend.title = element_text(size=14),legend.text = element_text(size=11.75))
+
+figure
+ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",
+       dpi = 900,
+       bg = 'white',
+       plot = figure,
+       width = 15.5,
+       height = 6.5)
 ```
