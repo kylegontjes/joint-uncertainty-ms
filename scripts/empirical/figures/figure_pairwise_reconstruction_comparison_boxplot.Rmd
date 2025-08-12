@@ -91,11 +91,11 @@ pairwise_comps_sync_all_geno$pheno_cluster <- recode(pairwise_comps_sync_all_gen
 ## A. Concordant synchronous transitions
 ```{r,fig.width=9,fig.height=9}
 A <- ggplot(pairwise_comparisons,
-       aes(x = num_concordant_transitions,
+       aes(x = synchronous_gains_num,
            y = as.factor(genotype),
            fill = as.factor(pheno_cluster))) +
 geom_boxplot(position = position_dodge(width = 0.8)) +
-labs(x = "Concordant transitions",
+labs(x = "Synchronous phenotype-genotype gain events",
      y = "",
      fill = "Phenotype axes") +
 scale_fill_brewer(palette = "Set1",guide = guide_legend(nrow=1)) +
