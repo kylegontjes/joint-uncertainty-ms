@@ -76,7 +76,7 @@ get_median_min_max_values <- function(variable,dataset){
   ) %>% ungroup %>% select(pheno_cluster,genotype,summary_string) %>% `colnames<-`(c("pheno_cluster","genotype",paste0(variable))) 
  return(variable_summary)
 }
-variable_transitionstats  <- c("num_concordant_transitions")
+variable_transitionstats  <- c("synchronous_gains_num")
 
 transition_stats <- lapply(variable_transitionstats,get_median_min_max_values,dataset=synchronous_statistics) %>% reduce(
   .,
@@ -87,7 +87,7 @@ transition_stats <- lapply(variable_transitionstats,get_median_min_max_values,da
 transition_stats_wide <- transition_stats %>% arrange(genotype)%>% 
   pivot_wider(
     names_from = genotype,
-    values_from = c(num_concordant_transitions,),
+    values_from = c(synchronous_gains_num,),
     names_glue = "{genotype}_{.value}", names_expand = TRUE,
     names_sort = FALSE 
   ) %>%  select(pheno_cluster, sort(tidyselect::peek_vars()))
@@ -98,9 +98,9 @@ transition_stats_wide$pheno_cluster <- recode(transition_stats_wide$pheno_cluste
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
                                              "5" ="Reconstruction axis 5") 
-transition_stats_wide <- transition_stats_wide %>% select(pheno_cluster,paste0(levels(transition_stats$genotype),"_num_concordant_transitions"))
+transition_stats_wide <- transition_stats_wide %>% select(pheno_cluster,paste0(levels(transition_stats$genotype),"_synchronous_gains_num"))
 
-colnames(transition_stats_wide) <- gsub("_num_concordant_transitions"," concordant transitions",colnames(transition_stats_wide)) %>% gsub("pheno_cluster","Phenotype axis",.)
+colnames(transition_stats_wide) <- gsub("_synchronous_gains_num"," sychrnounous gains",colnames(transition_stats_wide)) %>% gsub("pheno_cluster","Phenotype axis",.)
 ```
  
 # Merged table

@@ -1,7 +1,7 @@
-Phenotype axis,AA552 blaKPC-containing plasmid concordant transitions,25 cytosine-to-thymine transition in ompK36 concordant transitions,Loop 3 insertion in ompK36 concordant transitions,Insertion seqeunce at ompK36 promoter concordant transitions,Putative disruptive mutation in ompK36 concordant transitions,Penicillin-binding-protein mutant concordant transitions,ramR efflux pump regulator PFAV concordant transitions,ramA efflux pump activator PFAV concordant transitions
-Reconstruction axis 1,2.0 (0.0 - 7.0),1.0 (1.0 - 3.0),0.0 (0.0 - 2.0),2.0 (0.0 - 4.0),4.0 (3.0 - 7.0),3.0 (0.0 - 4.0),1.0 (1.0 - 2.0),0.0 (0.0 - 1.0)
-Reconstruction axis 2,4.0 (1.0 - 7.0),1.0 (0.0 - 2.0),0.0 (0.0 - 2.0),2.0 (0.0 - 5.0),5.0 (2.0 - 9.0),3.0 (0.0 - 5.0),1.0 (0.0 - 5.0),0.0 (0.0 - 3.0)
-Reconstruction axis 3,2.0 (0.0 - 4.0),1.0 (0.0 - 2.0),0.0 (0.0 - 3.0),2.0 (0.0 - 5.0),5.0 (2.0 - 9.0),2.0 (0.0 - 5.0),1.0 (1.0 - 5.0),0.0 (0.0 - 2.0)
-Reconstruction axis 4,2.0 (0.0 - 6.0),1.0 (0.0 - 3.0),0.0 (0.0 - 3.0),2.0 (0.0 - 4.0),5.0 (2.0 - 9.0),2.0 (0.0 - 4.0),1.0 (1.0 - 5.0),0.0 (0.0 - 2.0)
-Reconstruction axis 5,4.0 (1.0 - 6.0),1.0 (1.0 - 2.0),0.0 (0.0 - 1.0),2.0 (0.0 - 3.0),5.0 (3.0 - 8.0),3.0 (1.0 - 5.0),1.0 (1.0 - 3.0),0.0 (0.0 - 1.0)
+Phenotype axis,AA552 blaKPC-containing plasmid sychrnounous gains,25 cytosine-to-thymine transition in ompK36 sychrnounous gains,Loop 3 insertion in ompK36 sychrnounous gains,Insertion seqeunce at ompK36 promoter sychrnounous gains,Putative disruptive mutation in ompK36 sychrnounous gains,Penicillin-binding-protein mutant sychrnounous gains,ramR efflux pump regulator PFAV sychrnounous gains,ramA efflux pump activator PFAV sychrnounous gains
+Reconstruction axis 1,2.0 (0.0 - 4.0),1.0 (1.0 - 3.0),0.0 (0.0 - 2.0),2.0 (0.0 - 3.0),4.0 (3.0 - 7.0),3.0 (0.0 - 4.0),1.0 (1.0 - 2.0),0.0 (0.0 - 1.0)
+Reconstruction axis 2,4.0 (1.0 - 7.0),1.0 (0.0 - 2.0),0.0 (0.0 - 1.0),2.0 (0.0 - 3.0),5.0 (2.0 - 9.0),3.0 (0.0 - 4.0),1.0 (0.0 - 3.0),0.0 (0.0 - 2.0)
+Reconstruction axis 3,2.0 (0.0 - 4.0),1.0 (0.0 - 2.0),0.0 (0.0 - 1.0),2.0 (0.0 - 3.0),4.0 (2.0 - 7.0),2.0 (0.0 - 4.0),1.0 (1.0 - 3.0),0.0 (0.0 - 2.0)
+Reconstruction axis 4,2.0 (0.0 - 5.0),1.0 (0.0 - 3.0),0.0 (0.0 - 2.0),2.0 (0.0 - 3.0),5.0 (2.0 - 8.0),2.0 (0.0 - 4.0),1.0 (1.0 - 4.0),0.0 (0.0 - 2.0)
+Reconstruction axis 5,4.0 (1.0 - 6.0),1.0 (1.0 - 2.0),0.0 (0.0 - 1.0),2.0 (0.0 - 2.0),5.0 (2.0 - 7.0),3.0 (1.0 - 4.0),1.0 (1.0 - 2.0),0.0 (0.0 - 1.0)
 Best joint reconstruction,3.0 (2.0 - 4.0),1.0 (1.0 - 2.0),0.0 (0.0 - 0.0),2.0 (1.0 - 2.0),5.0 (4.0 - 6.0),3.0 (2.0 - 3.0),1.0 (1.0 - 2.0),0.0 (0.0 - 1.0)
