@@ -69,7 +69,7 @@ pairwise_comparisons_ordered$genotype_reconstruction_axes <- paste0(pairwise_com
 dbcluster_names <- dbres$cluster %>% `names<-`(seq_len(length(.)))
 matrix_of_vals <- pairwise_comparisons_ordered %>%
     group_by(genotype_reconstruction_axes, phenotype_reconstruction) %>%
-    summarise(value = num_concordant_transitions) %>%  # or median(), sum(), etc
+    summarise(value = synchronous_gains_num) %>%  # or median(), sum(), etc
     pivot_wider(names_from = genotype_reconstruction_axes, values_from = value) 
 
 matrix_of_vals$cluster <- sapply(matrix_of_vals$phenotype_reconstruction,FUN=function(x){
@@ -130,7 +130,7 @@ A <- Heatmap(
   column_title = NULL,
   right_annotation = rowannots,
   top_annotation = colannots,
-  name = "Concordant transitions"
+  name = "Synchronous gain events"
 ) 
 
 # Extract legends for each annotation
@@ -151,7 +151,7 @@ merged_legends <- packLegend(
 # Pivot wide 
 matrix_of_vals <- pairwise_comparisons_ordered %>%
     group_by(genotype_reconstruction_axes, phenotype_reconstruction) %>%
-    summarise(value = num_discordant_transitions) %>%  # or median(), sum(), etc
+    summarise(value = synchronous_losses_num) %>%  # or median(), sum(), etc
     pivot_wider(names_from = genotype_reconstruction_axes, values_from = value) 
 
 matrix_of_vals$cluster <- sapply(matrix_of_vals$phenotype_reconstruction,FUN=function(x){
@@ -190,7 +190,7 @@ B <- Heatmap(
   column_title = NULL,
   right_annotation = rowannots,
   top_annotation = colannots,
-  name = "Discordant transitions"
+  name = "Synchronous loss events"
 ) 
 
 
@@ -209,7 +209,7 @@ merged_legends_2 <- packLegend(
 
 
 ```{r}
-png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_concordant_heatmap.png", width=12, height=8, units="in", res=900)
+png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_synchronous_gain_events_heatmap.png", width=12, height=8, units="in", res=900)
 draw(
   A,
   heatmap_legend_list = list(merged_legends),
@@ -217,7 +217,7 @@ draw(
 )
 dev.off()
 
-png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_disconcordant_heatmap.png", width=12, height=8, units="in", res=900)
+png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_synchronous_loss_events_heatmap.png", width=12, height=8, units="in", res=900)
 draw(
   B,
   heatmap_legend_list = list(merged_legends),
