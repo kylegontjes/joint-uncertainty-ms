@@ -110,7 +110,7 @@ for (k in seq_along(cluster_ids)) {
     ybottom = start_row - 0.5, 
     xright = nrow(m) + 0.5, 
     ytop = end_row + 0.5, 
-    border = "grey50", 
+    border = clust_cols[[k]], 
     lwd = 1.5,
     lty = 2)
 }
