@@ -1,5 +1,5 @@
 ---
-title: "Supplemental Figure - Transition statistics f"
+title: "Supplemental Figure - Transition and clustering statistics"
 author: "Kyle Gontjes"
 date: "`r Sys.Date()`"
 output: html_document
@@ -65,19 +65,19 @@ colnames(transition_data_simple) <- c("Transitions","Gain Events","Gain Events (
 ```{r,fig.width=10.5,fig.height=8.4}
 transitional_data <- lapply(colnames(transition_data_simple),FUN=function(x){
   num_bins = length(unique(transition_data_simple[[x]]))
+  
   if(num_bins>20){
     num_bins=20
   }
+  
   value_from_best <- best_joint_parent_child_transitions_simple[[x]]
   
-  ggplot(data=transition_data_simple,aes(x=get(x),fill=as.factor(Cluster))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + tnsecluster_scale_fill  + theme(legend.position = 'none',
-                                                                                                                                                                                     axis.text =   element_text(size=12, color="black"),
-                                                                                                                                                                                     axis.title = element_text(size = 14, color="black"))  + geom_vline(xintercept = value_from_best,linetype = 2,color = 'black') + theme()
-  
+  ggplot(data=transition_data_simple,aes(x=get(x),fill=as.factor(Cluster))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + phylogenetic_reconstruction_numeric_scale  + theme(legend.position = 'none',                                                                                                          axis.text =   element_text(size=12, color="black"), axis.title = element_text(size = 14, color="black"))  + geom_vline(xintercept = value_from_best,linetype = 2,color = 'black') 
 }) %>% cowplot::plot_grid(plotlist = .,labels = "AUTO",label_size = 16)
- 
-transitional_data
 
-ggsave("./figures/empirical/phyloAMR_alternative_reconstruction_transition_statistics.png",dpi = 900,bg = 'white',plot = transitional_data,width=10.5,height=8.4)
+transitional_data
 ```
 
+```{r}
+ggsave("./figures/empirical/phyloAMR_alternative_reconstruction_transition_statistics.png",dpi = 900,bg = 'white',plot = transitional_data,width=10.5,height=8.4)
+```

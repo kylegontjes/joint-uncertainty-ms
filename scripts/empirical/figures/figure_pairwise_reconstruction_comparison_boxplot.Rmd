@@ -19,6 +19,9 @@ packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR','kableExt
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
 
+# Source functions
+source("./lib/consistent_themes.R")
+
 # Print environment
 set.seed(0104) 
 Sys.info()
@@ -62,7 +65,7 @@ pairwise_comparisons$genotype <- factor(
 pairwise_comparisons$genotype,levels = rev(c("Overall","AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
 
  
-pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
+pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
 
 pairwise_comparisons$pheno_cluster <- recode(pairwise_comparisons$pheno_cluster,"focal_states" ="Best joint reconstruction",
                                              "1" ="Reconstruction axis 1",
@@ -77,7 +80,7 @@ pairwise_comps_sync_all_geno <- bind_rows(pairwise_comps_sync_all_geno,overall_r
 pairwise_comps_sync_all_geno$genotype <- factor(
 pairwise_comps_sync_all_geno$genotype,levels = rev(c("Overall","AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
  
-pairwise_comps_sync_all_geno$genotype <- recode(pairwise_comps_sync_all_geno$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
+pairwise_comps_sync_all_geno$genotype <- recode(pairwise_comps_sync_all_geno$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
 
 pairwise_comps_sync_all_geno$pheno_cluster <- recode(pairwise_comps_sync_all_geno$pheno_cluster,"focal_states" ="Best joint reconstruction",
                                              "1" ="Reconstruction axis 1",
@@ -90,6 +93,9 @@ pairwise_comps_sync_all_geno$pheno_cluster <- recode(pairwise_comps_sync_all_gen
 # Overall summary figures 
 ## A. Concordant synchronous transitions
 ```{r,fig.width=9,fig.height=9}
+min_value <- min(pairwise_comparisons$synchronous_gains_num,na.rm = T)
+max_value <- max(pairwise_comparisons$synchronous_gains_num,na.rm = T)
+
 A <- ggplot(pairwise_comparisons,
        aes(x = synchronous_gains_num,
            y = as.factor(genotype),
@@ -97,9 +103,7 @@ A <- ggplot(pairwise_comparisons,
 geom_boxplot(position = position_dodge(width = 0.8)) +
 labs(x = "Synchronous phenotype-genotype gain events",
      y = "",
-     fill = "Phenotype axes") +
-scale_fill_brewer(palette = "Set1",guide = guide_legend(nrow=1)) +
-theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + scale_x_continuous(breaks = c(0,2,4,6,8,10)) + xlim(NA,10.1) + theme(legend.position = 'bottom')
+     fill = "Phenotype axes") + phylogenetic_reconstruction_scale + theme_bw() + scale_x_continuous(breaks = c(0,1:max_value),labels =c(0,1:max_value) )   + theme(legend.position = 'bottom',axis.text.x = element_text(hjust = 0.5,size=11))
 
 A
 ```
@@ -113,9 +117,7 @@ B <- ggplot(pairwise_comps_sync_all_geno,
 geom_boxplot(position = position_dodge(width = 0.8)) +
 labs(x = "Proportion of genotype gains with a phenotype gain",
      y = "",
-     fill = "Phenotype axes") +
-scale_fill_brewer(palette = "Set1",guide = guide_legend(nrow=1)) +
-theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + theme(legend.position = 'bottom')
+     fill = "Phenotype axes") + phylogenetic_reconstruction_scale  + theme_bw() + theme(legend.position = 'bottom',axis.text.x = element_text(hjust = 0.5,size=11))
 
 B
 ```
@@ -172,7 +174,7 @@ pheno_gain_explanation_df <- rbind(pheno_gain_explanation_df,overall_row)
 pheno_gain_explanation_df$genotype <- factor(
 pheno_gain_explanation_df$genotype,levels = rev(c("Overall","AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
 
-pheno_gain_explanation_df$genotype <- recode(pheno_gain_explanation_df$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
+pheno_gain_explanation_df$genotype <- recode(pheno_gain_explanation_df$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
 
 pheno_gain_explanation_df$pheno_number <- sapply(pheno_gain_explanation_df$pheno_reconstruction,FUN=function(x){
   if(grepl("alt_recon",x)){
@@ -207,9 +209,7 @@ C<- ggplot(pheno_gain_explanation_df,
 geom_boxplot(position = position_dodge(width = 0.8)) +
 labs(x = "Proportion of phenotype gains with >=1 genotype gain",
      y = "",
-     fill = "Phenotype axes") +
-scale_fill_brewer(palette = "Set1",guide = guide_legend(nrow=1)) +
-theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme_bw() + theme(legend.position = 'bottom') + xlim(NA,0.601)  + scale_x_continuous(breaks = c(0,0.1,0.20,0.3,0.4,0.5,0.6))
+     fill = "Phenotype axes") + phylogenetic_reconstruction_scale  + theme_bw() +  theme(legend.position = 'bottom',axis.text.x = element_text(hjust = 0.5,size=11))  + xlim(NA,0.601)  + scale_x_continuous(breaks = c(0,0.1,0.20,0.3,0.4,0.5,0.6))
 
 C
 ```
@@ -222,9 +222,9 @@ legend_title <- ""
 
 # Apply the same title to all plots and specify a horizontal layout for the legend.
 # Patchwork will use this structure when it collects the guides.
-A <- A + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
-B <- B + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
-C <- C + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 1))
+A <- A + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 2))
+B <- B + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 2))
+C <- C + labs(fill = legend_title) + guides(fill = guide_legend(nrow = 2))
 
 # 1. Create a dedicated y-axis plot (this part is now correct).
 y_axis_plot <- ggplot(A$data, aes(y = !!A$mapping$y)) +
@@ -244,19 +244,22 @@ A_main <- A + labs(tag = "A") +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
-        legend.position = "none")
+        legend.position = "none",
+        plot.tag = element_text(size = 16))
 
 B_main <- B + labs(tag = "B") +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
-        legend.position = "none")
+        legend.position = "none",
+        plot.tag = element_text(size = 16))
 
 C_main <- C + labs(tag = "C") +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
-        legend.position = "none")
+        legend.position = "none",
+        plot.tag = element_text(size = 16))
 
 
 # 3. Assemble the final figure with patchwork.
@@ -269,13 +272,14 @@ figure <- y_axis_plot + A_main + B_main + C_main +
     widths = c(0.01, 1, 1, 1),
   ) &
   # Position the single, collected legend at the bottom.
-  theme(legend.position = 'bottom',legend.title = element_text(size=14),legend.text = element_text(size=11.75))
+  theme(legend.position = 'bottom',legend.title = element_text(size=14),legend.text = element_text(size=12))
 
 figure
+
 ggsave("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_boxplot.png",
-       dpi = 900,
-       bg = 'white',
-       plot = figure,
-       width = 15.5,
-       height = 6.5)
+      dpi = 900,
+      bg = 'white',
+      plot = figure,
+      width = 15.5,
+      height = 6.5)
 ```

@@ -62,63 +62,60 @@ downstream_pvalue_results_df <- lapply(names(downstream_pvalue_results),FUN=func
  
 
 # Synchronous p-values 
-```{r,fig.height=16.5,fig.width=12.5}
+```{r,fig.height=6.25,fig.width=12}
 synchronous_pvalue_results_df$comparitor <- factor(
 synchronous_pvalue_results_df$comparitor,levels = c("AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA"))
 
-synchronous_pvalue_results_df$comparitor <- recode(synchronous_pvalue_results_df$comparitor , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
+synchronous_pvalue_results_df$comparitor <- recode(synchronous_pvalue_results_df$comparitor , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
 
-synchronous_pvalue_results_df$phenotype_axis <- recode(synchronous_pvalue_results_df$phenotype_axis,"best_joint" ="Best joint model",
-                                             "JR_cluster_1" ="Alternative axis 1",
-                                             "JR_cluster_2" ="Alternative axis 2",
-                                             "JR_cluster_3" ="Alternative axis 3",
-                                             "JR_cluster_4" ="Alternative axis 4",
-                                             "JR_cluster_5" ="Alternative axis 5") 
+synchronous_pvalue_results_df$phenotype_axis <- recode(synchronous_pvalue_results_df$phenotype_axis,"best_joint" ="Best joint reconstruction",
+                                             "JR_cluster_1" ="Reconstruction axis 1",
+                                             "JR_cluster_2" ="Reconstruction axis 2",
+                                             "JR_cluster_3" ="Reconstruction axis 3",
+                                             "JR_cluster_4" ="Reconstruction axis 4",
+                                             "JR_cluster_5" ="Reconstruction axis 5") 
 
-axes_fill <- scale_fill_manual(breaks = c(unique(synchronous_pvalue_results_df$phenotype_axis)%>% factor),values=c("black", "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00", "#FFFF33","gray"),name="Phenotype axes")
-
-sync_variables <- c("transition_pval","synchronous_gain_pval","synchronous_loss_pval","synchronous_gain_loss_pval","synchronous_gain_loss_pval","synchronous_loss_gain_pval")
+sync_variables <- c("transition_pval","synchronous_gain_pval")
 
 synchronous_pval_figs <- lapply(sync_variables,FUN=function(x){
-  name <- recode(x,"transition_pval" = 'transition p-value',"synchronous_gain_pval" = 'synchronous gain p-value',"synchronous_loss_pval" = 'synchronous loss p-value',"synchronous_gain_loss_pval" = 'synchronous gain-loss p-value',"synchronous_gain_loss_pval" = 'synchronous gain-loss p-value',"synchronous_loss_gain_pval" = 'sychronous loss-gain p-value')
+  name <- recode(x,"transition_pval" = 'Transition p-value',"synchronous_gain_pval" = 'Synchronous gain p-value')
   
-ggplot(data=synchronous_pvalue_results_df,aes(x=comparitor,y=-log(get(x)),group=as.factor(phenotype_axis),fill=as.factor(phenotype_axis))) + geom_bar(position="dodge",stat='identity') + axes_fill + theme_bw() + ylab(name) + xlab("Comparitor") + ylim(NA,6.5) + theme(axis.text.x = element_text(angle=90)) + geom_hline(yintercept = -log(0.1),linetype = 2)   + geom_hline(yintercept = -log(0.05),colour = 'red',linetype = 2)
+ggplot(data=synchronous_pvalue_results_df,aes(x=comparitor,y=-log(get(x)),group=as.factor(phenotype_axis),fill=as.factor(phenotype_axis))) + geom_bar(position="dodge",stat='identity') + phylogenetic_reconstruction_scale + theme_bw() + ylab(name) + xlab("Genotype") + ylim(NA,6.5)  + geom_hline(yintercept = -log(0.1),linetype = 2)   + geom_hline(yintercept = -log(0.05),colour = 'red',linetype = 2) + theme(axis.text.x = element_text(angle=90))
 })
 
 synchronous_pvalue_plots <- cowplot::plot_grid(plotlist = synchronous_pval_figs,ncol=2,labels = "AUTO")
 
 synchronous_pvalue_plots
 
-ggsave("./figures/empirical/phyloAMR_synchronous_permutation_test_pvalues.png",dpi = 900,bg = 'white',plot = synchronous_pvalue_plots,width=12.5,height=17.5) 
+ggsave("./figures/empirical/phyloAMR_synchronous_permutation_test_pvalues.png",dpi = 900,bg = 'white',plot = synchronous_pvalue_plots,width=12.5,height=6.25) 
 ```
 
 # Downstream p-values 
 
-```{r,fig.height=19,fig.width=12.5} 
+```{r,fig.height=12.5,fig.width=12.5} 
 downstream_pvalue_results_df$comparitor <- factor(
 downstream_pvalue_results_df$comparitor,levels = c("AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA"))
 
-downstream_pvalue_results_df$comparitor <- recode(downstream_pvalue_results_df$comparitor , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
+downstream_pvalue_results_df$comparitor <- recode(downstream_pvalue_results_df$comparitor , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
 
+downstream_pvalue_results_df$phenotype_axis <- recode(downstream_pvalue_results_df$phenotype_axis,"best_joint" ="Best joint reconstruction",
+                                             "JR_cluster_1" ="Reconstruction axis 1",
+                                             "JR_cluster_2" ="Reconstruction axis 2",
+                                             "JR_cluster_3" ="Reconstruction axis 3",
+                                             "JR_cluster_4" ="Reconstruction axis 4",
+                                             "JR_cluster_5" ="Reconstruction axis 5") 
 
-downstream_pvalue_results_df$phenotype_axis <- recode(downstream_pvalue_results_df$phenotype_axis,"best_joint" ="Best joint model",
-                                             "JR_cluster_1" ="Alternative axis 1",
-                                             "JR_cluster_2" ="Alternative axis 2",
-                                             "JR_cluster_3" ="Alternative axis 3",
-                                             "JR_cluster_4" ="Alternative axis 4",
-                                             "JR_cluster_5" ="Alternative axis 5") 
-
-downstream_variables <-colnames(downstream_pvalue_results_df) %>% subset(!.%in% c('comparitor','phenotype_axis'))
+downstream_variables <-colnames(downstream_pvalue_results_df) %>% subset(!.%in% c('comparitor','phenotype_axis',"downstream_loss_pval","downstream_loss_stretches_pval"))
 
 downstream_pval_figs <- lapply(downstream_variables,FUN=function(x){
-  name <- recode(x,"downstream_transition_pval"    ="Downstream transitions p-value","downstream_transition_stretches_pval" = "Downstream strecthes count p-value", "downstream_gain_pval"= "Downstream gains p-value","downstream_gains_stretches_pval"  = "Downstream gain stretches count p-value",   "downstream_loss_pval" = "Downstream losses p-value", "downstream_loss_stretches_pval"   = "Downstream loss stretches count p-value")
+  name <- recode(x,"downstream_transition_pval"    ="Downstream transitions p-value","downstream_transition_stretches_pval" = "Downstream strecthes count p-value", "downstream_gain_pval"= "Downstream gains p-value","downstream_gains_stretches_pval"  = "Downstream gain stretches count p-value")
   
-ggplot(data=downstream_pvalue_results_df,aes(x=comparitor,y=-log(get(x)),group=as.factor(phenotype_axis),fill=as.factor(phenotype_axis))) + geom_bar(position="dodge",stat='identity') + axes_fill   + theme_bw() + ylab(name) + xlab("Comparitor") + ylim(NA,6.5) + theme(axis.text.x = element_text(angle=90)) + geom_hline(yintercept = -log(0.1),linetype = 2)   + geom_hline(yintercept = -log(0.05),colour = 'red',linetype = 2)
+ggplot(data=downstream_pvalue_results_df,aes(x=comparitor,y=-log(get(x)),group=as.factor(phenotype_axis),fill=as.factor(phenotype_axis))) + geom_bar(position="dodge",stat='identity') + phylogenetic_reconstruction_scale   + theme_bw() + ylab(name) + xlab("Genotype") + ylim(NA,6.5) + theme(axis.text.x = element_text(angle=90)) + geom_hline(yintercept = -log(0.1),linetype = 2)   + geom_hline(yintercept = -log(0.05),colour = 'red',linetype = 2)
 })
 
 downstream_pvalue_plots <- cowplot::plot_grid(plotlist = downstream_pval_figs,ncol=2,labels = "AUTO")
 
 downstream_pvalue_plots
 
-ggsave("./figures/empirical/phyloAMR_downstream_permutation_test_pvalues.png",dpi = 900,bg = 'white',plot = downstream_pvalue_plots,width=12.5,height=19) 
+ggsave("./figures/empirical/phyloAMR_downstream_permutation_test_pvalues.png",dpi = 900,bg = 'white',plot = downstream_pvalue_plots,width=12.5,height=12.5) 
 ```

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kyle Gontjes" />
 
-<meta name="date" content="2025-08-11" />
+<meta name="date" content="2025-09-16" />
 
 <title>Boyko’s requested figures</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Boyko’s requested figures</h1>
 <h4 class="author">Kyle Gontjes</h4>
-<h4 class="date">2025-08-11</h4>
+<h4 class="date">2025-09-16</h4>
 
 </div>
 
@@ -363,29 +363,32 @@ packages &lt;- c(&quot;tidyverse&quot;,&#39;corHMM&#39;,&#39;proxy&#39;,&#39;dbs
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
 
+# Source functions
+source(&quot;./lib/consistent_themes.R&quot;)
+
 # Print environment
 set.seed(0104) 
 Sys.info()</code></pre>
-<pre><code>                                                                                            sysname 
-                                                                                           &quot;Darwin&quot; 
-                                                                                            release 
-                                                                                           &quot;24.5.0&quot; 
-                                                                                            version 
-&quot;Darwin Kernel Version 24.5.0: Tue Apr 22 19:53:26 PDT 2025; root:xnu-11417.121.6~2/RELEASE_X86_64&quot; 
-                                                                                           nodename 
-                                                                                   &quot;msla0572.local&quot; 
-                                                                                            machine 
-                                                                                           &quot;x86_64&quot; 
-                                                                                              login 
-                                                                                             &quot;root&quot; 
-                                                                                               user 
-                                                                                         &quot;kgontjes&quot; 
-                                                                                     effective_user 
-                                                                                         &quot;kgontjes&quot; </code></pre>
+<pre><code>                                                                                                    sysname 
+                                                                                                   &quot;Darwin&quot; 
+                                                                                                    release 
+                                                                                                   &quot;24.6.0&quot; 
+                                                                                                    version 
+&quot;Darwin Kernel Version 24.6.0: Mon Aug 11 21:16:05 PDT 2025; root:xnu-11417.140.69.701.11~1/RELEASE_X86_64&quot; 
+                                                                                                   nodename 
+                                                                                           &quot;msla0572.local&quot; 
+                                                                                                    machine 
+                                                                                                   &quot;x86_64&quot; 
+                                                                                                      login 
+                                                                                                     &quot;root&quot; 
+                                                                                                       user 
+                                                                                                 &quot;kgontjes&quot; 
+                                                                                             effective_user 
+                                                                                                 &quot;kgontjes&quot; </code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.5.1 (2025-06-13)
 Platform: x86_64-apple-darwin20
-Running under: macOS Sequoia 15.5
+Running under: macOS Sequoia 15.7
 
 Matrix products: default
 BLAS:   /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/lib/libRblas.0.dylib 

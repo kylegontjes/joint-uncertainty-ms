@@ -15,10 +15,13 @@ knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-un
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
-packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR','kableExtra','ComplexHeatmap','RColorBrewer') 
+packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR','kableExtra','ComplexHeatmap','RColorBrewer','colorRamp2') 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Source functions
+source("./lib/consistent_themes.R")
 
 # Print environment
 set.seed(0104) 
@@ -57,7 +60,7 @@ pairwise_comparisons <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_
 pairwise_comparisons$genotype <- factor(
 pairwise_comparisons$genotype,levels = rev(c("AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
 
-pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
+pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion seqeunce at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
 ```
 
 # Synchronous
@@ -92,10 +95,7 @@ rowsplit_pheno <- factor(matrix_of_vals$cluster,levels = unique(sort(matrix_of_v
 
 gene <- factor(colnames(matrix_of_vals %>% select(-cluster, -phenotype_reconstruction)) %>% str_split(.,"_",simplify=T) %>% .[,1:2] %>% apply(.,1,paste0,collapse="_")  %>% gsub("_alt|_focal","",.)) 
 
-phen_colors <- setNames(
-  c("black", brewer.pal(length(unique(dbcluster_names)), "Set1")),
-  unique(factor(matrix_of_vals$cluster))
-)
+phen_colors <- setNames(phylogenetic_reconstruction_scale$palette(length(phylogenetic_reconstruction_scale$breaks)),phylogenetic_reconstruction_scale$breaks)
 
 rowannots <- ComplexHeatmap::rowAnnotation(
   `Phenotype axes` = factor(matrix_of_vals$cluster),
@@ -114,6 +114,10 @@ colannots <- ComplexHeatmap::columnAnnotation(
    show_legend = FALSE 
 )
 
+max_syn_transitions <- matrix_of_vals %>% select(-cluster, -phenotype_reconstruction) %>% as.matrix() %>% unlist %>% as.vector %>% max
+
+col_fun_syn <- colorRamp2(c(0, max_syn_transitions), c("white", "red"))
+
 A <- Heatmap(
   matrix_of_vals %>% select(-cluster, -phenotype_reconstruction) %>% as.matrix(),
   row_split = rowsplit_pheno,
@@ -122,7 +126,7 @@ A <- Heatmap(
   cluster_row_slices = TRUE,
   cluster_columns = FALSE,
   cluster_column_slices = TRUE,
-  col = c("white", "red"),
+  col =col_fun_syn,
   show_row_names = FALSE,
   show_column_names = FALSE,
   show_row_dend = FALSE,
@@ -130,7 +134,9 @@ A <- Heatmap(
   column_title = NULL,
   right_annotation = rowannots,
   top_annotation = colannots,
-  name = "Synchronous gain events"
+  name = "Synchronous gain events",
+  heatmap_legend_param =list(at = 0:max_syn_transitions,labels = 0:max_syn_transitions)
+    
 ) 
 
 # Extract legends for each annotation
@@ -174,6 +180,10 @@ rowsplit_pheno <- factor(matrix_of_vals$cluster,levels = unique(sort(matrix_of_v
 
 gene <- factor(colnames(matrix_of_vals %>% select(-cluster, -phenotype_reconstruction)) %>% str_split(.,"_",simplify=T) %>% .[,1:2] %>% apply(.,1,paste0,collapse="_")  %>% gsub("_alt|_focal","",.)) 
  
+max_asyn_transitions <- matrix_of_vals %>% select(-cluster, -phenotype_reconstruction) %>% as.matrix() %>% unlist %>% as.vector %>% max
+
+col_fun_asyn <- colorRamp2(c(0, max_asyn_transitions), c("white", "red"))
+
 B <- Heatmap(
   matrix_of_vals %>% select(-cluster, -phenotype_reconstruction) %>% as.matrix(),
   row_split = rowsplit_pheno,
@@ -182,7 +192,7 @@ B <- Heatmap(
   cluster_row_slices = TRUE,
   cluster_columns = FALSE,
   cluster_column_slices = TRUE,
-  col = c("white", "red"),
+  col = col_fun_asyn,
   show_row_names = FALSE,
   show_column_names = FALSE,
   show_row_dend = FALSE,
@@ -190,8 +200,9 @@ B <- Heatmap(
   column_title = NULL,
   right_annotation = rowannots,
   top_annotation = colannots,
-  name = "Synchronous loss events"
-) 
+  name = "Synchronous loss events",
+  heatmap_legend_param =list(at = 0:max_asyn_transitions,labels = 0:max_asyn_transitions)
+)
 
 
 # Extract legends for each annotation

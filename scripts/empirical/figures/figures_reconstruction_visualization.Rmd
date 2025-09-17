@@ -19,6 +19,9 @@ packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR')
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
 
+# Source functions
+source("./lib/consistent_themes.R")
+
 # Print environment
 set.seed(0104) 
 Sys.info()
@@ -71,8 +74,9 @@ optimal_k_gap <- sum(as.numeric(unique(dbres$cluster)) >0)
 
 # cluster assignment
 cluster_assignments <- dbres$cluster
-clusters <- factor(cluster_assignments)
-clust_cols <- RColorBrewer::brewer.pal(sum(levels(clusters) !=0), "Set1")
+clusters <- factor(cluster_assignments) 
+clust_cols <- phylogenetic_reconstruction_scale$palette(length(phylogenetic_reconstruction_scale$breaks))[1+1:sum(levels(clusters) !=0)]
+
 
 pdf("./figures/empirical/empirical_joint_uncertainty_reconstructions.pdf", height = 15, width = 5.5)
 par(mar=c(0,0,0,0))
@@ -126,7 +130,7 @@ dev.off()
 ```{r}
 pdf("./figures/empirical/empirical_joint_uncertainty_lnlik_dist.pdf", width = 2.5, height = 10)
 
-corHMM:::plot_stacked_densities(joint_ci$lnliks, clusters, cols = rep("grey50", 5), main = "", xlab ="", ylab="")
+corHMM:::plot_stacked_densities(joint_ci$lnliks, clusters, cols = clust_cols, main = "", xlab ="", ylab="")
 
 dev.off()
 ```

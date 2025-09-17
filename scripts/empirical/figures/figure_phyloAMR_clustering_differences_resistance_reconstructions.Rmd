@@ -80,14 +80,10 @@ clustering_data <- lapply(colnames(cluster_data_simple) ,FUN=function(x){
   value_from_best <- best_joint_parent_child_clusters_simple[[x]]
   
   if(x == "Phenotype axis"){
-  ggplot(data=cluster_data_simple,aes(x=get(x),fill=as.factor(`Phenotype axis`))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + tnsecluster_scale_fill  + theme(legend.position = 'none')  
-    
+  ggplot(data=cluster_data_simple,aes(x=get(x),fill=as.factor(`Phenotype axis`))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + phylogenetic_reconstruction_numeric_scale  + theme(legend.position = 'none')  
   } else {
-  ggplot(data=cluster_data_simple,aes(x=get(x),fill=as.factor(`Phenotype axis`))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + tnsecluster_scale_fill  + theme(legend.position = 'none')  + geom_vline(xintercept = value_from_best,linetype = 2,color = 'black') 
-    
+  ggplot(data=cluster_data_simple,aes(x=get(x),fill=as.factor(`Phenotype axis`))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + phylogenetic_reconstruction_numeric_scale  + theme(legend.position = 'none')  + geom_vline(xintercept = value_from_best,linetype = 2,color = 'black') 
   }
-  
-  
 }) %>% cowplot::plot_grid(plotlist = .,labels = "AUTO",ncol=3)
 
 clustering_data
