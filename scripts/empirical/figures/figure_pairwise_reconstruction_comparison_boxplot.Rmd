@@ -96,10 +96,16 @@ pairwise_comps_sync_all_geno$pheno_cluster <- recode(pairwise_comps_sync_all_gen
 min_value <- min(pairwise_comparisons$synchronous_gains_num,na.rm = T)
 max_value <- max(pairwise_comparisons$synchronous_gains_num,na.rm = T)
 
+factor_order <- c("Best joint reconstruction",paste0("Reconstruction axis ",1:5))
+
+pairwise_comparisons$pheno_cluster <- factor(
+pairwise_comparisons$pheno_cluster,levels = rev(factor_order))
+
+
 A <- ggplot(pairwise_comparisons,
        aes(x = synchronous_gains_num,
            y = as.factor(genotype),
-           fill = as.factor(pheno_cluster))) +
+           fill = pheno_cluster)) +
 geom_boxplot(position = position_dodge(width = 0.8)) +
 labs(x = "Synchronous phenotype-genotype gain events",
      y = "",
@@ -110,6 +116,9 @@ A
  
 # Get proportion of genotypes with gain event of phenotype
 ```{r,fig.width=9,fig.height=7.5} 
+pairwise_comps_sync_all_geno$pheno_cluster <- factor(
+pairwise_comps_sync_all_geno$pheno_cluster,levels = rev(factor_order))
+
 B <- ggplot(pairwise_comps_sync_all_geno,
        aes(x = synchronous_gains_prop,
            y = as.factor(genotype),
@@ -201,6 +210,10 @@ pheno_gain_explanation_df$pheno_cluster <- recode(pheno_gain_explanation_df$phen
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
                                              "5" ="Reconstruction axis 5") 
+
+
+pheno_gain_explanation_df$pheno_cluster <- factor(
+pheno_gain_explanation_df$pheno_cluster,levels = rev(factor_order))
 
 C<- ggplot(pheno_gain_explanation_df,
        aes(x = prop_pheno_gains_w_geno_gain,
