@@ -13,6 +13,7 @@ knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-un
 ```
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
+# setwd("../../../")
 #Packages
 packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR') 
 
@@ -30,12 +31,14 @@ sessionInfo()
 
 # Load data
 ```{r}  
+# setwd("../../../")
 phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
 dat <- readRDS("./data/empirical/dataset/df.RDS")
 dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
 ```
 
 ```{r}
+# setwd("../../../")
 focal <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS") %>% .[["blbli_dich_num"]]
 joint_ci <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS") %>% .[["blbli_dich_num"]]
 
@@ -49,6 +52,7 @@ phylo_dist_mat_local <- readRDS("./data/empirical/joint_reconstruction/joint_unc
 
 # Phylogeny with node states
 ```{r}
+# setwd("../../../")
 pdf("./figures/empirical/empirical_phylogeny.pdf", height = 5.667, width = 17)   
 to_keep <- corHMM:::get_desc(phy, 417)
 to_col <- match(to_keep, phy$edge[,2])
@@ -70,6 +74,7 @@ dev.off()
 
 # Raw ancestral reconstruction figure
 ```{r}
+# setwd("../../../")
 optimal_k_gap <- sum(as.numeric(unique(dbres$cluster)) >0)
 
 # cluster assignment
@@ -100,7 +105,7 @@ rle_clusters <- rle(sorted_clusters)
 cluster_starts <- cumsum(c(1, head(rle_clusters$lengths, -1)))
 cluster_ends <- cumsum(rle_clusters$lengths)
 cluster_ids <- rle_clusters$values
-box_colors <- clust_cols
+box_colors <- rev(clust_cols)
 for (k in seq_along(cluster_ids)) {
   cluster_id <- cluster_ids[k]
   if (cluster_id == 0) next  # Skip cluster 0 if used for noise
@@ -110,7 +115,7 @@ for (k in seq_along(cluster_ids)) {
     ybottom = start_row - 0.5, 
     xright = nrow(m) + 0.5, 
     ytop = end_row + 0.5, 
-    border = clust_cols[[k]], 
+    border = box_colors[[k]], 
     lwd = 1.5,
     lty = 2)
 }
@@ -128,10 +133,9 @@ dev.off()
 
 # Log likelihood distribution
 ```{r}
+# setwd("../../../")
 pdf("./figures/empirical/empirical_joint_uncertainty_lnlik_dist.pdf", width = 2.5, height = 10)
-
 corHMM:::plot_stacked_densities(joint_ci$lnliks, clusters, cols = clust_cols, main = "", xlab ="", ylab="")
-
 dev.off()
 ```
 
