@@ -1,12 +1,12 @@
-name: joint_uncertainty_corHMM_phyloAMR_revision
+name: joint_uncertainty_revision
 channels:  
   - conda-forge
   - r
   - bioconda
   - defaults
-dependencies:  
+dependencies:   
   - r-base==4.5.2
-  - r-tidyverse
+  - r-dplyr
   - r-devtools
   - r-phangorn
   - r-phytools
@@ -16,5 +16,4 @@ dependencies:
   - r-proxy
   - r-dbscan
   - r-Rtsne
-  - r-pbmcapply
-  - bioconductor-ggtree=3.17.
+  

@@ -1,0 +1,24 @@
+# Setting up conda environment
+# Create interactive node
+srun --account=esnitkin1 --nodes=1 --ntasks-per-node=1 --mem-per-cpu=30GB --cpus-per-task=1 --time=0:30:00 --pty /bin/bash
+
+# Create environment
+conda env create -f joint_uncertainty_revision.yaml
+
+# Activate environment
+conda activate joint_uncertainty_revision
+
+# DO THIS IN In R:
+R
+
+# Install corHMM from GitHub
+## corHMM - installed because the GitHub version is preferred
+### Make sure that a PAT is set in ~/.Renviron
+#### If more recent versions of packages are available, do not update them.
+devtools::install_github("thej022214/corHMM", force = TRUE, build_vignettes = FALSE)
+
+# Exit R
+q()
+
+# Save conda environment
+conda list > joint_uncertainty_revision_conda_environment.txt
