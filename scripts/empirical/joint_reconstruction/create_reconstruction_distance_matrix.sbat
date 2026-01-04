@@ -1,0 +1,13 @@
+#!/bin/sh
+# Job name
+#SBATCH --job-name=corHMM_joint_uncertainty_dist_matrix
+# User info
+#SBATCH --mail-user=kgontjes@umich.edu
+#SBATCH --mail-type=BEGIN,END
+#SBATCH --export=ALL
+#SBATCH --partition=standard
+#SBATCH --account=esnitkin1 
+#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=1 --mem=3g --time=0:12:00
+#SBATCH --output=create_reconstruction_distance_matrix.out
+
+Rscript -e "rmarkdown::render('create_reconstruction_distance_matrix.Rmd')"

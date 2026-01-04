@@ -6,15 +6,15 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+require(knitr)
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '/nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms') 
 ```
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
-packages <- c("tidyverse",'corHMM','phyloAMR','ape') 
+packages <- c("dplyr",'phyloAMR','ape') 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
@@ -24,6 +24,7 @@ set.seed(0104)
 Sys.info()
 sessionInfo()
 ```
+
 # Data
 ```{r}
 representative_parent_child_dfs <- readRDS('./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS')
@@ -34,11 +35,11 @@ phy <- read.tree("./data/empirical/tree/tree.treefile")
 
 # Synchronous transitions
 ```{r}  
-synchronous_transitions <- lapply(genotype_parent_child_dfs,FUN=function(x){
+synchronous_transitions <- pbmcapply::pbmclapply(genotype_parent_child_dfs,FUN=function(x){
    lapply(representative_parent_child_dfs, FUN=function(axis){
      synchronous_transitions(comparitor_parent_child_df = x, trait_parent_child_df = axis)
    }) %>% do.call(rbind,.) %>% mutate(phenotype_axis = names(representative_parent_child_dfs)) 
-})  %>% `names<-`(names(genotype_parent_child_dfs))
+},mc.cores=15)  %>% `names<-`(names(genotype_parent_child_dfs))
 
 synchronous_transitions_df <- lapply(names(synchronous_transitions), function(name) {
   df <- synchronous_transitions[[name]]
@@ -55,7 +56,7 @@ downstream_transitions <-  pbmcapply::pbmclapply(genotype_parent_child_dfs,FUN=f
    lapply(representative_parent_child_dfs, FUN=function(axis){
      downstream_transitions(comparitor_parent_child_df = x,trait_parent_child_df = axis, tr = phy)
    }) %>% do.call(rbind,.) %>% mutate(phenotype_axis = names(representative_parent_child_dfs)) 
-},mc.cores=7)  
+},mc.cores=15)  
 
 downstream_transitions_df <- lapply(names(downstream_transitions), function(name) {
   df <- downstream_transitions[[name]]

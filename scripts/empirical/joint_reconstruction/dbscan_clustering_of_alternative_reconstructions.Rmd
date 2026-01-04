@@ -1,5 +1,5 @@
 ---
-title: "dbscan_clustering_of_alternative_reconstructions"
+title: "Clustering of alternative reconstructions for BL/BLI resistance using tSNE and dbscan"
 author: "Kyle Gontjes"
 date: "`r Sys.Date()`"
 output: html_document
@@ -7,14 +7,14 @@ output: html_document
 
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+opts_knit$set(echo = TRUE, warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '/nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
-packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR') 
+packages <- c('ape','dbscan','Rtsne') 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
@@ -25,156 +25,107 @@ Sys.info()
 sessionInfo()
 ```
 
-# Load data
-```{r}  
-phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
-dat <- readRDS("./data/empirical/dataset/df.RDS")
-dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
-```
-
-# Reconsctructions
-```{r} 
-focals <- readRDS("~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS")
-joint_uncs <- readRDS("~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
-```
-
-## BL/BLI Reconstruction
-```{r} 
-focal <- focals$blbli_dich_num
-joint_ci <- joint_uncs$blbli_dich_num
-state_df_matrix <- as.matrix(joint_ci$state_df)
-``` 
-
+# Load distance matrix
 ```{r}
-phy <- ladderize(focal$phy)
-tmp_phy <- phy
-tmp_phy$edge.length <- rep(1, length(tmp_phy$edge.length))
-phy_dist <- ape::dist.nodes(tmp_phy)[-(1:Ntip(tmp_phy)),-(1:Ntip(tmp_phy))]
+phylo_dist_mat_local <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")
+phylo_dist_mat_local <- as.matrix(phylo_dist_mat_local) 
 ```
 
-```{r} 
-Rcpp::cppFunction('
-double phylo_aware_dist_local_cpp(LogicalVector mismatch, NumericMatrix phylo_dist) {
-  int n = mismatch.size();
-  std::vector<int> indices;
-  for(int i = 0; i < n; i++) {
-    if(mismatch[i]) indices.push_back(i);
-  }
-  int m = indices.size();
-  if(m <= 1) return 0.0;
-  double sum = 0.0;
-  for(int i = 0; i < m-1; i++) {
-    for(int j = i+1; j < m; j++) {
-      sum += exp(1.0 / phylo_dist(indices[i], indices[j]));
-    }
-  }
-  return sum;
-}')
+# Perform tSNE + dbscan clustering
+## Methodology:
+1. Set seed
 
-phylo_aware_dist_local <- function(graph_labels_x, graph_labels_y, phylo_dist) {
-  mismatch <- graph_labels_x != graph_labels_y
-  return(phylo_aware_dist_local_cpp(mismatch, phylo_dist))
+2. Perform tSNE on distance matrix
+
+3. Get second derivative 
+
+4. Get elbow (max second derivative) 
+
+5. Multiply by 0.95 to dampen the behavior 
+
+6. Cluster tSNE results using tSNE results, the reduced eps, and minimum points (15 points)
+
+```{r, tsne dbscan clustering}
+# Number of reconstructions
+nrecon <- nrow(phylo_dist_mat_local)
+# Get minimum points 
+min_pts <-  min(max(round(.01 * nrecon), 15), 40)
+
+# Helper reduced eps function
+compute_eps <- function(tsne_mat, min_pts){
+  distances <- kNNdist(tsne_mat, k = min_pts - 1)
+  sorted_distances <- sort(distances, decreasing = F)
+  second_deriv <- diff(sorted_distances, differences = 2)
+  elbow_id <- which.max(second_deriv) + 1L
+  sorted_distances[elbow_id]   * 0.95 
 }
 
-#pr_DB$delete_entry("PhyloSpreadDistLocal")
-try(pr_DB$set_entry(FUN = phylo_aware_dist_local, names = "PhyloSpreadDistLocal"),silent = TRUE)
-phylo_dist_mat_local <- proxy::dist(state_df_matrix, method = "PhyloSpreadDistLocal",
-  phylo_dist = phy_dist) 
+# Clustering methodology
+dbscan_clustering <- function(phylo_dist_mat_local, seed, min_pts){
+  # Set seed
+  set.seed(seed)
+  # Run tSNE
+  tsne_res <- Rtsne(phylo_dist_mat_local, is_distance = T, verbose = F, check_duplicates = FALSE) 
+  # Get second derivative to identify eps
+  reduced_eps <- compute_eps(tsne_mat = tsne_res$Y, min_pts = min_pts) 
+  # Run dbscan
+  dbres <- dbscan(tsne_res$Y, eps = reduced_eps, minPts = min_pts) 
+  return(dbres)
+}
 
-saveRDS(phylo_dist_mat_local,"./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")
+# Apply on seeds 1 to 1000
+## Break up into chunks to improve memory usage
+seeds <- 1:1000
+chunk_size <- 10
+seed_chunks <- split(seeds, ceiling(seq_along(seeds)/chunk_size))
+
+## Run on seed chunks
+ncores <-  35
+results <- pbmcapply::pbmclapply(
+  seed_chunks,
+  mc.cores = ncores,
+  FUN = function(chunk){
+    lapply(chunk, function(s){
+      dbscan_clustering(phylo_dist_mat_local, seed = s, min_pts = min_pts)
+    })
+  }
+)
+
+## Flatten to single list
+results <- do.call(c, results) 
+
+# Save tSNE + dbscan clustering results
+saveRDS(results,"./data/empirical/joint_reconstruction/joint_uncertainty_dbscan_multiple_seeds_clustering.RDS")
 ```
 
-# Visualize distance heatmap
-```{r}
-dist_heatmap <- ComplexHeatmap::Heatmap(as.matrix(phylo_dist_mat_local),show_column_names = F,show_row_names = F,
-  name = "Phylo Weighted Distance",
-  cluster_columns = T, cluster_rows = T,
-  row_dend_side = "left", column_dend_side = "top",
-  row_title = "Reconstruction", column_title = "Reconstruction") 
-dist_heatmap
-```
+# Generate consensus matrix
+```{r consensus distance}
+# Create raw matrix
+consensus_matrix <- matrix(0, nrecon, nrecon)
 
-# Generate clustering data
-```{r}
-# ⁠eps:⁠ A suitable neighborhood size parameter eps given a fixed value for minPts
-# can be found visually by inspecting the kNNdistplot() of the data using 
-# k = minPts−1, k=minPts−1 (minPts includes the point itself, 
-# while the k-nearest neighbors distance does not). 
-# The k-nearest neighbor distance plot sorts all data points by their k-nearest 
-# neighbor distance. A sudden increase of the kNN distance (a knee) indicates 
-# that the points to the right are most likely outliers. 
-# Choose eps for DBSCAN where the knee is.
-# min points is ~2.5% of the number of reconstructions
-par(mfrow=c(1,1), mar=c(4, 4, 4, 4)) 
-tsne_res <- Rtsne(phylo_dist_mat_local)
+# Generate consensus matrix
+## This represents the number of times a sample clusters with other samples
+### Larger values = strong and stable co-association
+### Smaller values = rare co-association 
+for (cl in results) {
+  # Get cluster assignments
+  z <- cl$cluster
+  # Get indices for samples assigned to a cluster (i.e., 0 = noise point)
+  idx <- which(z != 0)
+  # Group sample indices by their cluster label
+  for (k in split(idx, z[idx])) {
+    # For samples in same cluster, add value 1
+    consensus_matrix[k, k] <- consensus_matrix[k, k] + 1
+  }
+}
 
-saveRDS(tsne_res,"./data/empirical/joint_reconstruction/alternative_reconstruction_tsne.RDS")
+# Normalize this matrix by the number of clustering attempts
+consensus_matrix <- consensus_matrix / length(results) 
+## Save normalized consensus matrix
+saveRDS(consensus_matrix,"./data/empirical/joint_reconstruction/joint_uncertainty_dbscan_multiple_seeds_consensus_matrix.RDS")
 
-n_recons <- length(joint_ci$lnliks) 
-min_pts <-  min(max(round(.01 * n_recons), 15), 40)
-distances <- kNNdist(tsne_res$Y, k = min_pts - 1)
-sorted_distances <- sort(distances)
-```
-
-## Identify using empirical route second derivative
-### Second derivate suggested 
-```{r}
-second_deriv <- diff(diff(sorted_distances))
-elbow_id <- which.max(second_deriv) + 1
-eps <- sorted_distances[elbow_id] 
-paste0("Chosen eps using second-derivative method: ",eps)
-reduced_eps <- eps * .95
-paste0("Chose to left shift eps (eps *.95): ",reduced_eps)
-
-kNNdistplot(tsne_res$Y, k = min_pts - 1, minPts = min_pts)
-abline(h=eps, lty=3, col = "red")
-abline(h=reduced_eps, lty=3, col = "blue")
-```
-
-## Iterations
-```{r,fig.width=15}  
-# Run iterations of eps
-iterations <- seq(.5, 5, by = 0.05)
-dbres <- c()
-
-dbres_iterations <- lapply(iterations, function(i) {
- dbscan(tsne_res$Y, eps = i, minPts = min_pts) 
-})  
-names(dbres_iterations) <- iterations
- 
-dbres_clusters <- lapply(dbres_iterations, function(x) {
-  x$cluster
-})
-dbres_clusters <- do.call(cbind.data.frame,dbres_clusters)
-colnames(dbres_clusters) <- paste0("eps_", iterations) 
-
-saveRDS(dbres_iterations,"./data/empirical/joint_reconstruction/joint_uncertainty_asr_dbres_iterations.RDS")
-```
-
-```{r,fig.width=17.5,fig.height=10} 
-# dbres stats
-dbres_stats <- apply(dbres_clusters, 2, function(x) {
-  data.frame( 
-    n_clusters = length(unique(subset(x,x!=0))),
-    n_noise = sum(x == 0),
-    n_assigned = sum(x > 0)
-  )
-}) 
-dbres_stats <-  do.call(rbind.data.frame,dbres_stats)
-dbres_stats$eps = as.numeric(gsub("eps_","",colnames(dbres_clusters)) )  
-
-A <- ggplot2::ggplot(data=dbres_stats,ggplot2::aes(x=eps,y=n_clusters)) + ggplot2::geom_bar(stat='identity',colour = 'white',fill='black') + ggplot2::ylab("Number clusters")  +ggplot2::theme_bw() + ggplot2::scale_x_continuous(breaks = seq(0.5, 7, by = .2)) + ggplot2::geom_text(ggplot2::aes(label=n_clusters), vjust=-0.5, size=3) + ggplot2::geom_vline(xintercept = eps,colour = 'red',linetype = 3) + ggplot2::geom_vline(xintercept = reduced_eps,colour = 'blue',linetype = 3)
-B <- ggplot2::ggplot(data=dbres_stats,ggplot2::aes(x=eps,y=n_noise)) + ggplot2::geom_bar(stat='identity',colour = 'white',fill='black') + ggplot2::ylab("Number noise points")  + ggplot2::theme_bw()  + ggplot2::scale_x_continuous(breaks = seq(0.5, 7, by = .2)) + ggplot2::geom_text(ggplot2::aes(label=n_noise), vjust=-0.5, size=3)+ ggplot2::geom_vline(xintercept = eps,colour = 'red',linetype = 3) + ggplot2::geom_vline(xintercept = reduced_eps,colour = 'blue',linetype = 3)
-
-cowplot::plot_grid(A,B,labels="AUTO",ncol=1)
-```
-
-## Optimal dbres clustering
-```{r}
-dbres <- dbscan(tsne_res$Y, eps = reduced_eps, minPts = min_pts) 
-
-paste0("Number of recons: ", length(dbres$cluster ))
-paste0("Number of clusters: ", dbres$cluster %>% subset(.!=0) %>% unique %>% length)
-
-saveRDS(dbres,"./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+# Convert to a distance (i.e., 1 - consensus) for use with re-clustering
+consensus_dist <- as.dist(1 - consensus_matrix)
+## Save consensus distance matrix
+saveRDS(consensus_dist,"./data/empirical/joint_reconstruction/joint_uncertainty_dbscan_multiple_seeds_consensus_distance_matrix.RDS")
 ```

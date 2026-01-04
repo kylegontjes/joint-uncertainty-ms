@@ -7,21 +7,18 @@ output: html_document
 
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '/nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms') 
 ```
 
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
-packages <- c("tidyverse",'corHMM','phyloAMR') 
+packages <- c("dplyr",'phyloAMR','ape') 
 
 #Load Packages
-invisible(lapply(packages,library,character.only=T,quietly=T))
-
-# Source functions
-source("./lib/consistent_themes.R")
+invisible(lapply(packages,library,character.only=T,quietly=T)) 
 
 # Print environment
 set.seed(0104) 
@@ -29,54 +26,97 @@ Sys.info()
 sessionInfo()
 ```
 
-# Load data
-## Dataset
-```{r} 
-dat <- readRDS("./data/empirical/dataset/df.RDS")
-phy <- read.tree("./data/empirical/tree/tree.treefile")  
+# Load data  
+## Reconstructions
+```{r, load reconstruction}
+# Reconstructions 
+joint_uncs <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
+# Names of traits
+names_of_uncs <- names(joint_uncs)
 ```
 
-## Joint unc data
-```{r} 
-representative_parent_child_dfs <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS")
+## Reconstruction clustering
+```{r, clustering}
+asr_clustering <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering.RDS")
+cluster_analysis_statistics <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS")
+clustering <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS") 
 ```
 
-
-# Perform clustering analysis
+# Parent child data frames 
 ```{r} 
-## Perform analyses
-cluster_detects <- c()
-clusters <- names(representative_parent_child_dfs)
+parent_child_dfs <- readRDS("./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS")
+```
 
-for(i in clusters){
-  cluster_detects[[i]] <- asr_cluster_detection(df = dat,tr = phy,tip_name_variable  = 'isolate_no',patient_id = 'Patient_ID',parent_child_df = representative_parent_child_dfs[[i]],node_states = 'joint',confidence = NULL,simplify_faux_clusters = T,simplify_revertant = T,collapse_cluster = T)
+# Extract representative reconstruction from each BL/BLI cluster
+```{r, extract representative reconstructions}
+# Extract best reconstruction per cluster
+extract_best_per_cluster <- function(cluster,cluster_str,joint_ci,state_df){
+  cluster_id = which(cluster_str == cluster)
+  cluster_logs <- joint_ci$lnliks[cluster_id]
+  lowest_log_val <- which.max(cluster_logs)
+  lowest_val_id = cluster_id[lowest_log_val]
+  cluster_states <- state_df[lowest_val_id,]  %>% unlist %>% `names<-`(NULL)
+  return(lowest_val_id)
 }
+n_clusters = length(unique(clustering) %>% subset(.!=0))
+clusters = seq_len(n_clusters)
+clusters_str = clustering
+state_df_matrix <- as.matrix(joint_uncs$blbli_dich_num$state_df)
+cluster_joint_states <- lapply(clusters,extract_best_per_cluster,clusters_str,joint_uncs$blbli_dich_num,state_df_matrix) %>% unlist  %>% `names<-`(seq_along(.))
+cluster_representatives_state_parent_childs <- lapply(cluster_joint_states,FUN=function(x){
+  parent_child_dfs$blbli_dich_num[[paste0("alt_recon_",x)]]
+})   %>% `names<-`(paste0("JR_cluster_",seq_len(length(.))))
+   
+# Best joint
+best_joint_parent_child<- parent_child_dfs$blbli_dich_num$focal_states
+ 
+best_parent_child_states <-  c(list(best_joint_parent_child), cluster_representatives_state_parent_childs) %>% `names<-`(c("best_joint",paste0("JR_cluster_",seq_len(length(cluster_representatives_state_parent_childs)))))
 
-names(cluster_detects) <- clusters
+saveRDS(best_parent_child_states,'./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS')
+```
 
-saveRDS(cluster_detects,"./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering.RDS")
+# Extract clustering  
+```{r} 
+# Extract clustering analyses
+cluster_representatives_asr_clustering <- lapply(cluster_joint_states,FUN=function(x){
+  asr_clustering$blbli_dich_num[[paste0("alt_recon_",x)]]
+})   %>% `names<-`(paste0("JR_cluster_",seq_len(length(.))))
 
+# Best joint
+best_joint_asr_clustering <- asr_clustering$blbli_dich_num$focal_states
 
-clustering_df <- lapply(names(cluster_detects),FUN=function(x){
-  cluster_detects[[x]] %>% select(tip_name,asr_cluster,asr_cluster_renamed,asr_cluster_collapsed) %>% `colnames<-`(c("isolate_no",paste0(x,"_",colnames(.)[2:4]))) 
+best_asr_clustering <-  c(list(best_joint_asr_clustering), cluster_representatives_asr_clustering) %>% `names<-`(c("best_joint",paste0("JR_cluster_",seq_len(length(cluster_representatives_asr_clustering)))))
+ 
+saveRDS(best_asr_clustering,"./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering.RDS")
+
+# Create dataframe
+clustering_df <- lapply(names(best_asr_clustering),FUN=function(x){
+  best_asr_clustering[[x]] %>% select(tip_name,asr_cluster,asr_cluster_renamed,asr_cluster_collapsed) %>% `colnames<-`(c("isolate_no",paste0(x,"_",colnames(.)[2:4]))) 
 })
 
-clustering_df <- reduce(clustering_df, left_join, by = "isolate_no")
+clustering_df <- Reduce(
+  \(x, y) left_join(x,y,by='isolate_no'),
+  clustering_df) 
 
 saveRDS(clustering_df,"./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_df.RDS")
 ```
 
 # Clustering statistics
 ```{r} 
-cluster_analysis <- c()
-for(i in clusters){
-  cluster_analysis[[i]] <- asr_cluster_analysis(cluster_detects[[i]])
-}
+# Extract analyses
+cluster_representatives_asr_clustering_analysis <- lapply(cluster_joint_states,FUN=function(x){
+  cluster_analysis_statistics[cluster_analysis_statistics$trait=='blbli_dich_num' & cluster_analysis_statistics$reconstruction==paste0("alt_recon_",x),]
+})   %>% `names<-`(paste0("JR_cluster_",seq_len(length(.))))
 
-cluster_analysis_df <- do.call(rbind,cluster_analysis)
+# Best joint
+best_joint_asr_clustering_analysis <- cluster_analysis_statistics[cluster_analysis_statistics$trait=='blbli_dich_num' & cluster_analysis_statistics$reconstruction=='focal_states',]
+best_asr_clustering_analysis <-  c(list(best_joint_asr_clustering_analysis), cluster_representatives_asr_clustering_analysis) %>% `names<-`(c("best_joint",paste0("JR_cluster_",seq_len(length(cluster_representatives_asr_clustering_analysis)))))
+
+# Create dataframe
+cluster_analysis_df <- do.call(rbind.data.frame,best_asr_clustering_analysis)
 
 cluster_analysis_df <- cluster_analysis_df %>% mutate(phenotype_axis = rownames(cluster_analysis_df))
-
+ 
 saveRDS(cluster_analysis_df,"./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_statistics.RDS")
 ```
  

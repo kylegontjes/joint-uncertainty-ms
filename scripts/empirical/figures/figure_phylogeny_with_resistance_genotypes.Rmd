@@ -7,8 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
@@ -33,7 +33,7 @@ sessionInfo()
 ```{r} 
 dat <- readRDS("./data/empirical/dataset/df.RDS")
 phy <- read.tree("./data/empirical/tree/tree.treefile") 
-genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes.RDS") %>% select(isolate_no,"AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")
+genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes.RDS") %>% select(isolate_no,"AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")
 ```
 
 ```{r} 
@@ -55,16 +55,16 @@ p1 <-  gheatmap(p0.1,dat %>% select(best_joint_asr_cluster_renamed) %>% `colname
 p1.1 <- gheatmap(p1,dat %>% select(any_of(paste0(JR_variables,"_asr_cluster_renamed"))) %>% `colnames<-`(paste0("Reconstruction axis ",1:number_clusters)),offset =0.00005,width=0.1*number_clusters,color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.15) + cluster_scale  + ylim(NA,625)
 ```
 
-```{r ,fig.height=6.5,fig.width=6.5}
+```{r ,fig.height=7,fig.width=7}
 p1.2 <- p1.1 + ggnewscale::new_scale_fill()
-colnames(genotypes) <-  recode(colnames(genotypes)  , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "PFAV in ompK36") 
+colnames(genotypes) <-  recode(colnames(genotypes)  , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD insertion in loop 3 of ompK36','OmpK36TD'='TD insertion in loop 3 of ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "PFAV in ompK36") 
 
 clustered_heatmap <- ComplexHeatmap::Heatmap(genotypes %>% select(-isolate_no) %>% mutate_all(as.numeric))
 column_order_ <- colnames(genotypes %>% select(-isolate_no))[ComplexHeatmap::column_order(clustered_heatmap)]
 
 rownames(genotypes) <- genotypes$isolate_no
 
-p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.0001825),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.05)  + factor_scale + ylim(NA,740) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')),
+p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.0002075),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.05)  + factor_scale + ylim(NA,740) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')),
     legend.spacing.x = unit(0.05, "cm"))
 
 p2 

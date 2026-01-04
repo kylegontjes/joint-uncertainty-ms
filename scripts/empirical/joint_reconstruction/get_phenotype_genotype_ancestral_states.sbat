@@ -7,7 +7,7 @@
 #SBATCH --export=ALL
 #SBATCH --partition=standard
 #SBATCH --account=esnitkin1 
-#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=15 --mem=75g --time=0:08:00
+#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=16 --mem=32g --time=0:20:00
 #SBATCH --output=get_phenotype_genotype_ancestral_states.out
 
 Rscript -e "rmarkdown::render('get_phenotype_genotype_ancestral_states.Rmd')"

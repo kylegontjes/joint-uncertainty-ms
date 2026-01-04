@@ -1,0 +1,13 @@
+#!/bin/sh
+# Job name
+#SBATCH --job-name=phyloAMR_generate_representative_asr_clustering
+# User info
+#SBATCH --mail-user=kgontjes@umich.edu
+#SBATCH --mail-type=BEGIN,END
+#SBATCH --export=ALL
+#SBATCH --partition=standard
+#SBATCH --account=esnitkin1 
+#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=1 --mem=3g --time=0:05:00
+#SBATCH --output=phyloAMR_generate_representative_asr_clustering.out
+
+Rscript -e "rmarkdown::render('phyloAMR_generate_representative_asr_clustering.Rmd')"

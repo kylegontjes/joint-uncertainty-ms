@@ -1,0 +1,119 @@
+---
+title: "Clustering of dbscan consensus matrix"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = TRUE, warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+# Environment
+
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c('tidyverse','stats') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+# Load data
+## Individual dbscan results
+
+```{r}
+dbscan_results <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_dbscan_multiple_seeds_clustering.RDS")
+```
+
+## Distance matrix
+
+```{r}
+consensus_distance_matrix <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_dbscan_multiple_seeds_consensus_distance_matrix.RDS")
+consensus_distance_matrix <- as.dist(consensus_distance_matrix)
+```
+
+# Initial view of tSNE + dbscan clustering and co-association matrix results
+## Distribution of cluster size and number of outliers from dbscan
+
+```{r}
+individual_cluster_size <- lapply(dbscan_results,FUN=function(cl){
+  num_outliers = sum(cl$cluster==0)
+  num_clusters = length(unique(cl$cluster[cl$cluster!=0]))
+  data.frame(num_outliers,num_clusters)
+}) %>% do.call(rbind,.)
+
+ggplot(data=individual_cluster_size,aes(x=num_clusters)) + geom_bar() + theme_bw() + xlab("Number of clusters") + ylab("Seeds")
+ggplot(data=individual_cluster_size,aes(x=num_outliers)) + geom_bar() + theme_bw() + xlab("Number of outliers") + ylab("Seeds")
+```
+
+# Clustering of conensus distance matrix 
+
+```{r, save clustering using wardd2}
+hc <- hclust(consensus_distance_matrix, method = "ward.D2")
+
+saveRDS(hc,"./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix.RDS")
+```
+
+## Cluster size statistics
+ 
+```{r} 
+# Cut tree size 
+cutree(hc, k = 1) %>% table
+cutree(hc, k = 2) %>% table
+cutree(hc, k = 3) %>% table
+cutree(hc, k = 4) %>% table 
+cutree(hc, k = 5) %>% table
+cutree(hc, k = 6) %>% table
+cutree(hc, k = 7) %>% table
+cutree(hc, k = 8) %>% table
+```
+
+## Clustering diagram
+### Four Clusters
+
+```{r}
+hc$height <- log1p(hc$height)
+plot(hc, labels = FALSE,hang=-1,xlab = "Distance")
+rect.hclust(hc, k = 4,border = hues::iwanthue(7))
+```
+
+### Five Clusters
+
+```{r}
+hc$height <- log1p(hc$height)
+plot(hc, labels = FALSE,hang=-1,xlab = "Distance")
+rect.hclust(hc, k = 5,border = hues::iwanthue(7))
+```
+
+### Six Clusters
+
+```{r}
+hc$height <- log1p(hc$height)
+plot(hc, labels = FALSE,hang=-1,xlab = "Distance")
+rect.hclust(hc, k = 6,border = hues::iwanthue(7))
+```
+ 
+# Final clustering choices
+
+```{r}
+# Four clusters
+final_clustering_four <-  cutree(hc, k = 4) 
+saveRDS(final_clustering_four,"./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_four_clusters_string.RDS")
+
+# Five clusters
+final_clustering_five <-  cutree(hc, k = 5) 
+saveRDS(final_clustering_five,"./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_five_clusters_string.RDS") 
+
+# Six clusters
+final_clustering_six <-  cutree(hc, k = 6) 
+saveRDS(final_clustering_six,"./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")  
+```

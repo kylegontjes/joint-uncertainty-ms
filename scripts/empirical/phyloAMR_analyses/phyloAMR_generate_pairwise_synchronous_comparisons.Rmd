@@ -9,12 +9,12 @@ output: html_document
 require(knitr) 
 opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+knitr::opts_knit$set(root.dir = '/nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms') 
 ```
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
-packages <- c("tidyverse",'corHMM','phyloAMR') 
+packages <- c("dplyr",'ape','phyloAMR') 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
@@ -26,15 +26,17 @@ sessionInfo()
 ```
  
 # Load data
+## Dataset and tree
 ```{r}  
 phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
 dat <- readRDS("./data/empirical/dataset/df.RDS")
 dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
 ```
 
+## Reconstructions and clustering data
 ```{r}
 joint_uncs <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
-dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+clustering <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")
 parent_child_dfs <- readRDS("./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS")
 ```
 
@@ -62,7 +64,7 @@ pairwise_comps_sync <- lapply(genotype_names,FUN=function(genotype){
     }) 
     sync_hit <- do.call(rbind,sync_hit)
     return(sync_hit) 
-  },mc.cores=7)
+  },mc.cores=30)
   pairwise_comps <- do.call(rbind,pairwise_comps)
   pairwise_comps$genotype = genotype
   return(pairwise_comps)
@@ -81,11 +83,11 @@ pairwise_comps_sync_all$pheno_number <- sapply(pairwise_comps_sync_all$phenotype
   } 
 })  
 
-dbcluster_names <- dbres$cluster %>% `names<-`(seq_len(length(.)))
+cluster_names <- clustering %>% `names<-`(seq_len(length(.)))
 
 pairwise_comps_sync_all$pheno_cluster <- sapply(pairwise_comps_sync_all$pheno_number,FUN=function(x){
   if(!grepl("focal",x)){
-    dbcluster_names[names(dbcluster_names) == x]
+    cluster_names[names(cluster_names) == x]
   } else {
     x
   }
@@ -115,7 +117,7 @@ pairwise_comps_sync_geno <- lapply(genotype_names,FUN=function(genotype){
     }) 
     sync_hit <- do.call(rbind,sync_hit)
     return(sync_hit) 
-  },mc.cores=7)
+  },mc.cores=30)
   pairwise_comps <- do.call(rbind,pairwise_comps)
   pairwise_comps$genotype = genotype
   return(pairwise_comps)
@@ -136,7 +138,7 @@ pairwise_comps_sync_all_geno$pheno_number <- sapply(pairwise_comps_sync_all_geno
 
 pairwise_comps_sync_all_geno$pheno_cluster <- sapply(pairwise_comps_sync_all_geno$pheno_number,FUN=function(x){
   if(!grepl("focal",x)){
-    dbcluster_names[names(dbcluster_names) == x]
+    cluster_names[names(cluster_names) == x]
   } else {
     x
   }

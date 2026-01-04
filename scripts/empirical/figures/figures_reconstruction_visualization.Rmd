@@ -1,5 +1,5 @@
 ---
-title: "Boyko's requested figures"
+title: "Figures detailing ancestral state reconstructions"
 author: "Kyle Gontjes"
 date: "`r Sys.Date()`"
 output: html_document
@@ -7,13 +7,14 @@ output: html_document
 
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
-```{r environment, echo=T, message=FALSE, include=T, results=T}
-# setwd("../../../")
+# Environment
+
+```{r environment, echo=T, message=FALSE, include=T, results=T} 
 #Packages
 packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR') 
 
@@ -30,29 +31,41 @@ sessionInfo()
 ```
 
 # Load data
-```{r}  
-# setwd("../../../")
+## Dataset and phylogeny
+```{r load tree df}   
 phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
 dat <- readRDS("./data/empirical/dataset/df.RDS")
 dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
 ```
 
-```{r}
-# setwd("../../../")
+## Ancestral states
+```{r load recon data} 
 focal <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS") %>% .[["blbli_dich_num"]]
-joint_ci <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS") %>% .[["blbli_dich_num"]]
+joint_ci <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")%>% .[["blbli_dich_num"]]
 
 state_df <- joint_ci$state_df
- 
 state_df_matrix <- as.matrix(state_df)
-dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
-tsne_res <- readRDS("./data/empirical/joint_reconstruction/alternative_reconstruction_tsne.RDS")
-phylo_dist_mat_local <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")
+  
+clustering_6 <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS") 
+hclust_obj <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix.RDS") 
+
+dist_mat <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")
 ```
 
-# Phylogeny with node states
+## Chosen cluster assignments & theme
 ```{r}
-# setwd("../../../")
+# Cluster assignments
+cluster_assignments <- clustering_6
+clusters <- factor(cluster_assignments) 
+optimal_k_gap <- sum(as.numeric(unique(cluster_assignments)) >0)
+
+# Cluster colors
+clust_cols <- phylogenetic_reconstruction_scale$palette(length(phylogenetic_reconstruction_scale$breaks))[1+1:sum(levels(clusters) !=0)]
+```
+
+
+# Phylogeny with node states
+```{r phylo w node states} 
 pdf("./figures/empirical/empirical_phylogeny.pdf", height = 5.667, width = 17)   
 to_keep <- corHMM:::get_desc(phy, 417)
 to_col <- match(to_keep, phy$edge[,2])
@@ -64,25 +77,16 @@ tips_to_keep <- as.numeric(to_keep[to_keep <= Ntip(phy)]) %>% sort
 
 plot(phy, show.tip.label = FALSE, no.margin = TRUE, direction = "downwards", edge.color = edge_col)
 
-nodelabels(pch = 21,  cex = 0.75, bg = c("white", "grey70")[focal$states], col = "grey70") 
-tiplabels(pch = 22,  cex = 0.5, bg = c("white", "grey70")[focal$tip.states], col = "grey70",tip = c(1:Ntip(phy)))  
-nodelabels(pch = 21,  cex = 0.75, bg = c("white", "black")[focal$states][nodes_number], col = "black",node = sort(nodes_to_col))
-tiplabels(pch = 22,  cex = 0.5, bg = c("white", "black")[focal$tip.states][tips_to_keep], col = "black",tip = c(1:Ntip(phy))[tips_to_keep])  
+nodelabels(pch = 21,  cex = 0.75, bg = c("white", "grey70")[joint_ci$best_joint$lik.anc.states], col = "grey70") 
+tiplabels(pch = 22,  cex = 0.5, bg = c("white", "grey70")[joint_ci$best_joint$lik.tip.states], col = "grey70",tip = c(1:Ntip(phy)))  
+nodelabels(pch = 21,  cex = 0.75, bg = c("white", "black")[joint_ci$best_joint$lik.anc.states][nodes_number], col = "black",node = sort(nodes_to_col))
+tiplabels(pch = 22,  cex = 0.5, bg = c("white", "black")[joint_ci$best_joint$lik.tip.states][tips_to_keep], col = "black",tip = c(1:Ntip(phy))[tips_to_keep])  
 
 dev.off()
 ```
 
 # Raw ancestral reconstruction figure
-```{r}
-# setwd("../../../")
-optimal_k_gap <- sum(as.numeric(unique(dbres$cluster)) >0)
-
-# cluster assignment
-cluster_assignments <- dbres$cluster
-clusters <- factor(cluster_assignments) 
-clust_cols <- phylogenetic_reconstruction_scale$palette(length(phylogenetic_reconstruction_scale$breaks))[1+1:sum(levels(clusters) !=0)]
-
-
+```{r raw ancestral recon figure}  
 pdf("./figures/empirical/empirical_joint_uncertainty_reconstructions.pdf", height = 15, width = 5.5)
 par(mar=c(0,0,0,0))
 m <- t(state_df_matrix)[, order(cluster_assignments)]
@@ -122,28 +126,36 @@ for (k in seq_along(cluster_ids)) {
 dev.off()
 ```
 
-# Empirical tsne
-```{r} 
-pdf("./figures/empirical/empirical_joint_uncertainty_tsne.pdf", width = 5, height = 5)
+# Empirical tSNE plot
+## Removed as we no longer use tSNE
+#```{r tsne} 
+#pdf("./figures/empirical/empirical_joint_uncertainty_tsne.pdf", width = 5, height = 5)
+#plot(tsne_res$Y, pch = 21, bg = c("white", clust_cols)[cluster_assignments+1], main = "Phylo Weighted Distance", xlab = "tSNE Dimension 1", ylab = "tSNE Dimension 2")
+#dev.off()
+#```
 
-plot(tsne_res$Y, pch = 21, bg = c("white", clust_cols)[cluster_assignments+1], main = "Phylo Weighted Distance", xlab = "tSNE Dimension 1", ylab = "tSNE Dimension 2")
+# Dendogram
+```{r, dendogram}
+pdf("./figures/empirical/empirical_joint_uncertainty_consensus_matrix_hclust_dendogram.pdf", height = 5, width = 5)   
+par(mar = c(4.25,4,0.25,0.25))
+
+hclust_obj$height <- log1p(hclust_obj$height)
+plot(hclust_obj, labels = FALSE, hang=-1,xlab = "Distance (Ward's D2)",ylab = "ln(Height + 1)",main=NULL,ann = T,sub="",frame.plot = F,axes = T,check = T)
+rect.hclust(hclust_obj, k = optimal_k_gap,border = clust_cols)
 
 dev.off()
 ```
 
+
 # Log likelihood distribution
-```{r}
-# setwd("../../../")
+```{r loglik distribution} 
 pdf("./figures/empirical/empirical_joint_uncertainty_lnlik_dist.pdf", width = 2.5, height = 10)
 corHMM:::plot_stacked_densities(joint_ci$lnliks, clusters, cols = clust_cols, main = "", xlab ="", ylab="")
 dev.off()
 ```
 
-
-# Visualize alternatives
-```{r} 
-dist_mat <- phylo_dist_mat_local 
-
+# Visualize alternatives clusters results for clade I
+```{r alt recon cluster representatives}  
 pdf("./figures/empirical/empirical_joint_uncertainty_cluster_representatives.pdf", width = 7.5, height = 15)
 to_keep <- corHMM:::get_desc(phy, 417)[corHMM:::get_desc(phy, 417) <= Ntip(phy)]
 par(mfrow=c(optimal_k_gap, 1))
@@ -162,8 +174,8 @@ for(i in 1:optimal_k_gap){
 dev.off()
 ```
 
-# Important nodes
-```{r}
+# Important node vizualization
+```{r important nodes}
 # Calculate importance scores
 node_importance <- corHMM:::node_importance_by_cluster(state_df, clusters)
 
@@ -175,12 +187,12 @@ important_nodes <- lapply(unique(clusters), function(clust) {
 
 pdf("./figures/empirical/empirical_joint_uncertainty_important_nodes.pdf", width = 10.5, height = 10.5)
 par(mfrow=c(1,1))
-plot_info <- corHMM:::plot_clustered_phylo(
+corHMM:::plot_clustered_phylo(
   phy = phy,
   state_df = state_df,
   cluster_colors = clust_cols,
   cluster_assignments = clusters,
-  node_states = focal$states,
+  node_states = joint_ci$best_joint$lik.anc.states,
   important_nodes = important_nodes,
   state_colors = c("grey90", "black"),
   state_labels = c("S", "R"),

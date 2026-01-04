@@ -1,17 +1,17 @@
 ---
-title: "table_resistance_alternative_recon_statistics"
+title: "Table - Statistics across reconstructions"
 author: "Kyle Gontjes"
 date: "`r Sys.Date()`"
 output: html_document
 ---
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
-
+# Environment
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
 packages <- c("tidyverse",'corHMM','phyloAMR','gontjesr','kableExtra') 
@@ -29,38 +29,23 @@ sessionInfo()
 ```
 
 # Load data
-## Dataset
-```{r} 
-dat <- readRDS("./data/empirical/dataset/df.RDS")
-phy <- read.tree("./data/empirical/tree/tree.treefile") 
-dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+## Clustering string
+```{r}  
+clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")
 ```
 
-## Clustering stats
+## Clustering statistics
 ```{r}
 cluster_analysis_df <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS") 
 cluster_analysis_df$cluster_size_max <- str_split(cluster_analysis_df$cluster_size_range,"-",simplify=T) %>% .[,2] %>% as.numeric()
 blbli_cluster_analysis_df <- cluster_analysis_df %>% subset(trait == 'blbli_dich_num')
  
-dbcluster_names <- dbres$cluster %>% `names<-`(seq_len(length(.)))
-blbli_cluster_analysis_df$pheno_number <- sapply(blbli_cluster_analysis_df$reconstruction_axis,FUN=function(x){
-  if(grepl("alt_recon",x)){
-    
-  gsub("alt_recon_","",x)
-  } else {
-    x
-  } 
-})  
+cluster_names <- clustering_str %>% `names<-`(seq_len(length(.)))
+blbli_cluster_analysis_df$pheno_number <- gsub("^alt_recon_", "", blbli_cluster_analysis_df$reconstruction) 
 
-blbli_cluster_analysis_df$pheno_cluster <- sapply(blbli_cluster_analysis_df$pheno_number,FUN=function(x){
-  if(!grepl("focal",x)){
-    dbcluster_names[names(dbcluster_names) == x]
-  } else {
-    x
-  }
-})
+blbli_cluster_analysis_df$pheno_cluster <- ifelse(grepl("focal", blbli_cluster_analysis_df$pheno_number),
+                                               blbli_cluster_analysis_df$pheno_number, unname(cluster_names[blbli_cluster_analysis_df$pheno_number]))
  
-
 get_median_min_max_values <- function(variable,dataset){
  variable_summary <- dataset %>%
   group_by(pheno_cluster) %>% select(variable,pheno_cluster) %>% 
@@ -83,27 +68,15 @@ cluster_stats <- lapply(variable_cluster_stats,get_median_min_max_values,dataset
 )
 ```
 
-## Transition stats
+## Transition statistics
 ```{r}
 transition_df <- readRDS("./data/empirical/phyloAMR/joint_states_reconstruction_transition_statistics.RDS") 
 blbli_transition_analysis_df <- transition_df %>% .[["blbli_dich_num"]] 
  
-blbli_transition_analysis_df$pheno_number <- sapply(blbli_transition_analysis_df$reconstruction,FUN=function(x){
-  if(grepl("alt_recon",x)){
-    
-  gsub("alt_recon_","",x)
-  } else {
-    x
-  } 
-})  
+blbli_transition_analysis_df$pheno_number <- gsub("^alt_recon_", "", blbli_transition_analysis_df$reconstruction) 
 
-blbli_transition_analysis_df$pheno_cluster <- sapply(blbli_transition_analysis_df$pheno_number,FUN=function(x){
-  if(!grepl("focal",x)){
-    dbcluster_names[names(dbcluster_names) == x]
-  } else {
-    x
-  }
-})
+blbli_transition_analysis_df$pheno_cluster <- ifelse(grepl("focal", blbli_transition_analysis_df$pheno_number),
+                                               blbli_transition_analysis_df$pheno_number, unname(cluster_names[blbli_transition_analysis_df$pheno_number]))
 
 variable_transition_stats  <- c("transitions","gains","gains_tip","losses","losses_tip","continuations_present")
 
@@ -113,7 +86,7 @@ transition_stats <- lapply(variable_transition_stats,get_median_min_max_values,d
 )
 ```
 
-## Number reconstructions
+## Number of reconstructions
 ```{r}
 num_recons <- blbli_transition_analysis_df %>% group_by(pheno_cluster) %>% summarise (`Reconstructions` = n())
 ```
@@ -126,7 +99,8 @@ table$pheno_cluster <- recode(table$pheno_cluster,"focal_states" ="Best joint re
                                              "2" ="Reconstruction axis 2",
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
-                                             "5" ="Reconstruction axis 5") 
+                                             "5" ="Reconstruction axis 5",
+                                             "6" ="Reconstruction axis 6") 
 
 colnames(table) <- c("Phenotype axis","Reconstructions","Phylogenetic events","Singletons","Singleton isolates","Clusters","Cluster isolates","Cluster size (median)","Cluster size (max)","Transitions","Gain events","Gains (tip)","Loss events","Losses (tip)","Continuations of trait")
 

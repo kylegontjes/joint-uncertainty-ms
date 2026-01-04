@@ -1,5 +1,5 @@
 ---
-title: "table_phenotype_genotype_synchronous_transition_summary"
+title: "Table - Phenotype-genotype associations across reconstruction"
 author: "Kyle Gontjes"
 date: "`r Sys.Date()`"
 output: html_document
@@ -7,11 +7,12 @@ output: html_document
 
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
+# Environment
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
 packages <- c("tidyverse",'corHMM','phyloAMR','gontjesr','kableExtra') 
@@ -29,40 +30,30 @@ sessionInfo()
 ```
 
 # Load data
-## Dataset
-```{r} 
-dat <- readRDS("./data/empirical/dataset/df.RDS")
-phy <- read.tree("./data/empirical/tree/tree.treefile") 
-dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
+## Reconstruction clustering
+```{r}  
+clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")
 ```
 
 ## Genotype phenotype data
 ```{r}
-synchronous_statistics <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_transitions_genotype_as_comparitor.RDS") %>% subset(!genotype %in% c("AA018","AcrAB_TolC_any","OmpK36GD","OmpK36TD","PBP2","PBP4","OmpK36_truncation_kleborate","OmpK36_putative_function_altering"))
+synchronous_statistics <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_transitions_genotype_as_comparitor.RDS") 
+synchronous_statistics <- synchronous_statistics[synchronous_statistics$genotype %in% c("AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA"),] 
 
 synchronous_statistics$genotype <- factor(
-synchronous_statistics$genotype,levels = c("AA552","OmpK36_c25t","OmpK36_L3_mutations","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA"))
+synchronous_statistics$genotype,levels = c("AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA"))
 
-synchronous_statistics$genotype <- recode(synchronous_statistics$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD loop 3 insertion in ompK36','OmpK36TD'='TD loop 3 insertion in ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
+synchronous_statistics$genotype <- recode(synchronous_statistics$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD insertion in loop 3 of ompK36','OmpK36TD'='TD insertion in loop 3 of ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='ramR efflux pump regulator PFAV',"RamA"='ramA efflux pump activator PFAV','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative disruptive mutation in ompK36") 
+
 synchronous_statistics <- arrange(synchronous_statistics,genotype)
 
-dbcluster_names <- dbres$cluster %>% `names<-`(seq_len(length(.)))
-synchronous_statistics$pheno_number <- sapply(synchronous_statistics$phenotype_reconstruction,FUN=function(x){
-  if(grepl("alt_recon",x)){
-  gsub("alt_recon_","",x)
-  } else {
-    x
-  } 
-})  
+cluster_names <- clustering_str %>% `names<-`(seq_len(length(.)))
 
-synchronous_statistics$pheno_cluster <- sapply(synchronous_statistics$pheno_number,FUN=function(x){
-  if(!grepl("focal",x)){
-    dbcluster_names[names(dbcluster_names) == x]
-  } else {
-    x
-  }
-})
+synchronous_statistics$pheno_number <- gsub("^alt_recon_", "", synchronous_statistics$phenotype_reconstruction) 
 
+synchronous_statistics$pheno_cluster <- ifelse(grepl("focal", synchronous_statistics$pheno_number),
+                                               synchronous_statistics$pheno_number, unname(cluster_names[synchronous_statistics$pheno_number]))
+  
 get_median_min_max_values <- function(variable,dataset){
  variable_summary <- dataset %>%
   group_by(genotype,pheno_cluster)  %>% 
@@ -97,7 +88,9 @@ transition_stats_wide$pheno_cluster <- recode(transition_stats_wide$pheno_cluste
                                              "2" ="Reconstruction axis 2",
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
-                                             "5" ="Reconstruction axis 5") 
+                                             "5" ="Reconstruction axis 5",
+                                             "6" ="Reconstruction axis 6")
+
 transition_stats_wide <- transition_stats_wide %>% select(pheno_cluster,paste0(levels(transition_stats$genotype),"_synchronous_gains_num"))
 
 colnames(transition_stats_wide) <- gsub("_synchronous_gains_num"," synchronous gains",colnames(transition_stats_wide)) %>% gsub("pheno_cluster","Phenotype axis",.)

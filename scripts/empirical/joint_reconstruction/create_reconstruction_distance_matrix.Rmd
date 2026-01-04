@@ -1,0 +1,95 @@
+---
+title: "Create phylogenetically-aware distance matrix of BL/BLI resistance alternative reconstructions"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '/nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+# Environment
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c('corHMM','proxy','ape','Rcpp') 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+
+# Load dataset and phylogeny
+```{r, load data}  
+phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
+dat <- readRDS("./data/empirical/dataset/df.RDS")
+dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
+```
+
+# Load reconstructions
+```{r, load recons}  
+joint_uncs <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
+```
+
+## Extract BL/BLI reconstructions
+```{r, blbli recons}  
+joint_ci <- joint_uncs$blbli_dich_num
+state_df_matrix <- as.matrix(joint_ci$state_df)
+``` 
+
+# Functions
+```{r, functions} 
+# Distance function
+Rcpp::cppFunction('
+double phylo_aware_dist_local_cpp(LogicalVector mismatch, NumericMatrix phylo_dist) {
+  int n = mismatch.size();
+  std::vector<int> indices;
+  for(int i = 0; i < n; i++) {
+    if(mismatch[i]) indices.push_back(i);
+  }
+  int m = indices.size();
+  if(m <= 1) return 0.0;
+  double sum = 0.0;
+  for(int i = 0; i < m-1; i++) {
+    for(int j = i+1; j < m; j++) {
+      sum += exp(1.0 / phylo_dist(indices[i], indices[j]));
+    }
+  }
+  return sum;
+}')
+
+# Phyloaware distance local function
+phylo_aware_dist_local <- function(graph_labels_x, graph_labels_y, phylo_dist) {
+  mismatch <- graph_labels_x != graph_labels_y
+  return(phylo_aware_dist_local_cpp(mismatch, phylo_dist))
+}
+
+# Get distance matrix function
+get_distance_matrix <- function(phy, state_df){
+  tmp_phy <- phy
+  tmp_phy$edge.length <- rep(1, length(tmp_phy$edge.length))
+  phy_dist <- ape::dist.nodes(tmp_phy)[-(1:Ntip(tmp_phy)),-(1:Ntip(tmp_phy))]
+  state_df_matrix <- as.matrix(state_df)
+  try(pr_DB$delete_entry("PhyloSpreadDistLocal"),silent=T)
+  pr_DB$set_entry(FUN = phylo_aware_dist_local, names = "PhyloSpreadDistLocal")
+  phylo_dist_mat_local <- proxy::dist(state_df_matrix, method = "PhyloSpreadDistLocal", phylo_dist = phy_dist)
+  return(phylo_dist_mat_local)
+}
+```
+
+# Generate distance matrix for alternative ancestral state reconstructions of BL/BLI resistance 
+```{r, phylodistmatrix} 
+phylo_dist_mat_local <- get_distance_matrix(phy = phy, state_df = state_df_matrix)
+```
+
+# Save distance matrix
+```{r, save distance matrix}
+saveRDS(phylo_dist_mat_local,"./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")
+```

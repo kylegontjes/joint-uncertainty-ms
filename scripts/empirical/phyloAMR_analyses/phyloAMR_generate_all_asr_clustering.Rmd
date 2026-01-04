@@ -7,20 +7,17 @@ output: html_document
 
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '/nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms') 
 ```
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
-packages <- c("tidyverse",'corHMM','phyloAMR') 
+packages <- c("dplyr",'phyloAMR','ape') 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
-
-# Source functions
-source("./lib/consistent_themes.R")
 
 # Print environment
 set.seed(0104) 
@@ -29,41 +26,90 @@ sessionInfo()
 ```
 
 # Load data
-## Dataset
+## Dataset and tree
 ```{r} 
 dat <- readRDS("./data/empirical/dataset/df.RDS")
 phy <- read.tree("./data/empirical/tree/tree.treefile")  
 ```
 
-## Joint unc data
+## Parent child data frame from joint uncertainty data 
 ```{r} 
+# Parent child data frames
 parent_child_dfs <- readRDS("./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS")
+# Names of traits
+names_of_traits <- names(parent_child_dfs)
 ```
 
 # Perform clustering analysis
-```{r} 
-clustering <- lapply(names(parent_child_dfs),FUN=function(x){ 
-  trait_pcdfs <- parent_child_dfs[[x]]
-  
-  pbmcapply::pbmclapply(trait_pcdfs,FUN=function(pcdf){
-    asr_cluster_detection(df = dat,tr = phy,tip_name_variable  = 'isolate_no',patient_id = 'Patient_ID',parent_child_df = pcdf,node_states = 'joint',confidence = NULL,simplify_faux_clusters = T,simplify_revertant = T,collapse_cluster = T)
-  },mc.cores = 7) %>% `names<-`(names(trait_pcdfs))
-}) %>% `names<-`(names(parent_child_dfs))
+```{r, clustering analysis} 
+# Separate into individual jobs based on name and state
+jobs <- do.call(c,
+    lapply(names(parent_child_dfs), function(name) {
+        lapply(names(parent_child_dfs[[name]]), function(state_name) {
+            list(
+                name = name,
+                reconstruction = state_name
+            )
+        })
+    })
+)
 
-saveRDS(clustering,"./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering.RDS")
+# Randomly sample to speed up
+jobs <- jobs[sample(length(jobs))] 
+
+# Let's try with large chunks
+chunk_size <- 500
+job_chunks <- split(jobs, ceiling(seq_along(jobs) / chunk_size))
+
+# Run clustering 
+clustering_chunked_list <- pbmcapply::pbmclapply(job_chunks,FUN=function(chunk){  
+  out <- vector("list", length(chunk))
+  for (i in seq_along(chunk)) {
+      job <- chunk[[i]]
+      name <- job$name
+      reconstruction <- job$reconstruction
+      trait_pcdf <- parent_child_dfs[[name]][[reconstruction]]
+      clustering <-  asr_cluster_detection(df = dat, tr = phy, tip_name_variable  = 'isolate_no', patient_id = 'Patient_ID', parent_child_df = trait_pcdf, node_states = 'joint', confidence = NULL, simplify_faux_clusters = T, simplify_revertant = T, collapse_cluster = T)
+      clustering$trait <- name
+      clustering$reconstruction <- reconstruction
+      out[[i]] <- clustering
+  }
+  out
+},mc.cores = 35)  
+
+# Unlist this grouping
+flat_list <- unlist(clustering_chunked_list, recursive = FALSE)
+# Get job list information
+all_jobs <- unlist(job_chunks, recursive = FALSE)
+ 
+# Create final output structure
+clustering_dfs <- list()
+# Preallocate outer list
+clustering_dfs <- setNames(vector("list", length(names_of_traits)), names_of_traits)
+## Name the lists
+for (nm in names_of_traits) {
+  state_names <- names(parent_child_dfs[[nm]])
+  clustering_dfs[[nm]] <- setNames(vector("list", length(state_names)), state_names)
+} 
+## Allocate
+for (i in seq_along(flat_list)) {
+  job <- all_jobs[[i]]
+  clustering_dfs[[job$name]][[job$reconstruction]] <- flat_list[[i]]
+}
+
+saveRDS(clustering_dfs,"./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering.RDS")
 ```
 
-# Clustering statistics
-```{r} 
-cluster_analysis <- lapply(names(clustering),FUN=function(x){ 
-  clustering_pcdfs <- clustering[[x]]
+# Generate clustering statistics
+```{r, clustering statistics} 
+cluster_analysis <- lapply(names(clustering_dfs),FUN=function(x){ 
+  clustering_pcdfs <- clustering_dfs[[x]]
    pbmcapply::pbmclapply(clustering_pcdfs,FUN=function(pcdf){
      asr_cluster_analysis(pcdf)
-   }) %>% do.call(rbind.data.frame,.) %>% mutate(reconstruction_axis = names(clustering_pcdfs),trait = x)
-})%>% `names<-`(names(clustering))
+   },mc.cores=35) %>% do.call(rbind.data.frame,.) %>% mutate(reconstruction = names(clustering_pcdfs),trait = x)
+})%>% `names<-`(names(clustering_dfs))
 
 cluster_analysis_df <- do.call(rbind.data.frame,cluster_analysis) 
 
 saveRDS(cluster_analysis_df,"./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS")
 ```
- 

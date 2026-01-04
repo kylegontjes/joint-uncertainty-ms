@@ -7,14 +7,15 @@ output: html_document
 
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '/nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms') 
 ```
 
+# Environmental 
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
-packages <- c("tidyverse",'corHMM','phyloAMR') 
+packages <- c("dplyr",'phyloAMR','ape') 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
@@ -26,101 +27,151 @@ sessionInfo()
 ```
  
 # Load data
+## Dataset and tree
 ```{r}  
 phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
 dat <- readRDS("./data/empirical/dataset/df.RDS")
 dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
 ```
-
-```{r}
+## Genotypes
+```{r, load genotypes}
 genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes.RDS") 
 genotypes <-  genotypes %>% .[match(phy$tip.label,.[['isolate_no']]),]
 
 df <- left_join(dat,genotypes)
+df <- df[match(phy$tip.label, df[['isolate_no']]), ]
+```
+## Reconstructions
+```{r, load reconstruction}
+# Reconstructions 
+joint_uncs <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
+# Names of traits
+names_of_uncs <- names(joint_uncs)
 ```
 
-# Reconsctructions
-```{r}
-focals <- readRDS("~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS")
-joint_uncs <- readRDS("~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
-dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
-```
-
-# Generate pcdfs 
-
-```{r} 
-get_parent_child_df_from_states <- function(states,dat,tr,feature){ 
-  # Outcome string
-  outcome_str <- dat[,feature] %>% `names<-`(dat[['isolate_no']])
+# Generate  parent child dfs 
+## Extract states
+```{r, extract states} 
+# Extract states
+states <- lapply(names_of_uncs,FUN=function(name,focal,joint_uncs){ 
+  # get states from joint_uncs
+  joint_unc_states <-  lapply(joint_uncs[[name]]$sampled_joints,FUN=function(x){x[["anc.states"]]}) 
+  names(joint_unc_states) <-  paste0("alt_recon_", seq_len(length(paste0("alt_recon_", seq_len(length(joint_unc_states))))))
   
-  # Get Parent Child data
-  parent_child_df <- get_parent_child_data(tr=tr, ancestral_states=states, trait_data  =outcome_str, confidence_threshold  = NULL, node_states='joint')
+  # Focal states
+  joint_unc_states[['focal_states']] = joint_uncs[[name]]$best_joint$lik.anc.states
+  return(joint_unc_states)
+},focal = focals,joint_uncs = joint_uncs)  
 
+names(states) <- names_of_uncs
+```
+
+## Get dataframe from ancestral states
+```{r, get dataframe} 
+# Internal function
+get_parent_child_df_from_states <- function(states,dat,tr,feature,outcome_str){ 
+  # Get Parent Child data from tree, states, and outcome string
+  parent_child_df <- get_parent_child_data(tr=tr, ancestral_states=states, trait_data  = outcome_str, confidence_threshold  = NULL, node_states='joint')
   # Annotate parent child data
-  parent_child_df <- get_continuation_data(parent_child_df,'joint')
+  parent_child_df <- get_continuation_data(parent_child_df, node_states = 'joint')
   return(parent_child_df)
 }
-
-names_of_uncs <- names(joint_uncs)
-
-states <- pbmcapply::pbmclapply(names_of_uncs,FUN=function(name,focal,joint_uncs){
-  # get states
-  focal_states = focals[[name]]$states
-  # get states from joint_uncs
-  joint_unc_states = lapply(joint_uncs[[name]]$sampled_joints,FUN=function(x){x[["anc.states"]]}) 
-  names(joint_unc_states) = paste0("alt_recon_", seq_len(length(paste0("alt_recon_", seq_len(length(joint_unc_states))))))
-  
-  joint_unc_states[['focal_states']] = focal_states
-   
-  return(joint_unc_states)
-},mc.cores =7,focal = focals,joint_uncs = joint_uncs)  %>% `names<-`(names_of_uncs)
-
-parent_child_dfs <- lapply(names_of_uncs,FUN=function(name,dat,tr,states){
-  pcdfs <- pbmcapply::pbmclapply(states[[name]] ,get_parent_child_df_from_states,dat=dat,tr = tr,feature = name,mc.cores =7)
-  names(pcdfs) <- names(states[[name]])
-  return(pcdfs)
-},dat=df,tr = phy, states = states) %>% `names<-`(names_of_uncs)
 ```
 
-```{r}
+## Parallelized parent child data frame construction
+```{r, pcdf parallel}  
+# Create a list of jobs
+jobs <- do.call(c,
+    lapply(names_of_uncs, function(name) {
+        lapply(names(states[[name]]), function(state_name) {
+            list(
+                name = name,
+                reconstruction = state_name
+            )
+        })
+    })
+)
+## Randomly sample jobs
+jobs <- jobs[sample(length(jobs))] 
+
+# Chunk size and partitioning
+chunk_size <- 500
+job_chunks <- split(jobs, ceiling(seq_along(jobs) / chunk_size))
+
+# Pre compute outcome strings to speed up analyses
+outcome_strs <- lapply(names_of_uncs, function(name) {
+  setNames(df[, name], df$isolate_no)
+})
+names(outcome_strs) <- names_of_uncs
+
+# Generate a flat parent child dataframe list using job chunks
+parent_child_flat <- pbmcapply::pbmclapply(
+    job_chunks,
+    function(chunk) {
+      
+  out <- vector("list", length(chunk))
+   for (i in seq_along(chunk)) {
+      # Get job info
+      job <- chunk[[i]]
+      name  <- job$name
+      reconstruction <- job$reconstruction
+      # Run command
+      pcdf <- get_parent_child_df_from_states(
+                states[[name]][[reconstruction]],
+                dat = df,
+                tr = phy,
+                feature = name,
+                outcome_str = outcome_strs[[name]]
+            )
+      # Annotate
+      pcdf$trait <- name
+      pcdf$reconstruction <- reconstruction
+      # Store output
+      out[[i]] <- pcdf 
+    }
+    out
+    }, 
+    mc.cores = 25
+)
+
+# Unlist this grouping
+flat_list <- unlist(parent_child_flat, recursive = FALSE)
+# Get job list information
+all_jobs <- unlist(job_chunks, recursive = FALSE)
+ 
+# Create final output structure
+parent_child_dfs <- list()
+# Preallocate outer list
+parent_child_dfs <- setNames(vector("list", length(names_of_uncs)), names_of_uncs)
+## Name the lists
+for (nm in names_of_uncs) {
+  state_names <- names(states[[nm]])
+  parent_child_dfs[[nm]] <- setNames(vector("list", length(state_names)), state_names)
+} 
+## Allocate
+for (i in seq_along(flat_list)) {
+  job <- all_jobs[[i]]
+  parent_child_dfs[[job$name]][[job$reconstruction]] <- flat_list[[i]]
+}
+```
+
+## Save parent child dfs
+```{r, save pcdfs}
 saveRDS(parent_child_dfs,"./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS")
 ```
 
-# ASR transition data 
-```{r} 
+# Generate ASR transition data
+```{r,transition_statistics} 
 # Generate transition statistics
 state_transition_statistics <- lapply(names_of_uncs,FUN=function(name){
   reconstructions <- parent_child_dfs[[name]]
-  pbmcapply::pbmclapply(reconstructions,asr_transition_analysis,node_states='joint',mc.cores = 7)  %>% do.call(rbind,.) %>% mutate(reconstruction = rownames(.),trait = name) 
-})  %>% `names<-`(names_of_uncs)
+  results <- pbmcapply::pbmclapply(reconstructions,asr_transition_analysis,node_states='joint',mc.cores = 25) 
+  results <- do.call(rbind,results)
+  results$reconstruction <- rownames(results)
+  results$trait = name 
+  return(results)
+})  
+names(state_transition_statistics) <- names_of_uncs
 
 saveRDS(state_transition_statistics,"./data/empirical/phyloAMR/joint_states_reconstruction_transition_statistics.RDS")
-```
-
-# Extract representative from blbli clusters
-```{r}
-# Extract best reconstruction per cluster
-extract_best_per_cluster <- function(cluster,cluster_str,joint_ci,state_df){
-  cluster_id = which(cluster_str == cluster)
-  cluster_logs <- joint_ci$lnliks[cluster_id]
-  lowest_log_val <- which.max(cluster_logs)
-  lowest_val_id = cluster_id[lowest_log_val]
-  cluster_states <- state_df[lowest_val_id,]  %>% unlist %>% `names<-`(NULL)
-  return(lowest_val_id)
-}
-n_clusters = length(unique(dbres$cluster) %>% subset(.!=0))
-clusters = seq_len(n_clusters)
-clusters_str = dbres$cluster
-state_df_matrix <- as.matrix(joint_uncs$blbli_dich_num$state_df)
-cluster_joint_states <- lapply(clusters,extract_best_per_cluster,clusters_str,joint_uncs$blbli_dich_num,state_df_matrix) %>% unlist  %>% `names<-`(seq_along(.))
-cluster_representatives_state_parent_childs <- lapply(cluster_joint_states,FUN=function(x){
-  parent_child_dfs$blbli_dich_num[[paste0("alt_recon_",x)]]
-})   %>% `names<-`(paste0("JR_cluster_",seq_len(length(.))))
-   
-# Best joint
-best_joint_parent_child<- parent_child_dfs$blbli_dich_num$focal_states
- 
-best_parent_child_states <-  c(list(parent_child_dfs$blbli_dich_num$focal_states), cluster_representatives_state_parent_childs) %>% `names<-`(c("best_joint",paste0("JR_cluster_",seq_len(length(cluster_representatives_state_parent_childs)))))
-
-saveRDS(best_parent_child_states,'./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS')
 ```

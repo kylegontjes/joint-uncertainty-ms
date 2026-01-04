@@ -1,0 +1,13 @@
+#!/bin/sh
+# Job name
+#SBATCH --job-name=phyloAMR_parent_child_df_construction
+# User info
+#SBATCH --mail-user=kgontjes@umich.edu
+#SBATCH --mail-type=BEGIN,END
+#SBATCH --export=ALL
+#SBATCH --partition=standard
+#SBATCH --account=esnitkin1 
+#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=26 --mem=52g --time=0:10:00
+#SBATCH --output=phyloAMR_parent_child_df_construction.out
+
+Rscript -e "rmarkdown::render('phyloAMR_parent_child_df_construction.Rmd')"

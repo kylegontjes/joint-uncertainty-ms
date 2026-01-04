@@ -1,0 +1,13 @@
+#!/bin/sh
+# Job name
+#SBATCH --job-name=phyloAMR_phenotype_genotype_representative_transition_statistics
+# User info
+#SBATCH --mail-user=kgontjes@umich.edu
+#SBATCH --mail-type=BEGIN,END
+#SBATCH --export=ALL
+#SBATCH --partition=standard
+#SBATCH --account=esnitkin1 
+#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=16 --mem=32g --time=0:05:00
+#SBATCH --output=phyloAMR_phenotype_genotype_representative_transition_statistics.out
+
+Rscript -e "rmarkdown::render('phyloAMR_phenotype_genotype_representative_transition_statistics.Rmd')"

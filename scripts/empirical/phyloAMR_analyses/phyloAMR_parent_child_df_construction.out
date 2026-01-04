@@ -1,0 +1,28 @@
+
+
+processing file: phyloAMR_parent_child_df_construction.Rmd
+1/20                        
+2/20 [setup]                
+3/20                        
+4/20 [environment]          
+5/20                        
+6/20 [unnamed-chunk-1]      
+7/20                        
+8/20 [load genotypes]       
+9/20                        
+10/20 [load reconstruction]  
+11/20                        
+12/20 [extract states]       
+13/20                        
+14/20 [get dataframe]        
+15/20                        
+16/20 [pcdf parallel]        
+17/20                        
+18/20 [save pcdfs]           
+19/20                        
+20/20 [transition_statistics]
+output file: phyloAMR_parent_child_df_construction.knit.md
+
+/home/kgontjes/.conda/envs/joint_uncertainty_revision/bin/pandoc +RTS -K512m -RTS phyloAMR_parent_child_df_construction.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output phyloAMR_parent_child_df_construction.html --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/latex-div.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/table-classes.lua --embed-resources --standalone --variable bs3=TRUE --section-divs --template /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmd/h/default.html --syntax-highlighting=none --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpfSi7K9/rmarkdown-str3621443f2c692a.html 
+
+Output created: phyloAMR_parent_child_df_construction.html

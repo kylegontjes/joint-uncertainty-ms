@@ -1,0 +1,18 @@
+
+
+processing file: dbscan_clustering_of_alternative_reconstructions.Rmd
+1/10                         
+2/10 [setup]                 
+3/10                         
+4/10 [environment]           
+5/10                         
+6/10 [unnamed-chunk-1]       
+7/10                         
+8/10 [tsne dbscan clustering]
+9/10                         
+10/10 [consensus distance]    
+output file: dbscan_clustering_of_alternative_reconstructions.knit.md
+
+/home/kgontjes/.conda/envs/joint_uncertainty_revision/bin/pandoc +RTS -K512m -RTS dbscan_clustering_of_alternative_reconstructions.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output dbscan_clustering_of_alternative_reconstructions.html --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/latex-div.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/table-classes.lua --embed-resources --standalone --variable bs3=TRUE --section-divs --template /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmd/h/default.html --syntax-highlighting=none --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpreqPpo/rmarkdown-str2fe2fb56e5d9f9.html 
+
+Output created: dbscan_clustering_of_alternative_reconstructions.html

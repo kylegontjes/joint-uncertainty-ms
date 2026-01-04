@@ -7,8 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
@@ -38,46 +38,51 @@ genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes
 
 # Transition data
 ```{r} 
-state_transition_statistics <- readRDS("./data/empirical/phyloAMR/joint_states_reconstruction_transition_statistics.RDS")  %>% .[["blbli_dich_num"]]
-dbres <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_clustering_optimal.RDS")
-cluster_statistics <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS") %>% subset(trait=='blbli_dich_num')
-cluster_statistics$reconstruction <- cluster_statistics$reconstruction_axis
-cluster_statistics$cluster_size_max <- str_split(cluster_statistics$cluster_size_range,"-",simplify=T) %>% .[,2] %>% as.numeric()
+# Transition statistics
+state_transition_statistics <- readRDS("./data/empirical/phyloAMR/joint_states_reconstruction_transition_statistics.RDS")  %>% .[["blbli_dich_num"]] 
 
+# Clustering
+clustering <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS") 
+cluster_statistics <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS") %>% subset(trait=='blbli_dich_num')  
+cluster_statistics$cluster_size_max <- str_split(cluster_statistics$cluster_size_range,"-",simplify=T) %>% .[,2] %>% as.numeric() 
+ 
+# Join clustering and transition states
 recon_stats <- left_join(state_transition_statistics,cluster_statistics)
 ```
 
 # Figure
+## Curate data
 ```{r}
 # Curate best
-best_joint_parent_child_transitions <- recon_stats %>% subset(reconstruction == 'focal_states')
+best_joint_parent_child_transitions <- recon_stats[recon_stats$reconstruction == 'focal_states',] 
 best_joint_parent_child_transitions_simple <- best_joint_parent_child_transitions %>% select(transitions,gains,gains_tip,losses,losses_tip,continuations_present,continuations_absent,singletons,singleton_isolates,clusters,cluster_isolates,cluster_size_median,cluster_size_max,revertant_isolates)
    
 colnames(best_joint_parent_child_transitions_simple) <- c("Transitions","Gain Events","Gain Events (Tips)","Loss Events","Loss Events (Tips)","Continuations (Present)","Continuations (Absent)","Resistant singletons","Singleton isolates","Resistant clusters","Cluster isolates","Cluster size (median)","Cluster size (max)","Revertant isolates")
 
 # Curate state transition data
-alt_recons <- recon_stats %>% subset(reconstruction!='focal_states')
-alt_recons$cluster <- dbres$cluster %>% as.numeric()
+alt_recons <-  recon_stats[recon_stats$reconstruction != 'focal_states',] 
+alt_recons$cluster <- clustering %>% as.numeric()
 transition_data_simple <- alt_recons %>% select(transitions,gains,gains_tip,losses,losses_tip,continuations_present,continuations_absent,singletons,singleton_isolates,clusters,cluster_isolates,cluster_size_median,cluster_size_max,revertant_isolates,cluster)
 colnames(transition_data_simple) <- c("Transitions","Gain Events","Gain Events (Tips)","Loss Events","Loss Events (Tips)","Continuations (Present)","Continuations (Absent)","Resistant singletons","Singleton isolates","Resistant clusters","Cluster isolates","Cluster size (median)","Cluster size (max)","Revertant isolates","Cluster")
 ```
 
+## Create figures
 ```{r,fig.width=10.5,fig.height=8.4}
 transitional_data <- lapply(colnames(transition_data_simple),FUN=function(x){
-  num_bins = length(unique(transition_data_simple[[x]]))
+  # Number of bins
+  num_bins = length(unique(transition_data_simple[[x]])) 
   
-  if(num_bins>20){
-    num_bins=20
-  }
-  
+  # Extract value from best joint transition data
   value_from_best <- best_joint_parent_child_transitions_simple[[x]]
   
-  ggplot(data=transition_data_simple,aes(x=get(x),fill=as.factor(Cluster))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + phylogenetic_reconstruction_numeric_scale  + theme(legend.position = 'none',                                                                                                          axis.text =   element_text(size=12, color="black"), axis.title = element_text(size = 14, color="black"))  + geom_vline(xintercept = value_from_best,linetype = 2,color = 'black') 
+  # GGplot figure
+  ggplot(data=transition_data_simple,aes(x=get(x),fill=as.factor(Cluster))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + phylogenetic_reconstruction_numeric_scale  + theme(legend.position = 'none', axis.text =   element_text(size=12, color="black"), axis.title = element_text(size = 14, color="black"))  + geom_vline(xintercept = value_from_best,linetype = 2,color = 'black') 
 }) %>% cowplot::plot_grid(plotlist = .,labels = "AUTO",label_size = 16)
 
 transitional_data
 ```
 
-```{r}
-ggsave("./figures/empirical/phyloAMR_alternative_reconstruction_transition_statistics.png",dpi = 900,bg = 'white',plot = transitional_data,width=10.5,height=8.4)
+# Save cowplot
+```{r, save figure}
+ggsave("./figures/empirical/phyloAMR_alternative_reconstruction_transition_statistics.png", dpi = 900, bg = 'white', plot = transitional_data, width=10.5, height=8.4)
 ```

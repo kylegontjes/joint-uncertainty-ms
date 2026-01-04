@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kyle Gontjes" />
 
-<meta name="date" content="2025-08-11" />
+<meta name="date" content="2026-01-04" />
 
 <title>phyloAMR generate and analyze reconstruction clustering calls</title>
 
@@ -353,105 +353,155 @@ display: none;
 <h1 class="title toc-ignore">phyloAMR generate and analyze
 reconstruction clustering calls</h1>
 <h4 class="author">Kyle Gontjes</h4>
-<h4 class="date">2025-08-11</h4>
+<h4 class="date">2026-01-04</h4>
 
 </div>
 
 
 <pre class="r"><code>#Packages
-packages &lt;- c(&quot;tidyverse&quot;,&#39;corHMM&#39;,&#39;phyloAMR&#39;) 
+packages &lt;- c(&quot;dplyr&quot;,&#39;phyloAMR&#39;,&#39;ape&#39;) 
 
 #Load Packages
-invisible(lapply(packages,library,character.only=T,quietly=T))
-
-# Source functions
-source(&quot;./lib/consistent_themes.R&quot;)
+invisible(lapply(packages,library,character.only=T,quietly=T)) 
 
 # Print environment
 set.seed(0104) 
 Sys.info()</code></pre>
-<pre><code>                                                                                            sysname 
-                                                                                           &quot;Darwin&quot; 
-                                                                                            release 
-                                                                                           &quot;24.5.0&quot; 
-                                                                                            version 
-&quot;Darwin Kernel Version 24.5.0: Tue Apr 22 19:53:26 PDT 2025; root:xnu-11417.121.6~2/RELEASE_X86_64&quot; 
-                                                                                           nodename 
-                                                                                   &quot;msla0572.local&quot; 
-                                                                                            machine 
-                                                                                           &quot;x86_64&quot; 
-                                                                                              login 
-                                                                                             &quot;root&quot; 
-                                                                                               user 
-                                                                                         &quot;kgontjes&quot; 
-                                                                                     effective_user 
-                                                                                         &quot;kgontjes&quot; </code></pre>
+<pre><code>                              sysname                               release 
+                              &quot;Linux&quot;       &quot;4.18.0-553.50.1.el8_10.x86_64&quot; 
+                              version                              nodename 
+&quot;#1 SMP Thu Apr 10 16:09:41 EDT 2025&quot;             &quot;gl3129.arc-ts.umich.edu&quot; 
+                              machine                                 login 
+                             &quot;x86_64&quot;                             &quot;unknown&quot; 
+                                 user                        effective_user 
+                           &quot;kgontjes&quot;                            &quot;kgontjes&quot; </code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.5.1 (2025-06-13)
-Platform: x86_64-apple-darwin20
-Running under: macOS Sequoia 15.5
+<pre><code>R version 4.4.3 (2025-02-28)
+Platform: x86_64-conda-linux-gnu
+Running under: Red Hat Enterprise Linux 8.10 (Ootpa)
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/lib/libRblas.0.dylib 
-LAPACK: /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+BLAS/LAPACK: /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/libopenblasp-r0.3.30.so;  LAPACK version 3.12.0
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
 
 time zone: America/Detroit
-tzcode source: internal
+tzcode source: system (glibc)
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] phyloAMR_0.1.0  corHMM_2.10     GenSA_1.1.14.1  nloptr_2.2.1   
- [5] ape_5.8-1       lubridate_1.9.4 forcats_1.0.0   stringr_1.5.1  
- [9] dplyr_1.1.4     purrr_1.0.4     readr_2.1.5     tidyr_1.3.1    
-[13] tibble_3.2.1    ggplot2_3.5.2   tidyverse_2.0.0 knitr_1.50     
+[1] ape_5.8-1      phyloAMR_0.1.0 dplyr_1.1.4    knitr_1.51    
 
 loaded via a namespace (and not attached):
- [1] tidyselect_1.2.1        viridisLite_0.4.2       Rmpfr_1.1-0            
- [4] farver_2.1.2            phytools_2.4-4          viridis_0.6.5          
- [7] optimParallel_1.0-2     fastmap_1.2.0           lazyeval_0.2.2         
-[10] combinat_0.0-8          digest_0.6.37           timechange_0.3.0       
-[13] lifecycle_1.0.4         tidytree_0.4.6          magrittr_2.0.3         
-[16] compiler_4.5.1          rlang_1.1.6             sass_0.4.10            
-[19] tools_4.5.1             igraph_2.1.4            yaml_2.3.10            
-[22] phangorn_2.12.1         clusterGeneration_1.3.8 mnormt_2.1.1           
-[25] scatterplot3d_0.3-44    RColorBrewer_1.1-3      aplot_0.2.5            
-[28] expm_1.0-0              withr_3.0.2             numDeriv_2016.8-1.1    
-[31] nnet_7.3-20             grid_4.5.1              scales_1.4.0           
-[34] iterators_1.0.14        MASS_7.3-65             cli_3.6.5              
-[37] rmarkdown_2.29          treeio_1.32.0           generics_0.1.4         
-[40] rstudioapi_0.17.1       ggtree_3.16.0           tzdb_0.5.0             
-[43] cachem_1.1.0            maps_3.4.3              parallel_4.5.1         
-[46] ggplotify_0.1.2         vctrs_0.6.5             yulab.utils_0.2.0      
-[49] Matrix_1.7-3            jsonlite_2.0.0          patchwork_1.3.0        
-[52] gridGraphics_0.5-1      hms_1.1.3               foreach_1.5.2          
-[55] jquerylib_0.1.4         glue_1.8.0              codetools_0.2-20       
-[58] DEoptim_2.2-8           stringi_1.8.7           gtable_0.3.6           
-[61] quadprog_1.5-8          gmp_0.7-5               pillar_1.10.2          
-[64] htmltools_0.5.8.1       R6_2.6.1                lhs_1.2.0              
-[67] doParallel_1.0.17       evaluate_1.0.3          lattice_0.22-7         
-[70] ggfun_0.1.8             corpcor_1.6.10          bslib_0.9.0            
-[73] Rcpp_1.0.14             fastmatch_1.1-6         coda_0.19-4.1          
-[76] gridExtra_2.3           nlme_3.1-168            xfun_0.52              
-[79] fs_1.6.6                pkgconfig_2.0.3        </code></pre>
+ [1] yulab.utils_0.2.3  rappdirs_0.3.3     sass_0.4.10        generics_0.1.4    
+ [5] tidyr_1.3.2        ggtree_3.14.0      ggplotify_0.1.3    stringi_1.8.7     
+ [9] lattice_0.22-7     digest_0.6.39      magrittr_2.0.4     evaluate_1.0.5    
+[13] grid_4.4.3         RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0    
+[17] purrr_1.2.0        aplot_0.2.9        scales_1.4.0       lazyeval_0.2.2    
+[21] jquerylib_0.1.4    cli_3.6.5          rlang_1.1.6        tidytree_0.4.6    
+[25] cachem_1.1.0       yaml_2.3.12        otel_0.2.0         tools_4.4.3       
+[29] parallel_4.4.3     ggplot2_3.5.2      vctrs_0.6.5        R6_2.6.1          
+[33] gridGraphics_0.5-1 lifecycle_1.0.4    stringr_1.6.0      fs_1.6.6          
+[37] ggfun_0.2.0        treeio_1.30.0      pkgconfig_2.0.3    pillar_1.11.1     
+[41] bslib_0.9.0        gtable_0.3.6       glue_1.8.0         Rcpp_1.1.0        
+[45] xfun_0.55          tibble_3.3.0       tidyselect_1.2.1   farver_2.1.2      
+[49] htmltools_0.5.9    nlme_3.1-168       patchwork_1.3.2    rmarkdown_2.30    
+[53] compiler_4.4.3    </code></pre>
 <div id="load-data" class="section level1">
 <h1>Load data</h1>
-<div id="dataset" class="section level2">
-<h2>Dataset</h2>
+<div id="reconstructions" class="section level2">
+<h2>Reconstructions</h2>
+<pre class="r"><code># Reconstructions 
+joint_uncs &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS&quot;)
+# Names of traits
+names_of_uncs &lt;- names(joint_uncs)</code></pre>
 </div>
-<div id="joint-unc-data" class="section level2">
-<h2>Joint unc data</h2>
+<div id="reconstruction-clustering" class="section level2">
+<h2>Reconstruction clustering</h2>
+<pre class="r"><code>asr_clustering &lt;- readRDS(&quot;./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering.RDS&quot;)
+cluster_analysis_statistics &lt;- readRDS(&quot;./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS&quot;)
+clustering &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS&quot;) </code></pre>
 </div>
 </div>
-<div id="perform-clustering-analysis" class="section level1">
-<h1>Perform clustering analysis</h1>
+<div id="parent-child-data-frames" class="section level1">
+<h1>Parent child data frames</h1>
+<pre class="r"><code>parent_child_dfs &lt;- readRDS(&quot;./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS&quot;)</code></pre>
+</div>
+<div id="extract-representative-reconstruction-from-each-blbli-cluster" class="section level1">
+<h1>Extract representative reconstruction from each BL/BLI cluster</h1>
+<pre class="r"><code># Extract best reconstruction per cluster
+extract_best_per_cluster &lt;- function(cluster,cluster_str,joint_ci,state_df){
+  cluster_id = which(cluster_str == cluster)
+  cluster_logs &lt;- joint_ci$lnliks[cluster_id]
+  lowest_log_val &lt;- which.max(cluster_logs)
+  lowest_val_id = cluster_id[lowest_log_val]
+  cluster_states &lt;- state_df[lowest_val_id,]  %&gt;% unlist %&gt;% `names&lt;-`(NULL)
+  return(lowest_val_id)
+}
+n_clusters = length(unique(clustering) %&gt;% subset(.!=0))
+clusters = seq_len(n_clusters)
+clusters_str = clustering
+state_df_matrix &lt;- as.matrix(joint_uncs$blbli_dich_num$state_df)
+cluster_joint_states &lt;- lapply(clusters,extract_best_per_cluster,clusters_str,joint_uncs$blbli_dich_num,state_df_matrix) %&gt;% unlist  %&gt;% `names&lt;-`(seq_along(.))
+cluster_representatives_state_parent_childs &lt;- lapply(cluster_joint_states,FUN=function(x){
+  parent_child_dfs$blbli_dich_num[[paste0(&quot;alt_recon_&quot;,x)]]
+})   %&gt;% `names&lt;-`(paste0(&quot;JR_cluster_&quot;,seq_len(length(.))))
+   
+# Best joint
+best_joint_parent_child&lt;- parent_child_dfs$blbli_dich_num$focal_states
+ 
+best_parent_child_states &lt;-  c(list(best_joint_parent_child), cluster_representatives_state_parent_childs) %&gt;% `names&lt;-`(c(&quot;best_joint&quot;,paste0(&quot;JR_cluster_&quot;,seq_len(length(cluster_representatives_state_parent_childs)))))
+
+saveRDS(best_parent_child_states,&#39;./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS&#39;)</code></pre>
+</div>
+<div id="extract-clustering" class="section level1">
+<h1>Extract clustering</h1>
+<pre class="r"><code># Extract clustering analyses
+cluster_representatives_asr_clustering &lt;- lapply(cluster_joint_states,FUN=function(x){
+  asr_clustering$blbli_dich_num[[paste0(&quot;alt_recon_&quot;,x)]]
+})   %&gt;% `names&lt;-`(paste0(&quot;JR_cluster_&quot;,seq_len(length(.))))
+
+# Best joint
+best_joint_asr_clustering &lt;- asr_clustering$blbli_dich_num$focal_states
+
+best_asr_clustering &lt;-  c(list(best_joint_asr_clustering), cluster_representatives_asr_clustering) %&gt;% `names&lt;-`(c(&quot;best_joint&quot;,paste0(&quot;JR_cluster_&quot;,seq_len(length(cluster_representatives_asr_clustering)))))
+ 
+saveRDS(best_asr_clustering,&quot;./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering.RDS&quot;)
+
+# Create dataframe
+clustering_df &lt;- lapply(names(best_asr_clustering),FUN=function(x){
+  best_asr_clustering[[x]] %&gt;% select(tip_name,asr_cluster,asr_cluster_renamed,asr_cluster_collapsed) %&gt;% `colnames&lt;-`(c(&quot;isolate_no&quot;,paste0(x,&quot;_&quot;,colnames(.)[2:4]))) 
+})
+
+clustering_df &lt;- Reduce(
+  \(x, y) left_join(x,y,by=&#39;isolate_no&#39;),
+  clustering_df) 
+
+saveRDS(clustering_df,&quot;./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_df.RDS&quot;)</code></pre>
 </div>
 <div id="clustering-statistics" class="section level1">
 <h1>Clustering statistics</h1>
+<pre class="r"><code># Extract analyses
+cluster_representatives_asr_clustering_analysis &lt;- lapply(cluster_joint_states,FUN=function(x){
+  cluster_analysis_statistics[cluster_analysis_statistics$trait==&#39;blbli_dich_num&#39; &amp; cluster_analysis_statistics$reconstruction==paste0(&quot;alt_recon_&quot;,x),]
+})   %&gt;% `names&lt;-`(paste0(&quot;JR_cluster_&quot;,seq_len(length(.))))
+
+# Best joint
+best_joint_asr_clustering_analysis &lt;- cluster_analysis_statistics[cluster_analysis_statistics$trait==&#39;blbli_dich_num&#39; &amp; cluster_analysis_statistics$reconstruction==&#39;focal_states&#39;,]
+best_asr_clustering_analysis &lt;-  c(list(best_joint_asr_clustering_analysis), cluster_representatives_asr_clustering_analysis) %&gt;% `names&lt;-`(c(&quot;best_joint&quot;,paste0(&quot;JR_cluster_&quot;,seq_len(length(cluster_representatives_asr_clustering_analysis)))))
+
+# Create dataframe
+cluster_analysis_df &lt;- do.call(rbind.data.frame,best_asr_clustering_analysis)
+
+cluster_analysis_df &lt;- cluster_analysis_df %&gt;% mutate(phenotype_axis = rownames(cluster_analysis_df))
+ 
+saveRDS(cluster_analysis_df,&quot;./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_statistics.RDS&quot;)</code></pre>
 </div>
 
 

@@ -7,8 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 require(knitr) 
-opts_knit$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
-opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
 knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
@@ -30,14 +30,13 @@ sessionInfo()
 
 # Load data
 ## Dataset
-```{r} 
+```{r, load datasets} 
 dat <- readRDS("./data/empirical/dataset/df.RDS")
-phy <- read.tree("./data/empirical/tree/tree.treefile") 
-genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes.RDS") 
+phy <- read.tree("./data/empirical/tree/tree.treefile")  
 ```
 
 # Transition data
-```{r}
+```{r, load transition data}
 best_joint_parent_child <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS")  
 phyloAMR_cluster_df <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_df.RDS")
 clustering_stats <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_statistics.RDS")
@@ -46,7 +45,7 @@ rownames(dat) <- dat$isolate_no
 ```
 
 # Tracing states on the phylogenetic tree 
-```{r,fig.width=12.5,fig.height=8.75} 
+```{r,fig.width=12.5,fig.height=12.5} 
 n_clusters <- nrow(clustering_stats) - 1
 painted_trees <- lapply(best_joint_parent_child,paint_tree_with_states,tr = phy,legend_name = "Edge-based resistance")
 painted_trees_wo_legend <- lapply(painted_trees,function(x){x+theme(legend.position = "none")}) 
@@ -67,11 +66,14 @@ legend_fig <- cowplot::get_legend(painted_trees_w_cluster_calls[[which.max(clust
 painted_trees_w_cluster_calls_wo_legends <- lapply(painted_trees_w_cluster_calls,FUN=function(x){x + theme(legend.position='none')
 }) 
  
-tracing_states_on_tree_wo_legend <- cowplot::plot_grid(plotlist = painted_trees_w_cluster_calls_wo_legends,nrow=2,labels =c("Best joint reconstruction",paste0("Reconstruction axis ",1:n_clusters,"    ")),label_x = -0.25,label_size = 14)
+tracing_states_on_tree_wo_legend <- cowplot::plot_grid(plotlist = painted_trees_w_cluster_calls_wo_legends,nrow=3,labels =c("Best joint reconstruction",paste0("Reconstruction axis ",1:n_clusters,"    ")),label_x = -0.25,label_size = 14)
 
 tracing_states_on_tree <- cowplot::plot_grid(tracing_states_on_tree_wo_legend,legend_fig,ncol=2,rel_widths = c(1,0.2))
 
 tracing_states_on_tree
+```
 
-ggsave("./figures/empirical/ancestral_states_on_phylogeny.png",dpi = 900,bg = 'white',plot = tracing_states_on_tree,width=12.5,height=8.75)
+# Save
+```{r, save}
+ggsave("./figures/empirical/ancestral_states_on_phylogeny.png",dpi = 900,bg = 'white',plot = tracing_states_on_tree,width=12.5,height=12.5)
 ```

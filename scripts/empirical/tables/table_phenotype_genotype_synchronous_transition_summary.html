@@ -11,9 +11,9 @@
 
 <meta name="author" content="Kyle Gontjes" />
 
-<meta name="date" content="2025-08-12" />
+<meta name="date" content="2026-01-04" />
 
-<title>table_phenotype_genotype_synchronous_transition_summary</title>
+<title>Table - Phenotype-genotype associations across reconstruction</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -574,13 +574,16 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">table_phenotype_genotype_synchronous_transition_summary</h1>
+<h1 class="title toc-ignore">Table - Phenotype-genotype associations
+across reconstruction</h1>
 <h4 class="author">Kyle Gontjes</h4>
-<h4 class="date">2025-08-12</h4>
+<h4 class="date">2026-01-04</h4>
 
 </div>
 
 
+<div id="environment" class="section level1">
+<h1>Environment</h1>
 <pre class="r"><code>#Packages
 packages &lt;- c(&quot;tidyverse&quot;,&#39;corHMM&#39;,&#39;phyloAMR&#39;,&#39;gontjesr&#39;,&#39;kableExtra&#39;) 
 
@@ -596,11 +599,11 @@ Sys.info()</code></pre>
 <pre><code>                                                                                            sysname 
                                                                                            &quot;Darwin&quot; 
                                                                                             release 
-                                                                                           &quot;24.5.0&quot; 
+                                                                                           &quot;25.2.0&quot; 
                                                                                             version 
-&quot;Darwin Kernel Version 24.5.0: Tue Apr 22 19:53:26 PDT 2025; root:xnu-11417.121.6~2/RELEASE_X86_64&quot; 
+&quot;Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:34 PST 2025; root:xnu-12377.61.12~1/RELEASE_X86_64&quot; 
                                                                                            nodename 
-                                                                      &quot;msla0572.wifi.med.umich.edu&quot; 
+                                                                         &quot;0587669891.vpn.umich.net&quot; 
                                                                                             machine 
                                                                                            &quot;x86_64&quot; 
                                                                                               login 
@@ -610,9 +613,9 @@ Sys.info()</code></pre>
                                                                                      effective_user 
                                                                                          &quot;kgontjes&quot; </code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.5.1 (2025-06-13)
+<pre><code>R version 4.5.2 (2025-10-31)
 Platform: x86_64-apple-darwin20
-Running under: macOS Sequoia 15.5
+Running under: macOS Tahoe 26.2
 
 Matrix products: default
 BLAS:   /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/lib/libRblas.0.dylib 
@@ -630,50 +633,111 @@ attached base packages:
 other attached packages:
  [1] kableExtra_1.4.0 gontjesr_0.1.0   phyloAMR_0.1.0   corHMM_2.10     
  [5] GenSA_1.1.14.1   nloptr_2.2.1     ape_5.8-1        lubridate_1.9.4 
- [9] forcats_1.0.0    stringr_1.5.1    dplyr_1.1.4      purrr_1.0.4     
-[13] readr_2.1.5      tidyr_1.3.1      tibble_3.2.1     ggplot2_3.5.2   
+ [9] forcats_1.0.1    stringr_1.5.2    dplyr_1.1.4      purrr_1.1.0     
+[13] readr_2.1.5      tidyr_1.3.1      tibble_3.3.0     ggplot2_3.5.2   
 [17] tidyverse_2.0.0  knitr_1.50      
 
 loaded via a namespace (and not attached):
- [1] tidyselect_1.2.1        viridisLite_0.4.2       Rmpfr_1.1-0            
- [4] farver_2.1.2            phytools_2.4-4          viridis_0.6.5          
+ [1] tidyselect_1.2.1        viridisLite_0.4.2       Rmpfr_1.1-1            
+ [4] farver_2.1.2            phytools_2.5-2          viridis_0.6.5          
  [7] optimParallel_1.0-2     fastmap_1.2.0           lazyeval_0.2.2         
 [10] combinat_0.0-8          digest_0.6.37           timechange_0.3.0       
-[13] lifecycle_1.0.4         tidytree_0.4.6          magrittr_2.0.3         
-[16] compiler_4.5.1          rlang_1.1.6             sass_0.4.10            
-[19] tools_4.5.1             igraph_2.1.4            yaml_2.3.10            
+[13] lifecycle_1.0.4         tidytree_0.4.6          magrittr_2.0.4         
+[16] compiler_4.5.2          rlang_1.1.6             sass_0.4.10            
+[19] tools_4.5.2             igraph_2.1.4            yaml_2.3.10            
 [22] phangorn_2.12.1         clusterGeneration_1.3.8 mnormt_2.1.1           
-[25] scatterplot3d_0.3-44    xml2_1.3.8              RColorBrewer_1.1-3     
-[28] aplot_0.2.5             expm_1.0-0              withr_3.0.2            
-[31] numDeriv_2016.8-1.1     nnet_7.3-20             grid_4.5.1             
+[25] scatterplot3d_0.3-44    xml2_1.4.0              RColorBrewer_1.1-3     
+[28] aplot_0.2.9             expm_1.0-0              withr_3.0.2            
+[31] numDeriv_2016.8-1.1     nnet_7.3-20             grid_4.5.2             
 [34] scales_1.4.0            iterators_1.0.14        MASS_7.3-65            
 [37] cli_3.6.5               rmarkdown_2.29          treeio_1.32.0          
-[40] generics_0.1.4          rstudioapi_0.17.1       ggtree_3.16.0          
+[40] generics_0.1.4          rstudioapi_0.17.1       ggtree_3.17.0          
 [43] tzdb_0.5.0              cachem_1.1.0            maps_3.4.3             
-[46] parallel_4.5.1          ggplotify_0.1.2         vctrs_0.6.5            
-[49] yulab.utils_0.2.0       Matrix_1.7-3            jsonlite_2.0.0         
-[52] patchwork_1.3.0         gridGraphics_0.5-1      hms_1.1.3              
-[55] systemfonts_1.2.2       foreach_1.5.2           jquerylib_0.1.4        
+[46] parallel_4.5.2          ggplotify_0.1.3         vctrs_0.6.5            
+[49] yulab.utils_0.2.1       Matrix_1.7-4            jsonlite_2.0.0         
+[52] patchwork_1.3.2         gridGraphics_0.5-1      hms_1.1.3              
+[55] systemfonts_1.2.3       foreach_1.5.2           jquerylib_0.1.4        
 [58] glue_1.8.0              codetools_0.2-20        DEoptim_2.2-8          
 [61] stringi_1.8.7           gtable_0.3.6            quadprog_1.5-8         
-[64] gmp_0.7-5               pillar_1.10.2           htmltools_0.5.8.1      
-[67] R6_2.6.1                lhs_1.2.0               doParallel_1.0.17      
-[70] evaluate_1.0.3          lattice_0.22-7          ggfun_0.1.8            
-[73] corpcor_1.6.10          bslib_0.9.0             Rcpp_1.0.14            
-[76] fastmatch_1.1-6         svglite_2.1.3           coda_0.19-4.1          
-[79] gridExtra_2.3           nlme_3.1-168            xfun_0.52              
-[82] fs_1.6.6                pkgconfig_2.0.3        </code></pre>
+[64] gmp_0.7-5               pillar_1.11.1           rappdirs_0.3.3         
+[67] htmltools_0.5.8.1       R6_2.6.1                textshaping_1.0.3      
+[70] lhs_1.2.0               doParallel_1.0.17       evaluate_1.0.5         
+[73] lattice_0.22-7          ggfun_0.2.0             corpcor_1.6.10         
+[76] bslib_0.9.0             Rcpp_1.1.0              fastmatch_1.1-6        
+[79] svglite_2.2.1           coda_0.19-4.1           gridExtra_2.3          
+[82] nlme_3.1-168            xfun_0.53               fs_1.6.6               
+[85] pkgconfig_2.0.3        </code></pre>
+</div>
 <div id="load-data" class="section level1">
 <h1>Load data</h1>
-<div id="dataset" class="section level2">
-<h2>Dataset</h2>
+<div id="reconstruction-clustering" class="section level2">
+<h2>Reconstruction clustering</h2>
+<pre class="r"><code>clustering_str &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS&quot;)</code></pre>
 </div>
 <div id="genotype-phenotype-data" class="section level2">
 <h2>Genotype phenotype data</h2>
+<pre class="r"><code>synchronous_statistics &lt;- readRDS(&quot;./data/empirical/phyloAMR/pairwise_synchronous_transitions_genotype_as_comparitor.RDS&quot;) 
+synchronous_statistics &lt;- synchronous_statistics[synchronous_statistics$genotype %in% c(&quot;AA552&quot;,&quot;OmpK36_c25t&quot;,&quot;OmpK36GD&quot;,&quot;OmpK36TD&quot;,&quot;OmpK36_promoter_IS&quot;,&quot;OmpK36_disruptive&quot;,&quot;PBP_any&quot;,&quot;RamR&quot;,&quot;RamA&quot;),] 
+
+synchronous_statistics$genotype &lt;- factor(
+synchronous_statistics$genotype,levels = c(&quot;AA552&quot;,&quot;OmpK36_c25t&quot;,&quot;OmpK36GD&quot;,&quot;OmpK36TD&quot;,&quot;OmpK36_promoter_IS&quot;,&quot;OmpK36_disruptive&quot;,&quot;PBP_any&quot;,&quot;RamR&quot;,&quot;RamA&quot;))
+
+synchronous_statistics$genotype &lt;- recode(synchronous_statistics$genotype , &#39;OmpK35-25&#39;=&#39;ompK35 porin truncation at 25%&#39;,&#39;OmpK36_c25t&#39;=&#39;25 cytosine-to-thymine transition in ompK36&#39;,&#39;OmpK36_L3_mutations&#39;=&#39;Loop 3 insertion in ompK36&#39;,&#39;OmpK36GD&#39;=&#39;GD insertion in loop 3 of ompK36&#39;,&#39;OmpK36TD&#39;=&#39;TD insertion in loop 3 of ompK36&#39;,&#39;OmpK36_truncation_kleborate&#39;=&#39;ompK36 truncation&#39;, &#39;OmpK36_non_syn&#39;=&#39;ompK36 non-synonymous mutation&#39;,&#39;OmpK36_putative_function_altering&#39;=&#39;ompK36 PFAV&#39;,&#39;OmpK36_intergenic&#39;=&#39;Mutation in intergenic region of ompK36&#39;,&#39;OmpK36_promoter_IS&#39;=&#39;Insertion sequence at ompK36 promoter&#39;,&quot;AcrAB_TolC_any&quot; = &#39;acrAB-tolC efflux pump mutant&#39;,&#39;RamR&#39;=&#39;ramR efflux pump regulator PFAV&#39;,&quot;RamA&quot;=&#39;ramA efflux pump activator PFAV&#39;,&#39;PBP_any&#39;=&#39;Penicillin-binding-protein mutant&#39;,&#39;PBP2&#39;=&#39;Penicillin-binding protein-2 mutant&#39;,&quot;PBP4&quot;=&#39;Penicillin-binding protein-4 mutant&#39;,&quot;AA018&quot; = &quot;AA018 blaKPC-containing plasmid&quot;,&quot;AA552&quot; = &quot;AA552 blaKPC-containing plasmid&quot;,&quot;OmpK36_disruptive&quot; = &quot;Putative disruptive mutation in ompK36&quot;) 
+
+synchronous_statistics &lt;- arrange(synchronous_statistics,genotype)
+
+cluster_names &lt;- clustering_str %&gt;% `names&lt;-`(seq_len(length(.)))
+
+synchronous_statistics$pheno_number &lt;- gsub(&quot;^alt_recon_&quot;, &quot;&quot;, synchronous_statistics$phenotype_reconstruction) 
+
+synchronous_statistics$pheno_cluster &lt;- ifelse(grepl(&quot;focal&quot;, synchronous_statistics$pheno_number),
+                                               synchronous_statistics$pheno_number, unname(cluster_names[synchronous_statistics$pheno_number]))
+  
+get_median_min_max_values &lt;- function(variable,dataset){
+ variable_summary &lt;- dataset %&gt;%
+  group_by(genotype,pheno_cluster)  %&gt;% 
+  summarise(
+    median_value = median(get(variable), na.rm = TRUE),
+    min_value = min(get(variable), na.rm = TRUE),
+    max_value = max(get(variable), na.rm = TRUE)
+  ) %&gt;%
+  mutate(
+    summary_string = sprintf(&quot;%.1f (%.1f - %.1f)&quot;, median_value, min_value, max_value)
+  ) %&gt;% ungroup %&gt;% select(pheno_cluster,genotype,summary_string) %&gt;% `colnames&lt;-`(c(&quot;pheno_cluster&quot;,&quot;genotype&quot;,paste0(variable))) 
+ return(variable_summary)
+}
+variable_transitionstats  &lt;- c(&quot;synchronous_gains_num&quot;)
+
+transition_stats &lt;- lapply(variable_transitionstats,get_median_min_max_values,dataset=synchronous_statistics) %&gt;% reduce(
+  .,
+  ~ left_join(.x, .y, by = c(&quot;pheno_cluster&quot;,&quot;genotype&quot;))
+)
+
+# Pivot wide, rows should be pheno cluster and the two columns per genotype are num_concordant transitions and num_discordant_transitions
+transition_stats_wide &lt;- transition_stats %&gt;% arrange(genotype)%&gt;% 
+  pivot_wider(
+    names_from = genotype,
+    values_from = c(synchronous_gains_num,),
+    names_glue = &quot;{genotype}_{.value}&quot;, names_expand = TRUE,
+    names_sort = FALSE 
+  ) %&gt;%  select(pheno_cluster, sort(tidyselect::peek_vars()))
+
+transition_stats_wide$pheno_cluster &lt;- recode(transition_stats_wide$pheno_cluster,&quot;focal_states&quot; =&quot;Best joint reconstruction&quot;,
+                                             &quot;1&quot; =&quot;Reconstruction axis 1&quot;,
+                                             &quot;2&quot; =&quot;Reconstruction axis 2&quot;,
+                                             &quot;3&quot; =&quot;Reconstruction axis 3&quot;,
+                                             &quot;4&quot; =&quot;Reconstruction axis 4&quot;,
+                                             &quot;5&quot; =&quot;Reconstruction axis 5&quot;,
+                                             &quot;6&quot; =&quot;Reconstruction axis 6&quot;)
+
+transition_stats_wide &lt;- transition_stats_wide %&gt;% select(pheno_cluster,paste0(levels(transition_stats$genotype),&quot;_synchronous_gains_num&quot;))
+
+colnames(transition_stats_wide) &lt;- gsub(&quot;_synchronous_gains_num&quot;,&quot; synchronous gains&quot;,colnames(transition_stats_wide)) %&gt;% gsub(&quot;pheno_cluster&quot;,&quot;Phenotype axis&quot;,.)</code></pre>
 </div>
 </div>
 <div id="merged-table" class="section level1">
 <h1>Merged table</h1>
+<pre class="r"><code>transition_stats_wide %&gt;% favorite_kable()</code></pre>
 <table style="width:100%; color: black; margin-left: auto; margin-right: auto;" class="table table-striped table-hover table-condensed table-responsive">
 <thead>
 <tr>
@@ -687,7 +751,10 @@ AA552 blaKPC-containing plasmid synchronous gains
 25 cytosine-to-thymine transition in ompK36 synchronous gains
 </th>
 <th style="text-align:left;">
-Loop 3 insertion in ompK36 synchronous gains
+GD insertion in loop 3 of ompK36 synchronous gains
+</th>
+<th style="text-align:left;">
+TD insertion in loop 3 of ompK36 synchronous gains
 </th>
 <th style="text-align:left;">
 Insertion sequence at ompK36 promoter synchronous gains
@@ -712,28 +779,31 @@ ramA efflux pump activator PFAV synchronous gains
 Reconstruction axis 1
 </td>
 <td style="text-align:left;">
-2.0 (0.0 - 4.0)
+2.0 (0.0 - 6.0)
 </td>
 <td style="text-align:left;">
-1.0 (1.0 - 3.0)
+1.0 (0.0 - 3.0)
 </td>
 <td style="text-align:left;">
 0.0 (0.0 - 2.0)
 </td>
 <td style="text-align:left;">
-2.0 (0.0 - 3.0)
+0.0 (0.0 - 2.0)
 </td>
 <td style="text-align:left;">
-4.0 (3.0 - 7.0)
+2.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
-3.0 (0.0 - 4.0)
+5.0 (1.0 - 9.0)
 </td>
 <td style="text-align:left;">
-1.0 (1.0 - 2.0)
+2.0 (0.0 - 5.0)
 </td>
 <td style="text-align:left;">
-0.0 (0.0 - 1.0)
+1.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 3.0)
 </td>
 </tr>
 <tr>
@@ -741,22 +811,25 @@ Reconstruction axis 1
 Reconstruction axis 2
 </td>
 <td style="text-align:left;">
-4.0 (1.0 - 7.0)
+2.0 (0.0 - 5.0)
 </td>
 <td style="text-align:left;">
-1.0 (0.0 - 2.0)
+1.0 (0.0 - 3.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 2.0)
 </td>
 <td style="text-align:left;">
 0.0 (0.0 - 1.0)
 </td>
 <td style="text-align:left;">
-2.0 (0.0 - 3.0)
+2.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
-5.0 (2.0 - 9.0)
+5.0 (1.0 - 9.0)
 </td>
 <td style="text-align:left;">
-3.0 (0.0 - 4.0)
+3.0 (0.0 - 5.0)
 </td>
 <td style="text-align:left;">
 1.0 (0.0 - 3.0)
@@ -770,36 +843,7 @@ Reconstruction axis 2
 Reconstruction axis 3
 </td>
 <td style="text-align:left;">
-2.0 (0.0 - 4.0)
-</td>
-<td style="text-align:left;">
-1.0 (0.0 - 2.0)
-</td>
-<td style="text-align:left;">
-0.0 (0.0 - 1.0)
-</td>
-<td style="text-align:left;">
-2.0 (0.0 - 3.0)
-</td>
-<td style="text-align:left;">
-4.0 (2.0 - 7.0)
-</td>
-<td style="text-align:left;">
-2.0 (0.0 - 4.0)
-</td>
-<td style="text-align:left;">
-1.0 (1.0 - 3.0)
-</td>
-<td style="text-align:left;">
-0.0 (0.0 - 2.0)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Reconstruction axis 4
-</td>
-<td style="text-align:left;">
-2.0 (0.0 - 5.0)
+3.0 (0.0 - 8.0)
 </td>
 <td style="text-align:left;">
 1.0 (0.0 - 3.0)
@@ -808,16 +852,51 @@ Reconstruction axis 4
 0.0 (0.0 - 2.0)
 </td>
 <td style="text-align:left;">
-2.0 (0.0 - 3.0)
-</td>
-<td style="text-align:left;">
-5.0 (2.0 - 8.0)
+0.0 (0.0 - 2.0)
 </td>
 <td style="text-align:left;">
 2.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
-1.0 (1.0 - 4.0)
+5.0 (1.0 - 9.0)
+</td>
+<td style="text-align:left;">
+3.0 (0.0 - 5.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 3.0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reconstruction axis 4
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 5.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 3.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 2.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 2.0)
+</td>
+<td style="text-align:left;">
+2.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+5.0 (1.0 - 9.0)
+</td>
+<td style="text-align:left;">
+2.0 (0.0 - 5.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
 0.0 (0.0 - 2.0)
@@ -828,28 +907,63 @@ Reconstruction axis 4
 Reconstruction axis 5
 </td>
 <td style="text-align:left;">
-4.0 (1.0 - 6.0)
+3.0 (0.0 - 6.0)
 </td>
 <td style="text-align:left;">
-1.0 (1.0 - 2.0)
+1.0 (0.0 - 2.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 1.0)
 </td>
 <td style="text-align:left;">
 0.0 (0.0 - 1.0)
 </td>
 <td style="text-align:left;">
-2.0 (0.0 - 2.0)
+2.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
-5.0 (2.0 - 7.0)
+5.0 (2.0 - 9.0)
 </td>
 <td style="text-align:left;">
-3.0 (1.0 - 4.0)
+2.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
-1.0 (1.0 - 2.0)
+1.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 2.0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reconstruction axis 6
+</td>
+<td style="text-align:left;">
+3.0 (0.0 - 7.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 2.0)
 </td>
 <td style="text-align:left;">
 0.0 (0.0 - 1.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 1.0)
+</td>
+<td style="text-align:left;">
+2.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+5.0 (1.0 - 10.0)
+</td>
+<td style="text-align:left;">
+3.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 3.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 2.0)
 </td>
 </tr>
 <tr>
@@ -857,25 +971,28 @@ Reconstruction axis 5
 Best joint reconstruction
 </td>
 <td style="text-align:left;">
-3.0 (2.0 - 4.0)
+3.0 (2.0 - 5.0)
 </td>
 <td style="text-align:left;">
-1.0 (1.0 - 2.0)
+1.0 (0.0 - 2.0)
 </td>
 <td style="text-align:left;">
 0.0 (0.0 - 0.0)
 </td>
 <td style="text-align:left;">
-2.0 (1.0 - 2.0)
+0.0 (0.0 - 0.0)
 </td>
 <td style="text-align:left;">
-5.0 (4.0 - 6.0)
+2.0 (0.0 - 3.0)
+</td>
+<td style="text-align:left;">
+5.0 (3.0 - 7.0)
 </td>
 <td style="text-align:left;">
 3.0 (2.0 - 3.0)
 </td>
 <td style="text-align:left;">
-1.0 (1.0 - 2.0)
+1.0 (0.0 - 2.0)
 </td>
 <td style="text-align:left;">
 0.0 (0.0 - 1.0)
@@ -883,6 +1000,7 @@ Best joint reconstruction
 </tr>
 </tbody>
 </table>
+<pre class="r"><code>write_csv(transition_stats_wide,&quot;./tables/empirical/table_phenotype_genotype_pairwise_synchronous_transitions_summary.csv&quot;)</code></pre>
 </div>
 
 
