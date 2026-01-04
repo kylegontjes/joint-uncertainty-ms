@@ -17,6 +17,9 @@ R
 #### If more recent versions of packages are available, do not update them.
 devtools::install_github("thej022214/corHMM", force = TRUE, build_vignettes = FALSE)
 
+## phyloAMR - install because we're running phyloAMR analyses on HPC now due to number of reconstructions. 
+devtools::install_github("kylegontjes/phyloAMR", force = TRUE, build_vignettes = FALSE)
+
 # Exit R
 q()
 

@@ -5,7 +5,8 @@ channels:
   - bioconda
   - defaults
 dependencies:   
-  - r-base==4.5.2
+  - r-base
+  - bioconductor-ggtree=3.14.0 
   - r-dplyr
   - r-devtools
   - r-phangorn
@@ -16,4 +17,5 @@ dependencies:
   - r-proxy
   - r-dbscan
   - r-Rtsne
+  - r-ggplot2=3.5.2
   
