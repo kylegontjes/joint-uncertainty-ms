@@ -357,6 +357,8 @@ display: none;
 </div>
 
 
+<div id="environment" class="section level1">
+<h1>Environment</h1>
 <pre class="r"><code>#Packages
 packages &lt;- c(&quot;tidyverse&quot;,&#39;kableExtra&#39;,&#39;ComplexHeatmap&#39;,&#39;RColorBrewer&#39;,&#39;colorRamp2&#39;) 
 
@@ -376,7 +378,7 @@ Sys.info()</code></pre>
                                                                                             version 
 &quot;Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:34 PST 2025; root:xnu-12377.61.12~1/RELEASE_X86_64&quot; 
                                                                                            nodename 
-                                                                         &quot;0587670313.vpn.umich.net&quot; 
+                                                                         &quot;0587669891.vpn.umich.net&quot; 
                                                                                             machine 
                                                                                            &quot;x86_64&quot; 
                                                                                               login 
@@ -432,6 +434,7 @@ loaded via a namespace (and not attached):
 [52] glue_1.8.0          xml2_1.4.0          BiocGenerics_0.54.0
 [55] svglite_2.2.1       rstudioapi_0.17.1   jsonlite_2.0.0     
 [58] R6_2.6.1            systemfonts_1.2.3  </code></pre>
+</div>
 <div id="load-data" class="section level1">
 <h1>Load data</h1>
 <pre class="r"><code>phy &lt;- ape::read.tree(&quot;./data/empirical/tree/tree.treefile&quot;)
@@ -485,7 +488,8 @@ matrix_of_vals$cluster &lt;- recode(matrix_of_vals$cluster,&quot;focal_states&qu
                                              &quot;3&quot; =&quot;Reconstruction axis 3&quot;,
                                              &quot;4&quot; =&quot;Reconstruction axis 4&quot;,
                                              &quot;5&quot; =&quot;Reconstruction axis 5&quot;, 
-                                             &quot;6&quot; =&quot;Reconstruction axis 6&quot;) 
+                                             &quot;6&quot; =&quot;Reconstruction axis 6&quot;, 
+                                             &quot;7&quot; =&quot;Reconstruction axis 7&quot;) 
 
 matrix_of_vals &lt;- matrix_of_vals %&gt;% arrange(cluster) 
 rowsplit_pheno &lt;- factor(matrix_of_vals$cluster,levels = unique(sort(matrix_of_vals$cluster)))
@@ -568,7 +572,8 @@ matrix_of_vals$cluster &lt;- recode(matrix_of_vals$cluster,&quot;focal_states&qu
                                              &quot;3&quot; =&quot;Reconstruction axis 3&quot;,
                                              &quot;4&quot; =&quot;Reconstruction axis 4&quot;,
                                              &quot;5&quot; =&quot;Reconstruction axis 5&quot;,
-                                             &quot;5&quot; =&quot;Reconstruction axis 6&quot;) 
+                                             &quot;5&quot; =&quot;Reconstruction axis 6&quot;, 
+                                             &quot;7&quot; =&quot;Reconstruction axis 7&quot;) 
 
 matrix_of_vals &lt;- matrix_of_vals %&gt;% arrange(cluster) 
 rowsplit_pheno &lt;- factor(matrix_of_vals$cluster,levels = unique(sort(matrix_of_vals$cluster)))

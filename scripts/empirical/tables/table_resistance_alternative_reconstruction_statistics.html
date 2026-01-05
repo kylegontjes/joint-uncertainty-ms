@@ -668,11 +668,11 @@ loaded via a namespace (and not attached):
 [82] nlme_3.1-168            xfun_0.53               fs_1.6.6               
 [85] pkgconfig_2.0.3        </code></pre>
 </div>
-<div id="load-data" class="section level1">
-<h1>Load data</h1>
+<div id="load-and-curate-data" class="section level1">
+<h1>Load and curate data</h1>
 <div id="clustering-string" class="section level2">
 <h2>Clustering string</h2>
-<pre class="r"><code>clustering_str &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS&quot;)</code></pre>
+<pre class="r"><code>clustering_str &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS&quot;)</code></pre>
 </div>
 <div id="clustering-statistics" class="section level2">
 <h2>Clustering statistics</h2>
@@ -738,7 +738,8 @@ table$pheno_cluster &lt;- recode(table$pheno_cluster,&quot;focal_states&quot; =&
                                              &quot;3&quot; =&quot;Reconstruction axis 3&quot;,
                                              &quot;4&quot; =&quot;Reconstruction axis 4&quot;,
                                              &quot;5&quot; =&quot;Reconstruction axis 5&quot;,
-                                             &quot;6&quot; =&quot;Reconstruction axis 6&quot;) 
+                                             &quot;6&quot; =&quot;Reconstruction axis 6&quot;,
+                                             &quot;7&quot; =&quot;Reconstruction axis 7&quot;) 
 
 colnames(table) &lt;- c(&quot;Phenotype axis&quot;,&quot;Reconstructions&quot;,&quot;Phylogenetic events&quot;,&quot;Singletons&quot;,&quot;Singleton isolates&quot;,&quot;Clusters&quot;,&quot;Cluster isolates&quot;,&quot;Cluster size (median)&quot;,&quot;Cluster size (max)&quot;,&quot;Transitions&quot;,&quot;Gain events&quot;,&quot;Gains (tip)&quot;,&quot;Loss events&quot;,&quot;Losses (tip)&quot;,&quot;Continuations of trait&quot;)
 
@@ -799,116 +800,22 @@ Continuations of trait
 Reconstruction axis 1
 </td>
 <td style="text-align:right;">
-4708
+3069
 </td>
 <td style="text-align:left;">
-33.0 (26.0 - 39.0)
+37.0 (33.0 - 41.0)
 </td>
 <td style="text-align:left;">
-27.0 (19.0 - 33.0)
+31.0 (25.0 - 36.0)
 </td>
 <td style="text-align:left;">
-28.0 (20.0 - 34.0)
+32.0 (26.0 - 38.0)
 </td>
 <td style="text-align:left;">
-6.0 (3.0 - 10.0)
+6.0 (4.0 - 9.0)
 </td>
 <td style="text-align:left;">
-30.0 (24.0 - 38.0)
-</td>
-<td style="text-align:left;">
-3.5 (2.0 - 8.5)
-</td>
-<td style="text-align:left;">
-10.0 (7.0 - 22.0)
-</td>
-<td style="text-align:left;">
-46.0 (39.0 - 57.0)
-</td>
-<td style="text-align:left;">
-34.0 (27.0 - 41.0)
-</td>
-<td style="text-align:left;">
-25.0 (17.0 - 33.0)
-</td>
-<td style="text-align:left;">
-13.0 (4.0 - 25.0)
-</td>
-<td style="text-align:left;">
-7.0 (1.0 - 17.0)
-</td>
-<td style="text-align:left;">
-60.0 (42.0 - 83.0)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Reconstruction axis 2
-</td>
-<td style="text-align:right;">
-171
-</td>
-<td style="text-align:left;">
-36.0 (33.0 - 39.0)
-</td>
-<td style="text-align:left;">
-31.0 (26.0 - 34.0)
-</td>
-<td style="text-align:left;">
-32.0 (26.0 - 36.0)
-</td>
-<td style="text-align:left;">
-5.0 (4.0 - 8.0)
-</td>
-<td style="text-align:left;">
-26.0 (22.0 - 32.0)
-</td>
-<td style="text-align:left;">
-2.0 (2.0 - 3.5)
-</td>
-<td style="text-align:left;">
-17.0 (10.0 - 19.0)
-</td>
-<td style="text-align:left;">
-47.0 (41.0 - 53.0)
-</td>
-<td style="text-align:left;">
-37.0 (34.0 - 40.0)
-</td>
-<td style="text-align:left;">
-29.0 (23.0 - 34.0)
-</td>
-<td style="text-align:left;">
-10.0 (5.0 - 16.0)
-</td>
-<td style="text-align:left;">
-5.0 (1.0 - 10.0)
-</td>
-<td style="text-align:left;">
-52.0 (42.0 - 64.0)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Reconstruction axis 3
-</td>
-<td style="text-align:right;">
-3267
-</td>
-<td style="text-align:left;">
-37.0 (32.0 - 43.0)
-</td>
-<td style="text-align:left;">
-31.0 (23.0 - 39.0)
-</td>
-<td style="text-align:left;">
-32.0 (24.0 - 40.0)
-</td>
-<td style="text-align:left;">
-6.0 (4.0 - 10.0)
-</td>
-<td style="text-align:left;">
-26.0 (18.0 - 34.0)
+26.0 (20.0 - 32.0)
 </td>
 <td style="text-align:left;">
 2.0 (2.0 - 5.0)
@@ -920,42 +827,89 @@ Reconstruction axis 3
 44.0 (39.0 - 54.0)
 </td>
 <td style="text-align:left;">
-38.0 (33.0 - 43.0)
+38.0 (33.0 - 42.0)
 </td>
 <td style="text-align:left;">
-28.0 (21.0 - 36.0)
+28.0 (21.0 - 37.0)
 </td>
 <td style="text-align:left;">
-6.0 (1.0 - 17.0)
+6.0 (1.0 - 16.0)
 </td>
 <td style="text-align:left;">
 5.0 (1.0 - 13.0)
 </td>
 <td style="text-align:left;">
-47.0 (35.0 - 65.0)
+47.0 (36.0 - 62.0)
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Reconstruction axis 4
+Reconstruction axis 2
 </td>
 <td style="text-align:right;">
-904
+4714
 </td>
 <td style="text-align:left;">
-30.0 (25.0 - 38.0)
+33.0 (26.0 - 40.0)
+</td>
+<td style="text-align:left;">
+27.0 (19.0 - 33.0)
+</td>
+<td style="text-align:left;">
+28.0 (20.0 - 35.0)
+</td>
+<td style="text-align:left;">
+6.0 (3.0 - 10.0)
+</td>
+<td style="text-align:left;">
+30.0 (23.0 - 38.0)
+</td>
+<td style="text-align:left;">
+3.0 (2.0 - 8.5)
+</td>
+<td style="text-align:left;">
+10.0 (6.0 - 22.0)
+</td>
+<td style="text-align:left;">
+46.0 (39.0 - 57.0)
+</td>
+<td style="text-align:left;">
+34.0 (26.0 - 40.0)
+</td>
+<td style="text-align:left;">
+25.0 (17.0 - 32.0)
+</td>
+<td style="text-align:left;">
+13.0 (4.0 - 26.0)
+</td>
+<td style="text-align:left;">
+7.0 (1.0 - 16.0)
+</td>
+<td style="text-align:left;">
+60.0 (42.0 - 88.0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reconstruction axis 3
+</td>
+<td style="text-align:right;">
+874
+</td>
+<td style="text-align:left;">
+30.0 (25.0 - 36.0)
 </td>
 <td style="text-align:left;">
 26.0 (20.0 - 31.0)
 </td>
 <td style="text-align:left;">
-27.0 (21.0 - 32.0)
+27.0 (21.0 - 33.0)
 </td>
 <td style="text-align:left;">
 4.0 (2.0 - 8.0)
 </td>
 <td style="text-align:left;">
-31.0 (26.0 - 37.0)
+31.0 (25.0 - 37.0)
 </td>
 <td style="text-align:left;">
 2.0 (2.0 - 16.5)
@@ -964,22 +918,69 @@ Reconstruction axis 4
 23.0 (10.0 - 29.0)
 </td>
 <td style="text-align:left;">
-48.0 (41.0 - 57.0)
+48.0 (41.0 - 56.0)
 </td>
 <td style="text-align:left;">
-31.0 (26.0 - 39.0)
+31.0 (26.0 - 38.0)
 </td>
 <td style="text-align:left;">
-25.0 (19.0 - 33.0)
+25.0 (18.0 - 31.0)
 </td>
 <td style="text-align:left;">
-17.0 (7.0 - 27.0)
+16.0 (8.0 - 27.0)
 </td>
 <td style="text-align:left;">
-8.0 (1.0 - 16.0)
+7.0 (2.0 - 16.0)
 </td>
 <td style="text-align:left;">
-70.0 (52.0 - 91.0)
+70.0 (52.0 - 89.0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reconstruction axis 4
+</td>
+<td style="text-align:right;">
+180
+</td>
+<td style="text-align:left;">
+36.0 (32.0 - 39.0)
+</td>
+<td style="text-align:left;">
+30.0 (24.0 - 33.0)
+</td>
+<td style="text-align:left;">
+31.0 (25.0 - 35.0)
+</td>
+<td style="text-align:left;">
+6.0 (5.0 - 9.0)
+</td>
+<td style="text-align:left;">
+27.0 (23.0 - 33.0)
+</td>
+<td style="text-align:left;">
+3.0 (2.0 - 4.0)
+</td>
+<td style="text-align:left;">
+10.0 (10.0 - 10.0)
+</td>
+<td style="text-align:left;">
+45.0 (41.0 - 54.0)
+</td>
+<td style="text-align:left;">
+37.0 (33.0 - 40.0)
+</td>
+<td style="text-align:left;">
+27.0 (20.0 - 33.0)
+</td>
+<td style="text-align:left;">
+9.0 (5.0 - 16.0)
+</td>
+<td style="text-align:left;">
+7.0 (3.0 - 14.0)
+</td>
+<td style="text-align:left;">
+52.0 (44.0 - 64.0)
 </td>
 </tr>
 <tr>
@@ -987,46 +988,46 @@ Reconstruction axis 4
 Reconstruction axis 5
 </td>
 <td style="text-align:right;">
-98
+288
 </td>
 <td style="text-align:left;">
-34.0 (30.0 - 37.0)
+36.0 (33.0 - 40.0)
 </td>
 <td style="text-align:left;">
-27.0 (24.0 - 31.0)
+29.0 (25.0 - 35.0)
 </td>
 <td style="text-align:left;">
-28.0 (25.0 - 33.0)
+30.0 (25.0 - 37.0)
 </td>
 <td style="text-align:left;">
-6.0 (5.0 - 8.0)
+7.0 (5.0 - 9.0)
 </td>
 <td style="text-align:left;">
-30.0 (25.0 - 33.0)
+28.0 (21.0 - 33.0)
 </td>
 <td style="text-align:left;">
-3.5 (2.0 - 7.0)
+2.0 (2.0 - 4.0)
 </td>
 <td style="text-align:left;">
 10.0 (10.0 - 10.0)
 </td>
 <td style="text-align:left;">
-46.0 (42.0 - 53.0)
+45.0 (40.0 - 53.0)
 </td>
 <td style="text-align:left;">
-34.0 (30.0 - 37.0)
+37.0 (34.0 - 40.0)
 </td>
 <td style="text-align:left;">
-25.0 (21.0 - 30.0)
+27.0 (21.0 - 32.0)
 </td>
 <td style="text-align:left;">
-12.0 (8.0 - 17.0)
+8.0 (4.0 - 16.0)
 </td>
 <td style="text-align:left;">
-8.0 (4.0 - 13.0)
+6.0 (2.0 - 10.0)
 </td>
 <td style="text-align:left;">
-59.0 (50.0 - 70.0)
+51.0 (40.0 - 62.0)
 </td>
 </tr>
 <tr>
@@ -1034,46 +1035,93 @@ Reconstruction axis 5
 Reconstruction axis 6
 </td>
 <td style="text-align:right;">
-205
+158
 </td>
 <td style="text-align:left;">
-36.0 (33.0 - 40.0)
+36.0 (33.0 - 39.0)
+</td>
+<td style="text-align:left;">
+31.0 (25.0 - 35.0)
+</td>
+<td style="text-align:left;">
+32.0 (26.0 - 35.0)
+</td>
+<td style="text-align:left;">
+5.0 (4.0 - 8.0)
+</td>
+<td style="text-align:left;">
+26.0 (23.0 - 32.0)
+</td>
+<td style="text-align:left;">
+2.0 (2.0 - 4.0)
+</td>
+<td style="text-align:left;">
+17.0 (10.0 - 20.0)
+</td>
+<td style="text-align:left;">
+47.0 (42.0 - 53.0)
+</td>
+<td style="text-align:left;">
+37.0 (33.0 - 40.0)
+</td>
+<td style="text-align:left;">
+28.0 (24.0 - 34.0)
+</td>
+<td style="text-align:left;">
+10.0 (5.0 - 17.0)
+</td>
+<td style="text-align:left;">
+5.0 (1.0 - 10.0)
+</td>
+<td style="text-align:left;">
+53.0 (45.0 - 65.0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reconstruction axis 7
+</td>
+<td style="text-align:right;">
+117
+</td>
+<td style="text-align:left;">
+34.0 (30.0 - 37.0)
+</td>
+<td style="text-align:left;">
+27.0 (23.0 - 31.0)
+</td>
+<td style="text-align:left;">
+28.0 (24.0 - 33.0)
+</td>
+<td style="text-align:left;">
+7.0 (5.0 - 8.0)
 </td>
 <td style="text-align:left;">
 30.0 (25.0 - 34.0)
 </td>
 <td style="text-align:left;">
-31.0 (26.0 - 36.0)
+3.0 (2.5 - 7.0)
 </td>
 <td style="text-align:left;">
-6.0 (5.0 - 9.0)
+10.0 (10.0 - 15.0)
 </td>
 <td style="text-align:left;">
-27.0 (22.0 - 32.0)
+47.0 (42.0 - 53.0)
 </td>
 <td style="text-align:left;">
-3.0 (2.0 - 4.0)
+34.0 (31.0 - 38.0)
 </td>
 <td style="text-align:left;">
-10.0 (7.0 - 17.0)
+25.0 (20.0 - 30.0)
 </td>
 <td style="text-align:left;">
-46.0 (41.0 - 54.0)
+13.0 (8.0 - 19.0)
 </td>
 <td style="text-align:left;">
-37.0 (33.0 - 41.0)
+8.0 (5.0 - 15.0)
 </td>
 <td style="text-align:left;">
-27.0 (22.0 - 33.0)
-</td>
-<td style="text-align:left;">
-9.0 (5.0 - 16.0)
-</td>
-<td style="text-align:left;">
-7.0 (4.0 - 12.0)
-</td>
-<td style="text-align:left;">
-51.0 (42.0 - 64.0)
+59.0 (51.0 - 71.0)
 </td>
 </tr>
 <tr>

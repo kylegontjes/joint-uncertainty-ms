@@ -361,7 +361,7 @@ reconstructions</h1>
 <div id="environment" class="section level1">
 <h1>Environment</h1>
 <pre class="r"><code>#Packages
-packages &lt;- c(&quot;tidyverse&quot;,&#39;corHMM&#39;,&#39;proxy&#39;,&#39;dbscan&#39;,&#39;Rtsne&#39;,&#39;phyloAMR&#39;) 
+packages &lt;- c(&quot;tidyverse&quot;,&#39;corHMM&#39;,&#39;proxy&#39;,&#39;dbscan&#39;,&#39;phyloAMR&#39;) 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
@@ -379,7 +379,7 @@ Sys.info()</code></pre>
                                                                                             version 
 &quot;Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:34 PST 2025; root:xnu-12377.61.12~1/RELEASE_X86_64&quot; 
                                                                                            nodename 
-                                                                         &quot;0587670313.vpn.umich.net&quot; 
+                                                                         &quot;0587669891.vpn.umich.net&quot; 
                                                                                             machine 
                                                                                            &quot;x86_64&quot; 
                                                                                               login 
@@ -407,11 +407,11 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] phyloAMR_0.1.0  Rtsne_0.17      dbscan_1.2.3    proxy_0.4-27   
- [5] corHMM_2.10     GenSA_1.1.14.1  nloptr_2.2.1    ape_5.8-1      
- [9] lubridate_1.9.4 forcats_1.0.1   stringr_1.5.2   dplyr_1.1.4    
-[13] purrr_1.1.0     readr_2.1.5     tidyr_1.3.1     tibble_3.3.0   
-[17] ggplot2_3.5.2   tidyverse_2.0.0 knitr_1.50     
+ [1] phyloAMR_0.1.0  dbscan_1.2.3    proxy_0.4-27    corHMM_2.10    
+ [5] GenSA_1.1.14.1  nloptr_2.2.1    ape_5.8-1       lubridate_1.9.4
+ [9] forcats_1.0.1   stringr_1.5.2   dplyr_1.1.4     purrr_1.1.0    
+[13] readr_2.1.5     tidyr_1.3.1     tibble_3.3.0    ggplot2_3.5.2  
+[17] tidyverse_2.0.0 knitr_1.50     
 
 loaded via a namespace (and not attached):
  [1] tidyselect_1.2.1        viridisLite_0.4.2       Rmpfr_1.1-1            
@@ -458,7 +458,7 @@ joint_ci &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/phenotype_gen
 state_df &lt;- joint_ci$state_df
 state_df_matrix &lt;- as.matrix(state_df)
   
-clustering_6 &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS&quot;) 
+clustering_7 &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS&quot;) 
 hclust_obj &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix.RDS&quot;) 
 
 dist_mat &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS&quot;)</code></pre>
@@ -466,7 +466,7 @@ dist_mat &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/joint_uncerta
 <div id="chosen-cluster-assignments-theme" class="section level2">
 <h2>Chosen cluster assignments &amp; theme</h2>
 <pre class="r"><code># Cluster assignments
-cluster_assignments &lt;- clustering_6
+cluster_assignments &lt;- clustering_7
 clusters &lt;- factor(cluster_assignments) 
 optimal_k_gap &lt;- sum(as.numeric(unique(cluster_assignments)) &gt;0)
 
@@ -537,13 +537,6 @@ for (k in seq_along(cluster_ids)) {
 dev.off()</code></pre>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
-</div>
-<div id="empirical-tsne-plot" class="section level1">
-<h1>Empirical tSNE plot</h1>
-<div id="removed-as-we-no-longer-use-tsne" class="section level2">
-<h2>Removed as we no longer use tSNE</h2>
-<p>#<code>{r tsne}  #pdf(&quot;./figures/empirical/empirical_joint_uncertainty_tsne.pdf&quot;, width = 5, height = 5) #plot(tsne_res$Y, pch = 21, bg = c(&quot;white&quot;, clust_cols)[cluster_assignments+1], main = &quot;Phylo Weighted Distance&quot;, xlab = &quot;tSNE Dimension 1&quot;, ylab = &quot;tSNE Dimension 2&quot;) #dev.off() #</code></p>
-</div>
 </div>
 <div id="dendogram" class="section level1">
 <h1>Dendogram</h1>

@@ -12,6 +12,7 @@ opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=
 knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
+# Environment
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
 packages <- c("tidyverse",'corHMM','phyloAMR') 
@@ -31,8 +32,7 @@ sessionInfo()
 # Load data
 ## Dataset
 ```{r} 
-dat <- readRDS("./data/empirical/dataset/df.RDS")
-phy <- read.tree("./data/empirical/tree/tree.treefile") 
+dat <- readRDS("./data/empirical/dataset/df.RDS") 
 genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes.RDS") 
 ```
 
@@ -76,7 +76,14 @@ transitional_data <- lapply(colnames(transition_data_simple),FUN=function(x){
   value_from_best <- best_joint_parent_child_transitions_simple[[x]]
   
   # GGplot figure
-  ggplot(data=transition_data_simple,aes(x=get(x),fill=as.factor(Cluster))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + phylogenetic_reconstruction_numeric_scale  + theme(legend.position = 'none', axis.text =   element_text(size=12, color="black"), axis.title = element_text(size = 14, color="black"))  + geom_vline(xintercept = value_from_best,linetype = 2,color = 'black') 
+  figure <- ggplot(data=transition_data_simple,aes(x=get(x),fill=as.factor(Cluster))) + geom_histogram(bins=num_bins) + xlab(x)  + ylab('Count')+ theme_bw() + phylogenetic_reconstruction_numeric_scale  + theme(legend.position = 'none', axis.text =   element_text(size=12, color="black"), axis.title = element_text(size = 14, color="black"))  + geom_vline(xintercept = value_from_best,linetype = 2,color = 'black') 
+  
+  if(x == "Cluster"){
+    figure + scale_x_continuous(breaks = c(1:max(transition_data_simple$Cluster)))
+  } else {
+    figure
+  }
+  
 }) %>% cowplot::plot_grid(plotlist = .,labels = "AUTO",label_size = 16)
 
 transitional_data

@@ -1,25 +1,50 @@
 
 
 processing file: phyloAMR_generate_representative_asr_clustering.Rmd
-1/17                                         
-2/17 [setup]                                 
-3/17                                         
-4/17 [environment]                           
-5/17                                         
-6/17 [load reconstruction]                   
+
+
+processing file: phyloAMR_generate_representative_asr_clustering.Rmd
+11//1717                                                                                  
+
+22//1717 [setup]                                  [setup]                                 
+
+33//1717                                                                                  
+
+4/417/ [environment]                           17
+ [environment]                           
+55//1717                                                                                  
+
+66//1717 [load reconstruction]                    [load reconstruction]                   
+
 7/17                                         
+7/17                                         
+8/17 [clustering]                            
 8/17 [clustering]                            
 9/17                                         
 10/17 [unnamed-chunk-1]                       
-11/17                                         
-12/17 [extract representative reconstructions]
+9/17                                         
+10/17 [unnamed-chunk-1]                       
+1111//1717                                                                                  
+
+1212//1717 [extract representative reconstructions] [extract representative reconstructions]
+
+13/17                                         
+14/17 [unnamed-chunk-2]                       
 13/17                                         
 14/17 [unnamed-chunk-2]                       
 15/17                                         
 16/17 [unnamed-chunk-3]                       
+15/17                                         
+16/17 [unnamed-chunk-3]                       
+17/17                                         
 17/17                                         
 output file: phyloAMR_generate_representative_asr_clustering.knit.md
 
-/home/kgontjes/.conda/envs/joint_uncertainty_revision/bin/pandoc +RTS -K512m -RTS phyloAMR_generate_representative_asr_clustering.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output phyloAMR_generate_representative_asr_clustering.html --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/latex-div.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/table-classes.lua --embed-resources --standalone --variable bs3=TRUE --section-divs --template /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmd/h/default.html --syntax-highlighting=none --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpognN5g/rmarkdown-str212b9fa3562f0.html 
+output file: phyloAMR_generate_representative_asr_clustering.knit.md
+
+/home/kgontjes/.conda/envs/joint_uncertainty_revision/bin/pandoc +RTS -K512m -RTS phyloAMR_generate_representative_asr_clustering.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output phyloAMR_generate_representative_asr_clustering.html --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/latex-div.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/table-classes.lua --embed-resources --standalone --variable bs3=TRUE --section-divs --template /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmd/h/default.html --syntax-highlighting=none --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/Rtmpqn1egP/rmarkdown-str3a79a873bd429.html 
+/home/kgontjes/.conda/envs/joint_uncertainty_revision/bin/pandoc +RTS -K512m -RTS phyloAMR_generate_representative_asr_clustering.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output phyloAMR_generate_representative_asr_clustering.html --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/latex-div.lua --lua-filter /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmarkdown/lua/table-classes.lua --embed-resources --standalone --variable bs3=TRUE --section-divs --template /home/kgontjes/.conda/envs/joint_uncertainty_revision/lib/R/library/rmarkdown/rmd/h/default.html --syntax-highlighting=none --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpStU2uJ/rmarkdown-str3a79a97fa2ba97.html 
+
+Output created: phyloAMR_generate_representative_asr_clustering.html
 
 Output created: phyloAMR_generate_representative_asr_clustering.html

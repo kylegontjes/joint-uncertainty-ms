@@ -66,8 +66,7 @@ pairwise_comparisons <- bind_rows(pairwise_comparisons,overall_row)
 pairwise_comparisons$genotype <- factor(
 pairwise_comparisons$genotype,levels = rev(c("Overall","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
 
- 
-pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype ,  'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD insertion in loop 3 ofompK36','OmpK36TD'='TD insertion in loop 3 of ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
+pairwise_comparisons$genotype <- recode(pairwise_comparisons$genotype ,  'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD insertion in loop 3 of ompK36','OmpK36TD'='TD insertion in loop 3 of ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
 
 pairwise_comparisons$pheno_cluster <- recode(pairwise_comparisons$pheno_cluster,"focal_states" ="Best joint reconstruction",
                                              "1" ="Reconstruction axis 1",
@@ -75,7 +74,8 @@ pairwise_comparisons$pheno_cluster <- recode(pairwise_comparisons$pheno_cluster,
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
                                              "5" ="Reconstruction axis 5",
-                                             "6" ="Reconstruction axis 6") 
+                                             "6" ="Reconstruction axis 6",
+                                             "7" ="Reconstruction axis 7") 
 ```
 ## Comparison genotype
 ```{r}
@@ -83,7 +83,7 @@ pairwise_comps_sync_all_geno <- bind_rows(pairwise_comps_sync_all_geno,overall_r
 pairwise_comps_sync_all_geno$genotype <- factor(
 pairwise_comps_sync_all_geno$genotype,levels = rev(c("Overall","AA552","OmpK36_c25t","OmpK36GD","OmpK36TD","OmpK36_promoter_IS","OmpK36_disruptive","PBP_any","RamR","RamA")))
  
-pairwise_comps_sync_all_geno$genotype <- recode(pairwise_comps_sync_all_geno$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD insertion in loop 3 ofompK36','OmpK36TD'='TD insertion in loop 3 of ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
+pairwise_comps_sync_all_geno$genotype <- recode(pairwise_comps_sync_all_geno$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD insertion in loop 3 of ompK36','OmpK36TD'='TD insertion in loop 3 of ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
 
 pairwise_comps_sync_all_geno$pheno_cluster <- recode(pairwise_comps_sync_all_geno$pheno_cluster,"focal_states" ="Best joint reconstruction",
                                              "1" ="Reconstruction axis 1",
@@ -91,7 +91,8 @@ pairwise_comps_sync_all_geno$pheno_cluster <- recode(pairwise_comps_sync_all_gen
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
                                              "5" ="Reconstruction axis 5",
-                                             "6" ="Reconstruction axis 6") 
+                                             "6" ="Reconstruction axis 6",
+                                             "7" ="Reconstruction axis 7") 
 ```
 
 # Overall summary figures 
@@ -100,7 +101,7 @@ pairwise_comps_sync_all_geno$pheno_cluster <- recode(pairwise_comps_sync_all_gen
 min_value <- min(pairwise_comparisons$synchronous_gains_num,na.rm = T)
 max_value <- max(pairwise_comparisons$synchronous_gains_num,na.rm = T)
 
-factor_order <- c("Best joint reconstruction",paste0("Reconstruction axis ",1:6))
+factor_order <- c("Best joint reconstruction",paste0("Reconstruction axis ",1:7))
 
 pairwise_comparisons$pheno_cluster <- factor(
 pairwise_comparisons$pheno_cluster,levels = rev(factor_order))
@@ -109,7 +110,7 @@ A <- ggplot(pairwise_comparisons,
        aes(x = synchronous_gains_num,
            y = as.factor(genotype),
            fill = pheno_cluster)) +
-geom_boxplot(position = position_dodge(width = 0.8),outlier.size = 1) +
+geom_boxplot(position = position_dodge(width = 0.8),outlier.size = 0.9) +
 labs(x = "Synchronous phenotype-genotype gain events",
      y = "",
      fill = "Phenotype axes") + phylogenetic_reconstruction_scale + theme_bw() + scale_x_continuous(breaks = c(0,1:max_value),labels =c(0,1:max_value) )   + theme(legend.position = 'bottom',axis.text.x = element_text(hjust = 0.5,size=11))
@@ -126,7 +127,7 @@ B <- ggplot(pairwise_comps_sync_all_geno,
        aes(x = synchronous_gains_prop,
            y = as.factor(genotype),
            fill = as.factor(pheno_cluster))) +
-geom_boxplot(position = position_dodge(width = 0.8),outlier.size = 1) +
+geom_boxplot(position = position_dodge(width = 0.8),outlier.size = 0.9) +
 labs(x = "Proportion of genotype gains with a phenotype gain",
      y = "",
      fill = "Phenotype axes") + phylogenetic_reconstruction_scale  + theme_bw() + theme(legend.position = 'bottom',axis.text.x = element_text(hjust = 0.5,size=11))
@@ -141,15 +142,17 @@ genotypes <-  names(parent_child_dfs) %>% subset(.!='blbli_dich_num') %>% sort %
 
 pheno_gain_explanation <- pbmcapply::pbmclapply(pheno_recons,FUN=function(x){
   pheno_recon_pcdf <- parent_child_dfs$blbli_dich_num[[x]]
-  pheno_recon_gains <- subset(pheno_recon_pcdf,gain==1) %>% .$child %>% as.numeric() %>% sort
+  pheno_recon_gains <- pheno_recon_pcdf[pheno_recon_pcdf$gain==1,'child']
+  pheno_recon_gains <- sort(as.numeric(pheno_recon_gains)) 
   num_pheno_gain <- length(pheno_recon_gains)
   genotype_pheno_data <- lapply(genotypes,FUN=function(geno){
     geno_recon_pcdfs <- parent_child_dfs[[geno]]
     geno_recon_gains <- lapply(geno_recon_pcdfs,FUN=function(genopcdf){
-       subset(genopcdf,gain==1) %>% .$child
-    }) %>% unlist %>% unique %>% sort
+       genopcdf[genopcdf$gain==1,'child']
+    }) 
+    geno_recon_gains <- sort(unique(unlist(geno_recon_gains))) 
     num_nodes_w_geno_gains <- length(geno_recon_gains)
-    pheno_gain_nodes_w_geno_gains <- pheno_recon_gains %>% subset(. %in% geno_recon_gains)
+    pheno_gain_nodes_w_geno_gains <- subset(pheno_recon_gains, pheno_recon_gains  %in% geno_recon_gains)
     num_pheno_gain_nodes_w_geno_gains <- length(pheno_gain_nodes_w_geno_gains)
     prop_pheno_gains_w_geno_gain <- num_pheno_gain_nodes_w_geno_gains /     num_pheno_gain
     perc_pheno_gains_w_geno_gain <- prop_pheno_gains_w_geno_gain*100
@@ -162,19 +165,21 @@ pheno_gain_explanation_df <- do.call(rbind,pheno_gain_explanation)
 # Add overall row
 overall_row <- pbmcapply::pbmclapply(pheno_recons,FUN=function(x){
   pheno_recon_pcdf <- parent_child_dfs$blbli_dich_num[[x]]
-  pheno_recon_gains <- subset(pheno_recon_pcdf,gain==1) %>% .$child %>% as.numeric() %>% sort
+  pheno_recon_gains <- pheno_recon_pcdf[pheno_recon_pcdf$gain==1,'child'] 
+  pheno_recon_gains <- sort(as.numeric(pheno_recon_gains)) 
   num_pheno_gain <- length(pheno_recon_gains)
   geno_recon_pcdfs <- subset(parent_child_dfs,names(parent_child_dfs) != 'blbli_dich_num')
   
   geno_recon_gains <- lapply(geno_recon_pcdfs,FUN=function(y){
     lapply(y,FUN=function(genopcdf){
-       subset(genopcdf,gain==1) %>% .$child
-    })}) %>% unlist %>% unique %>% sort
+       genopcdf[genopcdf$gain==1,'child']
+    })})
+  geno_recon_gains <- sort(unique(unlist(geno_recon_gains))) 
    
     num_nodes_w_geno_gains <- length(geno_recon_gains)
-    pheno_gain_nodes_w_geno_gains <- pheno_recon_gains %>% subset(. %in% geno_recon_gains)
+    pheno_gain_nodes_w_geno_gains <- subset(pheno_recon_gains, pheno_recon_gains %in% geno_recon_gains)
     num_pheno_gain_nodes_w_geno_gains <- length(pheno_gain_nodes_w_geno_gains)
-    prop_pheno_gains_w_geno_gain <- num_pheno_gain_nodes_w_geno_gains /     num_pheno_gain
+    prop_pheno_gains_w_geno_gain <- num_pheno_gain_nodes_w_geno_gains / num_pheno_gain
     perc_pheno_gains_w_geno_gain <- prop_pheno_gains_w_geno_gain*100
     data.frame(genotype = "Overall",pheno_reconstruction = x,pheno_recon_gains = paste0(pheno_recon_gains,collapse = ','),num_pheno_gain,geno_recon_gains = paste0(geno_recon_gains,collapse=','),num_nodes_w_geno_gains,prop_pheno_gains_w_geno_gain,perc_pheno_gains_w_geno_gain)
   },mc.cores = 7) %>% do.call(rbind,.) 
@@ -187,23 +192,12 @@ pheno_gain_explanation_df$genotype,levels = rev(c("Overall","AA552","OmpK36_c25t
 
 pheno_gain_explanation_df$genotype <- recode(pheno_gain_explanation_df$genotype , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD insertion in loop 3 ofompK36','OmpK36TD'='TD insertion in loop 3 of ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "Putative function-altering variant (PFAV)\nin ompK36") 
 
-pheno_gain_explanation_df$pheno_number <- sapply(pheno_gain_explanation_df$pheno_reconstruction,FUN=function(x){
-  if(grepl("alt_recon",x)){ 
-  gsub("alt_recon_","",x)
-  } else {
-    x
-  } 
-})  
+pheno_gain_explanation_df$pheno_number <- gsub("alt_recon_","",pheno_gain_explanation_df$pheno_reconstruction)
 
 cluster_names <- clustering_str %>% `names<-`(seq_len(length(.)))
 
-pheno_gain_explanation_df$pheno_cluster <- sapply(pheno_gain_explanation_df$pheno_number,FUN=function(x){
-  if(!grepl("focal",x)){
-    cluster_names[names(cluster_names) == x]
-  } else {
-    x
-  }
-})
+pheno_gain_explanation_df$pheno_cluster <-ifelse(grepl("focal", pheno_gain_explanation_df$pheno_number),
+                                               pheno_gain_explanation_df$pheno_number, unname(cluster_names[pheno_gain_explanation_df$pheno_number])) 
 
 pheno_gain_explanation_df$pheno_cluster <- recode(pheno_gain_explanation_df$pheno_cluster,"focal_states" ="Best joint reconstruction",
                                              "1" ="Reconstruction axis 1",
@@ -211,19 +205,25 @@ pheno_gain_explanation_df$pheno_cluster <- recode(pheno_gain_explanation_df$phen
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
                                              "5" ="Reconstruction axis 5",
-                                             "6" ="Reconstruction axis 6")  
+                                             "6" ="Reconstruction axis 6",
+                                             "7" ="Reconstruction axis 7")  
 
 pheno_gain_explanation_df$pheno_cluster <- factor(
 pheno_gain_explanation_df$pheno_cluster,levels = rev(factor_order))
+
+xmaximum <- (ceiling(max(pheno_gain_explanation_df$prop_pheno_gains_w_geno_gain) * 10) / 10) + .01
 
 C<- ggplot(pheno_gain_explanation_df,
        aes(x = prop_pheno_gains_w_geno_gain,
            y = as.factor(genotype),
            fill = as.factor(pheno_cluster))) +
-geom_boxplot(position = position_dodge(width = 0.8),outlier.size = 1) +
+geom_boxplot(position = position_dodge(width = 0.8),outlier.size = 0.9) +
 labs(x = "Proportion of phenotype gains with >=1 genotype gain",
      y = "",
-     fill = "Phenotype axes") + phylogenetic_reconstruction_scale  + theme_bw() +  theme(legend.position = 'bottom',axis.text.x = element_text(hjust = 0.5,size=11))  + xlim(NA,0.601)  + scale_x_continuous(breaks = c(0,0.1,0.20,0.3,0.4,0.5,0.6))
+     fill = "Phenotype axes") + phylogenetic_reconstruction_scale  + theme_bw() +  theme(legend.position = 'bottom',axis.text.x = element_text(hjust = 0.5,size=11))  + xlim(NA,xmaximum)  + scale_x_continuous(
+  breaks = seq(0, xmaximum-0.01, by = 0.1),
+  limits = c(0, xmaximum)
+)
 
 C
 ```

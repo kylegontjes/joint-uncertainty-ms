@@ -7,7 +7,7 @@
 #SBATCH --export=ALL
 #SBATCH --partition=standard
 #SBATCH --account=esnitkin1 
-#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=36 --mem=72g --time=1:15:00
+#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=36 --mem=62g --time=1:15:00
 #SBATCH --output=dbscan_clustering_of_alternative_reconstructions.out
 
 Rscript -e "rmarkdown::render('dbscan_clustering_of_alternative_reconstructions.Rmd')"

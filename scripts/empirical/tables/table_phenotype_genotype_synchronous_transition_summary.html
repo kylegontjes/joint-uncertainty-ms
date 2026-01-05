@@ -668,11 +668,11 @@ loaded via a namespace (and not attached):
 [82] nlme_3.1-168            xfun_0.53               fs_1.6.6               
 [85] pkgconfig_2.0.3        </code></pre>
 </div>
-<div id="load-data" class="section level1">
-<h1>Load data</h1>
+<div id="load-and-curate-data" class="section level1">
+<h1>Load and curate data</h1>
 <div id="reconstruction-clustering" class="section level2">
 <h2>Reconstruction clustering</h2>
-<pre class="r"><code>clustering_str &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS&quot;)</code></pre>
+<pre class="r"><code>clustering_str &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS&quot;)</code></pre>
 </div>
 <div id="genotype-phenotype-data" class="section level2">
 <h2>Genotype phenotype data</h2>
@@ -713,7 +713,7 @@ transition_stats &lt;- lapply(variable_transitionstats,get_median_min_max_values
   ~ left_join(.x, .y, by = c(&quot;pheno_cluster&quot;,&quot;genotype&quot;))
 )
 
-# Pivot wide, rows should be pheno cluster and the two columns per genotype are num_concordant transitions and num_discordant_transitions
+# Pivot wide
 transition_stats_wide &lt;- transition_stats %&gt;% arrange(genotype)%&gt;% 
   pivot_wider(
     names_from = genotype,
@@ -728,7 +728,8 @@ transition_stats_wide$pheno_cluster &lt;- recode(transition_stats_wide$pheno_clu
                                              &quot;3&quot; =&quot;Reconstruction axis 3&quot;,
                                              &quot;4&quot; =&quot;Reconstruction axis 4&quot;,
                                              &quot;5&quot; =&quot;Reconstruction axis 5&quot;,
-                                             &quot;6&quot; =&quot;Reconstruction axis 6&quot;)
+                                             &quot;6&quot; =&quot;Reconstruction axis 6&quot;,
+                                             &quot;7&quot; =&quot;Reconstruction axis 7&quot;)
 
 transition_stats_wide &lt;- transition_stats_wide %&gt;% select(pheno_cluster,paste0(levels(transition_stats$genotype),&quot;_synchronous_gains_num&quot;))
 
@@ -779,7 +780,7 @@ ramA efflux pump activator PFAV synchronous gains
 Reconstruction axis 1
 </td>
 <td style="text-align:left;">
-2.0 (0.0 - 6.0)
+3.0 (0.0 - 7.0)
 </td>
 <td style="text-align:left;">
 1.0 (0.0 - 3.0)
@@ -797,10 +798,10 @@ Reconstruction axis 1
 5.0 (1.0 - 9.0)
 </td>
 <td style="text-align:left;">
-2.0 (0.0 - 5.0)
+3.0 (0.0 - 5.0)
 </td>
 <td style="text-align:left;">
-1.0 (0.0 - 4.0)
+1.0 (0.0 - 3.0)
 </td>
 <td style="text-align:left;">
 0.0 (0.0 - 3.0)
@@ -811,7 +812,7 @@ Reconstruction axis 1
 Reconstruction axis 2
 </td>
 <td style="text-align:left;">
-2.0 (0.0 - 5.0)
+2.0 (0.0 - 7.0)
 </td>
 <td style="text-align:left;">
 1.0 (0.0 - 3.0)
@@ -826,16 +827,16 @@ Reconstruction axis 2
 2.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
-5.0 (1.0 - 9.0)
+5.0 (1.0 - 10.0)
 </td>
 <td style="text-align:left;">
-3.0 (0.0 - 5.0)
+2.0 (0.0 - 5.0)
 </td>
 <td style="text-align:left;">
-1.0 (0.0 - 3.0)
+1.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
-0.0 (0.0 - 2.0)
+0.0 (0.0 - 3.0)
 </td>
 </tr>
 <tr>
@@ -843,7 +844,7 @@ Reconstruction axis 2
 Reconstruction axis 3
 </td>
 <td style="text-align:left;">
-3.0 (0.0 - 8.0)
+1.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
 1.0 (0.0 - 3.0)
@@ -861,7 +862,7 @@ Reconstruction axis 3
 5.0 (1.0 - 9.0)
 </td>
 <td style="text-align:left;">
-3.0 (0.0 - 5.0)
+2.0 (0.0 - 5.0)
 </td>
 <td style="text-align:left;">
 1.0 (0.0 - 4.0)
@@ -873,70 +874,6 @@ Reconstruction axis 3
 <tr>
 <td style="text-align:left;">
 Reconstruction axis 4
-</td>
-<td style="text-align:left;">
-1.0 (0.0 - 5.0)
-</td>
-<td style="text-align:left;">
-1.0 (0.0 - 3.0)
-</td>
-<td style="text-align:left;">
-0.0 (0.0 - 2.0)
-</td>
-<td style="text-align:left;">
-0.0 (0.0 - 2.0)
-</td>
-<td style="text-align:left;">
-2.0 (0.0 - 4.0)
-</td>
-<td style="text-align:left;">
-5.0 (1.0 - 9.0)
-</td>
-<td style="text-align:left;">
-2.0 (0.0 - 5.0)
-</td>
-<td style="text-align:left;">
-1.0 (0.0 - 4.0)
-</td>
-<td style="text-align:left;">
-0.0 (0.0 - 2.0)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Reconstruction axis 5
-</td>
-<td style="text-align:left;">
-3.0 (0.0 - 6.0)
-</td>
-<td style="text-align:left;">
-1.0 (0.0 - 2.0)
-</td>
-<td style="text-align:left;">
-0.0 (0.0 - 1.0)
-</td>
-<td style="text-align:left;">
-0.0 (0.0 - 1.0)
-</td>
-<td style="text-align:left;">
-2.0 (0.0 - 4.0)
-</td>
-<td style="text-align:left;">
-5.0 (2.0 - 9.0)
-</td>
-<td style="text-align:left;">
-2.0 (0.0 - 4.0)
-</td>
-<td style="text-align:left;">
-1.0 (0.0 - 4.0)
-</td>
-<td style="text-align:left;">
-0.0 (0.0 - 2.0)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Reconstruction axis 6
 </td>
 <td style="text-align:left;">
 3.0 (0.0 - 7.0)
@@ -954,10 +891,106 @@ Reconstruction axis 6
 2.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
-5.0 (1.0 - 10.0)
+5.0 (1.0 - 9.0)
+</td>
+<td style="text-align:left;">
+2.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 3.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 2.0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reconstruction axis 5
+</td>
+<td style="text-align:left;">
+4.0 (0.0 - 7.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 3.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 1.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 1.0)
+</td>
+<td style="text-align:left;">
+2.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+5.0 (2.0 - 9.0)
+</td>
+<td style="text-align:left;">
+3.0 (0.0 - 5.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 3.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 2.0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reconstruction axis 6
+</td>
+<td style="text-align:left;">
+2.0 (0.0 - 6.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 3.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 2.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 1.0)
+</td>
+<td style="text-align:left;">
+2.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+5.0 (1.0 - 8.0)
 </td>
 <td style="text-align:left;">
 3.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 3.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 2.0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reconstruction axis 7
+</td>
+<td style="text-align:left;">
+3.0 (0.0 - 6.0)
+</td>
+<td style="text-align:left;">
+1.0 (0.0 - 2.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 1.0)
+</td>
+<td style="text-align:left;">
+0.0 (0.0 - 1.0)
+</td>
+<td style="text-align:left;">
+2.0 (0.0 - 4.0)
+</td>
+<td style="text-align:left;">
+5.0 (2.0 - 8.0)
+</td>
+<td style="text-align:left;">
+2.0 (0.0 - 4.0)
 </td>
 <td style="text-align:left;">
 1.0 (0.0 - 3.0)
@@ -989,7 +1022,7 @@ Best joint reconstruction
 5.0 (3.0 - 7.0)
 </td>
 <td style="text-align:left;">
-3.0 (2.0 - 3.0)
+3.0 (1.0 - 3.0)
 </td>
 <td style="text-align:left;">
 1.0 (0.0 - 2.0)

@@ -36,7 +36,7 @@ dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
 ## Reconstructions and clustering data
 ```{r}
 joint_uncs <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
-clustering <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")
+clustering <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS")
 parent_child_dfs <- readRDS("./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS")
 ```
 
@@ -74,24 +74,12 @@ pairwise_comps_sync_all <- do.call(rbind,pairwise_comps_sync)
 
 pairwise_comps_sync_all$num_concordant_transitions <- pairwise_comps_sync_all$synchronous_gains_num + pairwise_comps_sync_all$synchronous_losses_num
 pairwise_comps_sync_all$num_discordant_transitions <- pairwise_comps_sync_all$synchronous_gain_loss_num + pairwise_comps_sync_all$synchronous_loss_gain_num
-pairwise_comps_sync_all$pheno_number <- sapply(pairwise_comps_sync_all$phenotype_reconstruction,FUN=function(x){
-  if(grepl("alt_recon",x)){
-    
-  gsub("alt_recon_","",x)
-  } else {
-    x
-  } 
-})  
+pairwise_comps_sync_all$pheno_number <- gsub("alt_recon_","",pairwise_comps_sync_all$phenotype_reconstruction) 
 
 cluster_names <- clustering %>% `names<-`(seq_len(length(.)))
 
-pairwise_comps_sync_all$pheno_cluster <- sapply(pairwise_comps_sync_all$pheno_number,FUN=function(x){
-  if(!grepl("focal",x)){
-    cluster_names[names(cluster_names) == x]
-  } else {
-    x
-  }
-})
+pairwise_comps_sync_all$pheno_cluster <- ifelse(grepl("focal", pairwise_comps_sync_all$pheno_number),
+                                               pairwise_comps_sync_all$pheno_number, unname(cluster_names[pairwise_comps_sync_all$pheno_number]))
 
 saveRDS(pairwise_comps_sync_all,"./data/empirical/phyloAMR/pairwise_synchronous_transitions_genotype_as_comparitor.RDS")
 ``` 
@@ -127,22 +115,11 @@ pairwise_comps_sync_all_geno <- do.call(rbind,pairwise_comps_sync_geno)
 
 pairwise_comps_sync_all_geno$num_concordant_transitions <- pairwise_comps_sync_all_geno$synchronous_gains_num + pairwise_comps_sync_all_geno$synchronous_losses_num
 pairwise_comps_sync_all_geno$num_discordant_transitions <- pairwise_comps_sync_all_geno$synchronous_gain_loss_num + pairwise_comps_sync_all_geno$synchronous_loss_gain_num
-pairwise_comps_sync_all_geno$pheno_number <- sapply(pairwise_comps_sync_all_geno$phenotype_reconstruction,FUN=function(x){
-  if(grepl("alt_recon",x)){
-    
-  gsub("alt_recon_","",x)
-  } else {
-    x
-  } 
-})  
+pairwise_comps_sync_all_geno$pheno_number <- gsub("alt_recon_","",pairwise_comps_sync_all_geno$phenotype_reconstruction) 
 
-pairwise_comps_sync_all_geno$pheno_cluster <- sapply(pairwise_comps_sync_all_geno$pheno_number,FUN=function(x){
-  if(!grepl("focal",x)){
-    cluster_names[names(cluster_names) == x]
-  } else {
-    x
-  }
-})
+pairwise_comps_sync_all_geno$pheno_cluster <- ifelse(grepl("focal", pairwise_comps_sync_all_geno$pheno_number),
+                                               pairwise_comps_sync_all_geno$pheno_number, unname(cluster_names[pairwise_comps_sync_all_geno$pheno_number]))
+
 
 saveRDS(pairwise_comps_sync_all_geno,"./data/empirical/phyloAMR/pairwise_synchronous_transitions_phenotype_as_comparitor.RDS")
 ``` 

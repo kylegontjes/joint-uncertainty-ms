@@ -39,7 +39,7 @@ names_of_uncs <- names(joint_uncs)
 ```{r, clustering}
 asr_clustering <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering.RDS")
 cluster_analysis_statistics <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS")
-clustering <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS") 
+clustering <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS") 
 ```
 
 # Parent child data frames 

@@ -28,10 +28,10 @@ Sys.info()
 sessionInfo()
 ```
 
-# Load data
+# Load and curate data
 ## Clustering string
 ```{r}  
-clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")
+clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS")
 ```
 
 ## Clustering statistics
@@ -100,7 +100,8 @@ table$pheno_cluster <- recode(table$pheno_cluster,"focal_states" ="Best joint re
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
                                              "5" ="Reconstruction axis 5",
-                                             "6" ="Reconstruction axis 6") 
+                                             "6" ="Reconstruction axis 6",
+                                             "7" ="Reconstruction axis 7") 
 
 colnames(table) <- c("Phenotype axis","Reconstructions","Phylogenetic events","Singletons","Singleton isolates","Clusters","Cluster isolates","Cluster size (median)","Cluster size (max)","Transitions","Gain events","Gains (tip)","Loss events","Losses (tip)","Continuations of trait")
 

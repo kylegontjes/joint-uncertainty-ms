@@ -12,6 +12,7 @@ opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=
 knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
 ```
 
+# Environment
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
 packages <- c("tidyverse",'corHMM','phyloAMR','ggtree') 
@@ -66,9 +67,9 @@ legend_fig <- cowplot::get_legend(painted_trees_w_cluster_calls[[which.max(clust
 painted_trees_w_cluster_calls_wo_legends <- lapply(painted_trees_w_cluster_calls,FUN=function(x){x + theme(legend.position='none')
 }) 
  
-tracing_states_on_tree_wo_legend <- cowplot::plot_grid(plotlist = painted_trees_w_cluster_calls_wo_legends,nrow=3,labels =c("Best joint reconstruction",paste0("Reconstruction axis ",1:n_clusters,"    ")),label_x = -0.25,label_size = 14)
+painted_trees_w_cluster_calls_wo_legends[['legend']] <- legend_fig
 
-tracing_states_on_tree <- cowplot::plot_grid(tracing_states_on_tree_wo_legend,legend_fig,ncol=2,rel_widths = c(1,0.2))
+tracing_states_on_tree <- cowplot::plot_grid(plotlist = painted_trees_w_cluster_calls_wo_legends,nrow=3,labels =c("Best joint reconstruction",paste0("Reconstruction axis ",1:n_clusters,"    "),""),label_x = -0.25,label_size = 14)
 
 tracing_states_on_tree
 ```

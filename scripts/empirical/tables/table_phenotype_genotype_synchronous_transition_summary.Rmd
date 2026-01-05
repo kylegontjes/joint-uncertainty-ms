@@ -29,10 +29,10 @@ Sys.info()
 sessionInfo()
 ```
 
-# Load data
+# Load and curate data
 ## Reconstruction clustering
 ```{r}  
-clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")
+clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS")
 ```
 
 ## Genotype phenotype data
@@ -74,7 +74,7 @@ transition_stats <- lapply(variable_transitionstats,get_median_min_max_values,da
   ~ left_join(.x, .y, by = c("pheno_cluster","genotype"))
 )
 
-# Pivot wide, rows should be pheno cluster and the two columns per genotype are num_concordant transitions and num_discordant_transitions
+# Pivot wide
 transition_stats_wide <- transition_stats %>% arrange(genotype)%>% 
   pivot_wider(
     names_from = genotype,
@@ -89,7 +89,8 @@ transition_stats_wide$pheno_cluster <- recode(transition_stats_wide$pheno_cluste
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
                                              "5" ="Reconstruction axis 5",
-                                             "6" ="Reconstruction axis 6")
+                                             "6" ="Reconstruction axis 6",
+                                             "7" ="Reconstruction axis 7")
 
 transition_stats_wide <- transition_stats_wide %>% select(pheno_cluster,paste0(levels(transition_stats$genotype),"_synchronous_gains_num"))
 
@@ -97,7 +98,7 @@ colnames(transition_stats_wide) <- gsub("_synchronous_gains_num"," synchronous g
 ```
  
 # Merged table
-```{r} 
+```{r, save} 
 transition_stats_wide %>% favorite_kable()
 
 write_csv(transition_stats_wide,"./tables/empirical/table_phenotype_genotype_pairwise_synchronous_transitions_summary.csv")

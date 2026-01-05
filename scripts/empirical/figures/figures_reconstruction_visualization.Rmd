@@ -16,7 +16,7 @@ knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-un
 
 ```{r environment, echo=T, message=FALSE, include=T, results=T} 
 #Packages
-packages <- c("tidyverse",'corHMM','proxy','dbscan','Rtsne','phyloAMR') 
+packages <- c("tidyverse",'corHMM','proxy','dbscan','phyloAMR') 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
@@ -46,7 +46,7 @@ joint_ci <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_jo
 state_df <- joint_ci$state_df
 state_df_matrix <- as.matrix(state_df)
   
-clustering_6 <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS") 
+clustering_7 <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS") 
 hclust_obj <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix.RDS") 
 
 dist_mat <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")
@@ -55,14 +55,13 @@ dist_mat <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr
 ## Chosen cluster assignments & theme
 ```{r}
 # Cluster assignments
-cluster_assignments <- clustering_6
+cluster_assignments <- clustering_7
 clusters <- factor(cluster_assignments) 
 optimal_k_gap <- sum(as.numeric(unique(cluster_assignments)) >0)
 
 # Cluster colors
 clust_cols <- phylogenetic_reconstruction_scale$palette(length(phylogenetic_reconstruction_scale$breaks))[1+1:sum(levels(clusters) !=0)]
 ```
-
 
 # Phylogeny with node states
 ```{r phylo w node states} 
@@ -125,14 +124,6 @@ for (k in seq_along(cluster_ids)) {
 }
 dev.off()
 ```
-
-# Empirical tSNE plot
-## Removed as we no longer use tSNE
-#```{r tsne} 
-#pdf("./figures/empirical/empirical_joint_uncertainty_tsne.pdf", width = 5, height = 5)
-#plot(tsne_res$Y, pch = 21, bg = c("white", clust_cols)[cluster_assignments+1], main = "Phylo Weighted Distance", xlab = "tSNE Dimension 1", ylab = "tSNE Dimension 2")
-#dev.off()
-#```
 
 # Dendogram
 ```{r, dendogram}

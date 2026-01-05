@@ -102,6 +102,15 @@ plot(hc, labels = FALSE,hang=-1,xlab = "Distance")
 rect.hclust(hc, k = 6,border = hues::iwanthue(7))
 ```
  
+
+### Seven Clusters
+
+```{r}
+hc$height <- log1p(hc$height)
+plot(hc, labels = FALSE,hang=-1,xlab = "Distance")
+rect.hclust(hc, k = 7,border = hues::iwanthue(7))
+```
+
 # Final clustering choices
 
 ```{r}
@@ -116,4 +125,8 @@ saveRDS(final_clustering_five,"./data/empirical/joint_reconstruction/hclust_cons
 # Six clusters
 final_clustering_six <-  cutree(hc, k = 6) 
 saveRDS(final_clustering_six,"./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")  
+
+# Seven clusters
+final_clustering_seven <-  cutree(hc, k = 7) 
+saveRDS(final_clustering_seven,"./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS")  
 ```
