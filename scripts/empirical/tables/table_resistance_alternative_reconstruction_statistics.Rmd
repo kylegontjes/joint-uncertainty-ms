@@ -14,7 +14,7 @@ knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-un
 # Environment
 ```{r environment, echo=T, message=FALSE, include=T, results=T}
 #Packages
-packages <- c("tidyverse",'corHMM','phyloAMR','gontjesr','kableExtra') 
+packages <- c("tidyverse",'gontjesr','kableExtra') 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
@@ -30,12 +30,12 @@ sessionInfo()
 
 # Load and curate data
 ## Clustering string
-```{r}  
+```{r, clustering str}  
 clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS")
 ```
 
 ## Clustering statistics
-```{r}
+```{r, clustering statistics}
 cluster_analysis_df <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS") 
 cluster_analysis_df$cluster_size_max <- str_split(cluster_analysis_df$cluster_size_range,"-",simplify=T) %>% .[,2] %>% as.numeric()
 blbli_cluster_analysis_df <- cluster_analysis_df %>% subset(trait == 'blbli_dich_num')
@@ -69,7 +69,7 @@ cluster_stats <- lapply(variable_cluster_stats,get_median_min_max_values,dataset
 ```
 
 ## Transition statistics
-```{r}
+```{r, transition statistics}
 transition_df <- readRDS("./data/empirical/phyloAMR/joint_states_reconstruction_transition_statistics.RDS") 
 blbli_transition_analysis_df <- transition_df %>% .[["blbli_dich_num"]] 
  
@@ -87,12 +87,12 @@ transition_stats <- lapply(variable_transition_stats,get_median_min_max_values,d
 ```
 
 ## Number of reconstructions
-```{r}
+```{r, number of recons}
 num_recons <- blbli_transition_analysis_df %>% group_by(pheno_cluster) %>% summarise (`Reconstructions` = n())
 ```
 
 # Merged table
-```{r}
+```{r, print and save}
 table <- left_join(num_recons,cluster_stats) %>% left_join(.,transition_stats) 
 table$pheno_cluster <- recode(table$pheno_cluster,"focal_states" ="Best joint reconstruction",
                                              "1" ="Reconstruction axis 1",

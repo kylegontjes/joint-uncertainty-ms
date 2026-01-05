@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kyle Gontjes" />
 
-<meta name="date" content="2026-01-04" />
+<meta name="date" content="2026-01-05" />
 
 <title>Table - Statistics across reconstructions</title>
 
@@ -577,7 +577,7 @@ display: none;
 <h1 class="title toc-ignore">Table - Statistics across
 reconstructions</h1>
 <h4 class="author">Kyle Gontjes</h4>
-<h4 class="date">2026-01-04</h4>
+<h4 class="date">2026-01-05</h4>
 
 </div>
 
@@ -585,7 +585,7 @@ reconstructions</h1>
 <div id="environment" class="section level1">
 <h1>Environment</h1>
 <pre class="r"><code>#Packages
-packages &lt;- c(&quot;tidyverse&quot;,&#39;corHMM&#39;,&#39;phyloAMR&#39;,&#39;gontjesr&#39;,&#39;kableExtra&#39;) 
+packages &lt;- c(&quot;tidyverse&quot;,&#39;gontjesr&#39;,&#39;kableExtra&#39;) 
 
 #Load Packages
 invisible(lapply(packages,library,character.only=T,quietly=T))
@@ -631,42 +631,23 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] kableExtra_1.4.0 gontjesr_0.1.0   phyloAMR_0.1.0   corHMM_2.10     
- [5] GenSA_1.1.14.1   nloptr_2.2.1     ape_5.8-1        lubridate_1.9.4 
- [9] forcats_1.0.1    stringr_1.5.2    dplyr_1.1.4      purrr_1.1.0     
-[13] readr_2.1.5      tidyr_1.3.1      tibble_3.3.0     ggplot2_3.5.2   
-[17] tidyverse_2.0.0  knitr_1.50      
+ [1] kableExtra_1.4.0 gontjesr_0.1.0   lubridate_1.9.4  forcats_1.0.1   
+ [5] stringr_1.5.2    dplyr_1.1.4      purrr_1.1.0      readr_2.1.5     
+ [9] tidyr_1.3.1      tibble_3.3.0     ggplot2_3.5.2    tidyverse_2.0.0 
+[13] knitr_1.50      
 
 loaded via a namespace (and not attached):
- [1] tidyselect_1.2.1        viridisLite_0.4.2       Rmpfr_1.1-1            
- [4] farver_2.1.2            phytools_2.5-2          viridis_0.6.5          
- [7] optimParallel_1.0-2     fastmap_1.2.0           lazyeval_0.2.2         
-[10] combinat_0.0-8          digest_0.6.37           timechange_0.3.0       
-[13] lifecycle_1.0.4         tidytree_0.4.6          magrittr_2.0.4         
-[16] compiler_4.5.2          rlang_1.1.6             sass_0.4.10            
-[19] tools_4.5.2             igraph_2.1.4            yaml_2.3.10            
-[22] phangorn_2.12.1         clusterGeneration_1.3.8 mnormt_2.1.1           
-[25] scatterplot3d_0.3-44    xml2_1.4.0              RColorBrewer_1.1-3     
-[28] aplot_0.2.9             expm_1.0-0              withr_3.0.2            
-[31] numDeriv_2016.8-1.1     nnet_7.3-20             grid_4.5.2             
-[34] scales_1.4.0            iterators_1.0.14        MASS_7.3-65            
-[37] cli_3.6.5               rmarkdown_2.29          treeio_1.32.0          
-[40] generics_0.1.4          rstudioapi_0.17.1       ggtree_3.17.0          
-[43] tzdb_0.5.0              cachem_1.1.0            maps_3.4.3             
-[46] parallel_4.5.2          ggplotify_0.1.3         vctrs_0.6.5            
-[49] yulab.utils_0.2.1       Matrix_1.7-4            jsonlite_2.0.0         
-[52] patchwork_1.3.2         gridGraphics_0.5-1      hms_1.1.3              
-[55] systemfonts_1.2.3       foreach_1.5.2           jquerylib_0.1.4        
-[58] glue_1.8.0              codetools_0.2-20        DEoptim_2.2-8          
-[61] stringi_1.8.7           gtable_0.3.6            quadprog_1.5-8         
-[64] gmp_0.7-5               pillar_1.11.1           rappdirs_0.3.3         
-[67] htmltools_0.5.8.1       R6_2.6.1                textshaping_1.0.3      
-[70] lhs_1.2.0               doParallel_1.0.17       evaluate_1.0.5         
-[73] lattice_0.22-7          ggfun_0.2.0             corpcor_1.6.10         
-[76] bslib_0.9.0             Rcpp_1.1.0              fastmatch_1.1-6        
-[79] svglite_2.2.1           coda_0.19-4.1           gridExtra_2.3          
-[82] nlme_3.1-168            xfun_0.53               fs_1.6.6               
-[85] pkgconfig_2.0.3        </code></pre>
+ [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.5.2     tidyselect_1.2.1  
+ [5] xml2_1.4.0         jquerylib_0.1.4    textshaping_1.0.3  systemfonts_1.2.3 
+ [9] scales_1.4.0       yaml_2.3.10        fastmap_1.2.0      R6_2.6.1          
+[13] generics_0.1.4     svglite_2.2.1      bslib_0.9.0        pillar_1.11.1     
+[17] RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.1.6        cachem_1.1.0      
+[21] stringi_1.8.7      xfun_0.53          sass_0.4.10        viridisLite_0.4.2 
+[25] timechange_0.3.0   cli_3.6.5          withr_3.0.2        magrittr_2.0.4    
+[29] digest_0.6.37      grid_4.5.2         rstudioapi_0.17.1  hms_1.1.3         
+[33] lifecycle_1.0.4    vctrs_0.6.5        evaluate_1.0.5     glue_1.8.0        
+[37] farver_2.1.2       rmarkdown_2.29     tools_4.5.2        pkgconfig_2.0.3   
+[41] htmltools_0.5.8.1 </code></pre>
 </div>
 <div id="load-and-curate-data" class="section level1">
 <h1>Load and curate data</h1>
