@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kyle Gontjes" />
 
-<meta name="date" content="2026-01-04" />
+<meta name="date" content="2026-01-05" />
 
 <title>Figures detailing ancestral state reconstructions</title>
 
@@ -353,7 +353,7 @@ display: none;
 <h1 class="title toc-ignore">Figures detailing ancestral state
 reconstructions</h1>
 <h4 class="author">Kyle Gontjes</h4>
-<h4 class="date">2026-01-04</h4>
+<h4 class="date">2026-01-05</h4>
 
 </div>
 
@@ -541,7 +541,7 @@ dev.off()</code></pre>
 <div id="dendogram" class="section level1">
 <h1>Dendogram</h1>
 <pre class="r"><code>pdf(&quot;./figures/empirical/empirical_joint_uncertainty_consensus_matrix_hclust_dendogram.pdf&quot;, height = 5, width = 5)   
-par(mar = c(4.25,4,0.25,0.25))
+par(mar = c(4.3,4,0.3,0.3))
 
 hclust_obj$height &lt;- log1p(hclust_obj$height)
 plot(hclust_obj, labels = FALSE, hang=-1,xlab = &quot;Distance (Ward&#39;s D2)&quot;,ylab = &quot;ln(Height + 1)&quot;,main=NULL,ann = T,sub=&quot;&quot;,frame.plot = F,axes = T,check = T)
@@ -591,7 +591,7 @@ important_nodes &lt;- lapply(unique(clusters), function(clust) {
   cluster_nodes[(cluster_nodes$importance) &gt; quantile((cluster_nodes$importance), 0.985),]
 })
 
-pdf(&quot;./figures/empirical/empirical_joint_uncertainty_important_nodes.pdf&quot;, width = 10.5, height = 10.5)
+pdf(&quot;./figures/empirical/empirical_joint_uncertainty_important_nodes.pdf&quot;, width = 13.125, height = 10.5)
 par(mfrow=c(1,1))
 corHMM:::plot_clustered_phylo(
   phy = phy,

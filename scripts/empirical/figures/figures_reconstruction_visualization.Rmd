@@ -128,7 +128,7 @@ dev.off()
 # Dendogram
 ```{r, dendogram}
 pdf("./figures/empirical/empirical_joint_uncertainty_consensus_matrix_hclust_dendogram.pdf", height = 5, width = 5)   
-par(mar = c(4.25,4,0.25,0.25))
+par(mar = c(4.3,4,0.3,0.3))
 
 hclust_obj$height <- log1p(hclust_obj$height)
 plot(hclust_obj, labels = FALSE, hang=-1,xlab = "Distance (Ward's D2)",ylab = "ln(Height + 1)",main=NULL,ann = T,sub="",frame.plot = F,axes = T,check = T)
@@ -176,7 +176,7 @@ important_nodes <- lapply(unique(clusters), function(clust) {
   cluster_nodes[(cluster_nodes$importance) > quantile((cluster_nodes$importance), 0.985),]
 })
 
-pdf("./figures/empirical/empirical_joint_uncertainty_important_nodes.pdf", width = 10.5, height = 10.5)
+pdf("./figures/empirical/empirical_joint_uncertainty_important_nodes.pdf", width = 13.125, height = 10.5)
 par(mfrow=c(1,1))
 corHMM:::plot_clustered_phylo(
   phy = phy,

@@ -35,7 +35,7 @@ sessionInfo()
 phy <- ape::read.tree("./data/empirical/tree/tree.treefile")
 dat <- readRDS("./data/empirical/dataset/df.RDS")
 dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
-clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")
+clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS")
 ```
 
 ```{r}
@@ -213,7 +213,7 @@ pheno_gain_explanation_df$pheno_cluster,levels = rev(factor_order))
 
 xmaximum <- (ceiling(max(pheno_gain_explanation_df$prop_pheno_gains_w_geno_gain) * 10) / 10) + .01
 
-C<- ggplot(pheno_gain_explanation_df,
+C <- ggplot(pheno_gain_explanation_df,
        aes(x = prop_pheno_gains_w_geno_gain,
            y = as.factor(genotype),
            fill = as.factor(pheno_cluster))) +

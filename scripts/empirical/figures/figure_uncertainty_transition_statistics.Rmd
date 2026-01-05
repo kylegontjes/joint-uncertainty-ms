@@ -42,7 +42,7 @@ genotypes <- readRDS("./data/empirical/resistance_genotypes/resistance_genotypes
 state_transition_statistics <- readRDS("./data/empirical/phyloAMR/joint_states_reconstruction_transition_statistics.RDS")  %>% .[["blbli_dich_num"]] 
 
 # Clustering
-clustering <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS") 
+clustering <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS") 
 cluster_statistics <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering_statistics.RDS") %>% subset(trait=='blbli_dich_num')  
 cluster_statistics$cluster_size_max <- str_split(cluster_statistics$cluster_size_range,"-",simplify=T) %>% .[,2] %>% as.numeric() 
  

@@ -47,7 +47,7 @@ df <- left_join(dat,genotypes)
 ```{r}
 focals <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS")
 joint_uncs <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")
-clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_six_clusters_string.RDS")
+clustering_str <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_distance_matrix_seven_clusters_string.RDS")
 ```
 
 # Pairwise phyloAMR data
@@ -140,6 +140,8 @@ A <- Heatmap(
   heatmap_legend_param =list(at = 0:max_syn_transitions,labels = 0:max_syn_transitions)
 ) 
 
+A
+
 # Extract legends for each annotation
 lgd_row <- color_mapping_legend(rowannots@anno_list[["Phenotype axes"]]@color_mapping)
 lgd_col <- color_mapping_legend(colannots@anno_list[["Genotype"]]@color_mapping)
@@ -155,12 +157,12 @@ merged_legends <- packLegend(
 # Asynchronous
 ```{r,fig.width=12, fig.height=8, results='hide', echo=TRUE}
 # Pivot wide 
-matrix_of_vals <- pairwise_comparisons_ordered %>%
+matrix_of_vals_asy <- pairwise_comparisons_ordered %>%
     group_by(genotype_reconstruction_axes, phenotype_reconstruction) %>%
     summarise(value = synchronous_losses_num) %>%  # or median(), sum(), etc
     pivot_wider(names_from = genotype_reconstruction_axes, values_from = value) 
 
-matrix_of_vals$cluster <- sapply(matrix_of_vals$phenotype_reconstruction,FUN=function(x){
+matrix_of_vals_asy$cluster <- sapply(matrix_of_vals_asy$phenotype_reconstruction,FUN=function(x){
   if(!grepl("focal",x)){
     cluster_names[names(cluster_names) == gsub("alt_recon_","",x)]
   } else {
@@ -168,26 +170,26 @@ matrix_of_vals$cluster <- sapply(matrix_of_vals$phenotype_reconstruction,FUN=fun
   }
 })
 
-matrix_of_vals$cluster <- recode(matrix_of_vals$cluster,"focal_states" ="Best joint reconstruction",
+matrix_of_vals_asy$cluster <- recode(matrix_of_vals_asy$cluster,"focal_states" ="Best joint reconstruction",
                                              "1" ="Reconstruction axis 1",
                                              "2" ="Reconstruction axis 2",
                                              "3" ="Reconstruction axis 3",
                                              "4" ="Reconstruction axis 4",
                                              "5" ="Reconstruction axis 5",
-                                             "5" ="Reconstruction axis 6", 
+                                             "6" ="Reconstruction axis 6", 
                                              "7" ="Reconstruction axis 7") 
 
-matrix_of_vals <- matrix_of_vals %>% arrange(cluster) 
-rowsplit_pheno <- factor(matrix_of_vals$cluster,levels = unique(sort(matrix_of_vals$cluster)))
+matrix_of_vals_asy <- matrix_of_vals_asy %>% arrange(cluster) 
+rowsplit_pheno <- factor(matrix_of_vals_asy$cluster,levels = unique(sort(matrix_of_vals_asy$cluster)))
 
-gene <- factor(colnames(matrix_of_vals %>% select(-cluster, -phenotype_reconstruction)) %>% str_split(.,"_",simplify=T) %>% .[,1:2] %>% apply(.,1,paste0,collapse="_")  %>% gsub("_alt|_focal","",.)) 
+gene <- factor(colnames(matrix_of_vals_asy %>% select(-cluster, -phenotype_reconstruction)) %>% str_split(.,"_",simplify=T) %>% .[,1:2] %>% apply(.,1,paste0,collapse="_")  %>% gsub("_alt|_focal","",.)) 
  
-max_asyn_transitions <- matrix_of_vals %>% select(-cluster, -phenotype_reconstruction) %>% as.matrix() %>% unlist %>% as.vector %>% max
+max_asyn_transitions <- matrix_of_vals_asy %>% select(-cluster, -phenotype_reconstruction) %>% as.matrix() %>% unlist %>% as.vector %>% max
 
 col_fun_asyn <- colorRamp2(c(0, max_asyn_transitions), c("white", "red"))
 
 B <- Heatmap(
-  matrix_of_vals %>% select(-cluster, -phenotype_reconstruction) %>% as.matrix(),
+  matrix_of_vals_asy %>% select(-cluster, -phenotype_reconstruction) %>% as.matrix(),
   row_split = rowsplit_pheno,
   column_split = gene,
   cluster_rows = FALSE,
@@ -206,6 +208,7 @@ B <- Heatmap(
   heatmap_legend_param =list(at = 0:max_asyn_transitions,labels = 0:max_asyn_transitions)
 )
 
+B
 
 # Extract legends for each annotation
 lgd_row <- color_mapping_legend(rowannots@anno_list[["Phenotype axes"]]@color_mapping)
