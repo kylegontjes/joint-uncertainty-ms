@@ -1,0 +1,145 @@
+---
+title: "Compress large files for GitHub"
+author: "Kyle Gontjes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+Purpose: Not all files are small enough to host on GitHub using standard processes
+
+```{r setup, include=FALSE}
+require(knitr) 
+opts_knit$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE,error=FALSE,comment=NA) 
+knitr::opts_knit$set(root.dir = '~/Desktop/gl_mount/Analysis/Phyloaware/joint-uncertainty-ms/') 
+```
+
+# Environment
+```{r environment, echo=T, message=FALSE, include=T, results=T}
+#Packages
+packages <- c("tidyverse",'qs','float',"rhdf5") 
+
+#Load Packages
+invisible(lapply(packages,library,character.only=T,quietly=T))
+
+# Print environment
+set.seed(0104) 
+Sys.info()
+sessionInfo()
+```
+ 
+# Phylogenetic distance matrix of BL/BLI reconstructions: ./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS
+
+1. This file is massive with many elements. As such, we can't host it on GitHub and have decided to compress partitions of the lower triangle (as distance structure uses the lower triangle).
+
+2. To compress it, we will save only the upper triangle of the distance matrix as a float32 vector using the `qs` package. Five chunks will be created.
+
+3. This will not be 100% precise. Notice the small difference across this float32 vector. 
+
+```{r}
+# Phylogenetic distance matrix
+joint_uncertainty_asr_phylo_dist_matrix <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")  
+
+paste0("Class of object (must be dist for this approach to work: ",class(joint_uncertainty_asr_phylo_dist_matrix))
+
+# Get upper triangle of a float conversion of the distance matrix   
+lower_tri_values <- fl(as.numeric(joint_uncertainty_asr_phylo_dist_matrix))
+
+# Length
+L <- length(lower_tri_values)
+
+# Compute chunk size
+chunk_size <- ceiling(L / 5)
+
+# Split into 5 chunks
+chunks <- list(
+  lower_tri_values[1:chunk_size],
+  lower_tri_values[(chunk_size + 1):(2*chunk_size)],
+  lower_tri_values[(2*chunk_size + 1):(3*chunk_size)],
+  lower_tri_values[(3*chunk_size + 1):(4*chunk_size)],
+  lower_tri_values[(4*chunk_size + 1):L]  # last chunk may be slightly smaller
+)
+
+# Convert each chunk to float32 and save
+for (i in 1:5) {
+  chunk_f32 <- fl(chunks[[i]])
+  qsave(chunk_f32, paste0("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix_lower_triangle_chunk_", i, ".qs"), preset = "high")
+}
+```
+
+## Reconstruct matrix and determine differences
+
+1. Here, we provide a quick function to reconstruct the distance matrix
+
+2. Notice that there are only small differences between the utilized distance matrix and reconstructed matrix
+
+```{r}
+# Load chunks
+lower_tri_1 <- qread("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix_lower_triangle_chunk_1.qs") 
+lower_tri_2 <- qread("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix_lower_triangle_chunk_2.qs")
+lower_tri_3 <- qread("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix_lower_triangle_chunk_3.qs")
+lower_tri_4 <- qread("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix_lower_triangle_chunk_4.qs")
+lower_tri_5 <- qread("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix_lower_triangle_chunk_5.qs")
+
+# Stitch together the chunks
+lower_vals_restitch <- c(lower_tri_1,lower_tri_2,lower_tri_3,lower_tri_4,lower_tri_5)
+
+# Function to reconstruct distance matrix
+reconstruct_distance_matrix <- function(lower_vals) {
+  # Convert to numeric
+  lower_vals <- as.numeric(lower_vals)
+
+  # Get number of observations
+  L <- length(lower_vals)
+  n <- as.integer((1 + sqrt(1 + 8 * L)) / 2) 
+ 
+  # Create distance object
+  distance_obj <- structure(lower_vals, Size = n, class = "dist")
+  
+  # Recreate matrix
+  recreated_matrix <- as.matrix(distance_obj)
+  
+  recreated_matrix
+}
+
+# Implementation
+rebuilt_matrix <- reconstruct_distance_matrix(lower_vals_restitch) 
+
+## These are generally similar. With differences due to floating point rounding errors 
+paste0("Dimensions of reconstructed matrix: ")
+dim(rebuilt_matrix)
+
+paste0("How many cells are exactly the same?")
+joint_uncertainty_asr_phylo_dist_matrix_as_matrix <- as.matrix(joint_uncertainty_asr_phylo_dist_matrix)
+table(rebuilt_matrix == joint_uncertainty_asr_phylo_dist_matrix_as_matrix)
+
+paste0("Determine differences between matrices: ")
+diff <-  rebuilt_matrix - joint_uncertainty_asr_phylo_dist_matrix_as_matrix
+all.equal(rebuilt_matrix, joint_uncertainty_asr_phylo_dist_matrix_as_matrix, tolerance = 1e-8)
+hist(diff)  
+fivenum(diff)
+```
+
+# Consensus matrix of dbscan assignment across multiple seeds: ./data/empirical/joint_reconstruction/joint_uncertainty_dbscan_multiple_seeds_consensus_matrix.RDS
+```{r}
+joint_uncertainty_dbscan_multiple_seeds_consensus_matrix <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_dbscan_multiple_seeds_consensus_matrix.RDS") 
+qsave(joint_uncertainty_dbscan_multiple_seeds_consensus_matrix, "./data/empirical/joint_reconstruction/joint_uncertainty_dbscan_multiple_seeds_consensus_matrix.qs", preset = 'high')
+```
+ 
+# Parent child data frames for each reconstruction: ./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS
+```{r}
+joint_states_parent_child_dfs <- readRDS("./data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS") 
+qsave(joint_states_parent_child_dfs, "./data/empirical/phyloAMR/joint_states_parent_child_dfs.qs", preset = 'high') 
+```
+
+# Pairwise genotype data: ./data/empirical/phyloAMR/pairwise_synchronous_transitions_genotype_as_comparitor.RDS
+```{r}
+pairwise_synchronous_transitions_genotype_as_comparitor <- readRDS("./data/empirical/phyloAMR/pairwise_synchronous_transitions_genotype_as_comparitor.RDS") 
+qsave(pairwise_synchronous_transitions_genotype_as_comparitor, "./data/empirical/phyloAMR/pairwise_synchronous_transitions_genotype_as_comparitor.qs", preset = 'high') 
+```
+
+# Ancestral state reconstruction clustering: ./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering.RDS
+```{r}
+phenotype_genotype_joint_uncertainty_asr_clustering <- readRDS("./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering.RDS") 
+qsave(phenotype_genotype_joint_uncertainty_asr_clustering, "./data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering.qs", preset = 'high') 
+```

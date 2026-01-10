@@ -1,4 +1,4 @@
-# joint-uncertainty-ms
+# Uncertainty in joint reconstruction manuscript
 
 Code and data for the empirical study presented in the joinnt reconstruction uncertainty manuscript. 
 
