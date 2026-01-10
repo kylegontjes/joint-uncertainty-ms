@@ -52,3 +52,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Massive files 
+data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS
+data/empirical/phyloAMR/joint_states_parent_child_dfs.RDS
+data/empirical/phyloAMR/pairwise_synchronous_transitions_genotype_as_comparitor.RDS
+data/empirical/phyloAMR/phenotype_genotype_joint_uncertainty_asr_clustering.RDS
+data/empirical/joint_reconstruction/joint_uncertainty_dbscan_multiple_seeds_consensus_matrix.RDS
