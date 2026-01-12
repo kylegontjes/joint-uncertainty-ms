@@ -56,21 +56,27 @@ p1 <-  gheatmap(p0.1,dat %>% select(best_joint_asr_cluster_renamed) %>% `colname
 p1.1 <- gheatmap(p1,dat %>% select(any_of(paste0(JR_variables,"_asr_cluster_renamed"))) %>% `colnames<-`(paste0("Reconstruction axis ",1:number_clusters)),offset =0.00005,width=0.1*number_clusters,color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.05, hjust = 0,font.size = 3.15) + cluster_scale  + ylim(NA,625)
 ```
 
-```{r, fig.height=7,fig.width=7}
+```{r, fig.height=8.4375,fig.width=6.75}
 p1.2 <- p1.1 + ggnewscale::new_scale_fill()
-colnames(genotypes) <-  recode(colnames(genotypes)  , 'OmpK35-25'='ompK35 porin truncation at 25%','OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36','OmpK36_L3_mutations'='Loop 3 insertion in ompK36','OmpK36GD'='GD insertion in loop 3 of ompK36','OmpK36TD'='TD insertion in loop 3 of ompK36','OmpK36_truncation_kleborate'='ompK36 truncation', 'OmpK36_non_syn'='ompK36 non-synonymous mutation','OmpK36_putative_function_altering'='ompK36 PFAV','OmpK36_intergenic'='Mutation in intergenic region of ompK36','OmpK36_promoter_IS'='Insertion sequence at ompK36 promoter',"AcrAB_TolC_any" = 'acrAB-tolC efflux pump mutant','RamR'='PFAV in ramR efflux pump regulator',"RamA"='PFAV in ramA efflux pump activator','PBP_any'='Penicillin-binding-protein mutant','PBP2'='Penicillin-binding protein-2 mutant',"PBP4"='Penicillin-binding protein-4 mutant',"AA018" = "AA018 blaKPC-containing plasmid","AA552" = "AA552 blaKPC-containing plasmid","OmpK36_disruptive" = "PFAV in ompK36") 
+colnames(genotypes) <-  recode_genotypes(colnames(genotypes)) %>% collapse_PFAV(.)
 
 clustered_heatmap <- ComplexHeatmap::Heatmap(genotypes %>% select(-isolate_no) %>% mutate_all(as.numeric))
 column_order_ <- colnames(genotypes %>% select(-isolate_no))[ComplexHeatmap::column_order(clustered_heatmap)]
 
 rownames(genotypes) <- genotypes$isolate_no
 
-p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.000235),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.05)  + factor_scale + ylim(NA,687.5) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')),
-    legend.spacing.x = unit(0.05, "cm"))
+p2 <- gheatmap(p1.2,genotypes %>% select(column_order_) %>% mutate_all(as.factor),offset=(0.000235),width=0.1*ncol(genotypes %>% select(-isolate_no)),color=NULL,colnames_position = "top",colnames_angle = 90,colnames_offset_y = 0.1, hjust = 0,font.size=3.05)  + factor_scale + ylim(NA,580) +  theme(legend.position = 'bottom',legend.direction="horizontal", legend.justification = "center", legend.key = element_rect(colour = c('black')),
+    legend.spacing.x = unit(0.025, "cm"),legend.key.size = unit(0.5,"cm"))
 
-p2 
+p2_wo_legend <- p2 + theme(legend.position = 'none') + theme(plot.margin = margin(t=0,r=0,b=-0.8,l=-0.5,unit='cm'))
+
+p2_wo_legend
+p2_legend <- cowplot::get_legend(p2)
+
+figure <- cowplot::plot_grid(p2_wo_legend,p2_legend,ncol=1,rel_heights = c(1,0.1))
+figure
 ```
 
 ```{r, save}
-ggsave("./figures/empirical/phylogeny_with_resistance_genotypes.png",dpi = 900,bg = 'white',plot = p2, width=7,height=7)
+ggsave("./figures/empirical/phylogeny_with_resistance_genotypes.png", dpi = 900, bg = 'white', plot = figure, width=6.75, height=8.4375)
 ```

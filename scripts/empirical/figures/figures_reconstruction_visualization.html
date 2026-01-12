@@ -9,9 +9,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Kyle Gontjes" />
+<meta name="author" content="Kyle Gontjes &amp; James Boyko" />
 
-<meta name="date" content="2026-01-05" />
+<meta name="date" content="2026-01-12" />
 
 <title>Figures detailing ancestral state reconstructions</title>
 
@@ -352,8 +352,8 @@ display: none;
 
 <h1 class="title toc-ignore">Figures detailing ancestral state
 reconstructions</h1>
-<h4 class="author">Kyle Gontjes</h4>
-<h4 class="date">2026-01-05</h4>
+<h4 class="author">Kyle Gontjes &amp; James Boyko</h4>
+<h4 class="date">2026-01-12</h4>
 
 </div>
 
@@ -379,7 +379,7 @@ Sys.info()</code></pre>
                                                                                             version 
 &quot;Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:34 PST 2025; root:xnu-12377.61.12~1/RELEASE_X86_64&quot; 
                                                                                            nodename 
-                                                                         &quot;0587669891.vpn.umich.net&quot; 
+                                                                         &quot;0587665208.vpn.umich.net&quot; 
                                                                                             machine 
                                                                                            &quot;x86_64&quot; 
                                                                                               login 
@@ -450,8 +450,8 @@ loaded via a namespace (and not attached):
 dat &lt;- readRDS(&quot;./data/empirical/dataset/df.RDS&quot;)
 dat &lt;- dat[match(phy$tip.label, dat[[&#39;isolate_no&#39;]]), ]</code></pre>
 </div>
-<div id="ancestral-states" class="section level2">
-<h2>Ancestral states</h2>
+<div id="ancestral-states-and-clustering-assignments" class="section level2">
+<h2>Ancestral states and clustering assignments</h2>
 <pre class="r"><code>focal &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS&quot;) %&gt;% .[[&quot;blbli_dich_num&quot;]]
 joint_ci &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS&quot;)%&gt;% .[[&quot;blbli_dich_num&quot;]]
 
@@ -463,8 +463,8 @@ hclust_obj &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/hclust_cons
 
 dist_mat &lt;- readRDS(&quot;./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS&quot;)</code></pre>
 </div>
-<div id="chosen-cluster-assignments-theme" class="section level2">
-<h2>Chosen cluster assignments &amp; theme</h2>
+<div id="chosen-cluster-assignments-colors-from-theme" class="section level2">
+<h2>Chosen cluster assignments &amp; colors from theme</h2>
 <pre class="r"><code># Cluster assignments
 cluster_assignments &lt;- clustering_7
 clusters &lt;- factor(cluster_assignments) 
@@ -544,7 +544,7 @@ dev.off()</code></pre>
 par(mar = c(4.3,4,0.3,0.3))
 
 hclust_obj$height &lt;- log1p(hclust_obj$height)
-plot(hclust_obj, labels = FALSE, hang=-1,xlab = &quot;Distance (Ward&#39;s D2)&quot;,ylab = &quot;ln(Height + 1)&quot;,main=NULL,ann = T,sub=&quot;&quot;,frame.plot = F,axes = T,check = T)
+plot(hclust_obj, labels = FALSE, hang=-1, xlab = &quot;Distance (Ward&#39;s D2)&quot;,ylab = &quot;ln(Height + 1)&quot; ,main=NULL, ann = T, sub=&quot;&quot;, frame.plot = F, axes = T, check = T)
 rect.hclust(hclust_obj, k = optimal_k_gap,border = clust_cols)
 
 dev.off()</code></pre>

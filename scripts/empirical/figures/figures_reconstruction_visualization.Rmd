@@ -1,6 +1,6 @@
 ---
 title: "Figures detailing ancestral state reconstructions"
-author: "Kyle Gontjes"
+author: "Kyle Gontjes & James Boyko"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -38,7 +38,7 @@ dat <- readRDS("./data/empirical/dataset/df.RDS")
 dat <- dat[match(phy$tip.label, dat[['isolate_no']]), ]
 ```
 
-## Ancestral states
+## Ancestral states and clustering assignments
 ```{r load recon data} 
 focal <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_focal_asrs.RDS") %>% .[["blbli_dich_num"]]
 joint_ci <- readRDS("./data/empirical/joint_reconstruction/phenotype_genotype_joint_uncertainty_asrs.RDS")%>% .[["blbli_dich_num"]]
@@ -52,7 +52,7 @@ hclust_obj <- readRDS("./data/empirical/joint_reconstruction/hclust_consensus_di
 dist_mat <- readRDS("./data/empirical/joint_reconstruction/joint_uncertainty_asr_phylo_dist_matrix.RDS")
 ```
 
-## Chosen cluster assignments & theme
+## Chosen cluster assignments & colors from theme
 ```{r}
 # Cluster assignments
 cluster_assignments <- clustering_7
@@ -131,12 +131,11 @@ pdf("./figures/empirical/empirical_joint_uncertainty_consensus_matrix_hclust_den
 par(mar = c(4.3,4,0.3,0.3))
 
 hclust_obj$height <- log1p(hclust_obj$height)
-plot(hclust_obj, labels = FALSE, hang=-1,xlab = "Distance (Ward's D2)",ylab = "ln(Height + 1)",main=NULL,ann = T,sub="",frame.plot = F,axes = T,check = T)
+plot(hclust_obj, labels = FALSE, hang=-1, xlab = "Distance (Ward's D2)",ylab = "ln(Height + 1)" ,main=NULL, ann = T, sub="", frame.plot = F, axes = T, check = T)
 rect.hclust(hclust_obj, k = optimal_k_gap,border = clust_cols)
 
 dev.off()
 ```
-
 
 # Log likelihood distribution
 ```{r loglik distribution} 

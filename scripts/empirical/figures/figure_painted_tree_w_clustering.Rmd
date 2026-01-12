@@ -36,7 +36,7 @@ dat <- readRDS("./data/empirical/dataset/df.RDS")
 phy <- read.tree("./data/empirical/tree/tree.treefile")  
 ```
 
-# Transition data
+# Phylogenetic clustering data  
 ```{r, load transition data}
 best_joint_parent_child <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_parent_child_dfs.RDS")  
 phyloAMR_cluster_df <- readRDS("./data/empirical/phyloAMR/representative_blbli_joint_uncertainty_asr_clustering_df.RDS")
@@ -45,8 +45,8 @@ dat <- left_join(dat,phyloAMR_cluster_df)
 rownames(dat) <- dat$isolate_no
 ```
 
-# Tracing states on the phylogenetic tree 
-```{r,fig.width=12.5,fig.height=12.5} 
+# Tracing states on the phylogeny
+```{r,fig.width=11,fig.height=11} 
 n_clusters <- nrow(clustering_stats) - 1
 painted_trees <- lapply(best_joint_parent_child,paint_tree_with_states,tr = phy,legend_name = "Edge-based resistance")
 painted_trees_wo_legend <- lapply(painted_trees,function(x){x+theme(legend.position = "none")}) 
@@ -55,12 +55,12 @@ rownames(dat) <- dat$isolate_no
 
 variables <- names(painted_trees)
 painted_trees_w_cluster_calls <- lapply(variables,FUN=function(x){
-  p_obj <- painted_trees[[x]] 
-  p1 <- gheatmap(p_obj,data=dat  %>% select(blbli_dich_num) %>% `colnames<-`("Resistance") %>% mutate_all(as.factor),width = 0.1,colnames_position = 'top',colnames_angle=90, colnames_offset_y = 0.25, hjust = 0, color = NA) + Resistance_scale
-  p1.1 <- p1 + ggnewscale::new_scale_fill()
-  p2 <- gheatmap(p1.1,data=dat  %>% select(paste0(x,"_asr_cluster_renamed")) %>% `colnames<-`("Clustering"),width = 0.1,colnames_position = 'top',colnames_angle=90, colnames_offset_y = 0.25, hjust = 0, color = NA,offset=0.000025)  + cluster_scale_v + ylim(NA,500)
+  p_obj <- painted_trees[[x]]  
+  p1 <- gheatmap(p_obj,data=dat  %>% select(blbli_dich_num) %>% `colnames<-`("Resistance") %>% mutate_all(as.factor),width = 0.1,colnames_position = 'top',colnames_angle=90, colnames_offset_y = 0.25, hjust = 0, color = NA) + Resistance_scale + theme(legend.key = element_rect(colour = c('black')),legend.spacing.y=unit(.025, "cm"),legend.key.height=unit(.5,'cm'),legend.box.spacing = unit(.05, "cm"),legend.key.spacing.y = unit(0.1,"cm"))
+  p1.1 <- p1 + ggnewscale::new_scale_fill() 
+  p2 <- gheatmap(p1.1,data=dat  %>% select(paste0(x,"_asr_cluster_renamed")) %>% `colnames<-`("Clustering"),width = 0.1,colnames_position = 'top',colnames_angle=90, colnames_offset_y = 0.25, hjust = 0, color = NA,offset=0.000025)  + cluster_scale_v + ylim(NA,512.5)  + theme(legend.key = element_rect(colour = c('black')),legend.spacing.y=unit(.125, "cm"),legend.box.spacing = unit(.05, "cm"),legend.key.size = unit(0.5,"cm"), plot.margin = unit(c(0, 0, -0.25, 0), "cm"))   
   p2
-})
+}) 
 
 legend_fig <- cowplot::get_legend(painted_trees_w_cluster_calls[[which.max(clustering_stats$clusters)]])  %>% cowplot::plot_grid()
   
@@ -76,5 +76,5 @@ tracing_states_on_tree
 
 # Save
 ```{r, save}
-ggsave("./figures/empirical/ancestral_states_on_phylogeny.png",dpi = 900,bg = 'white',plot = tracing_states_on_tree,width=12.5,height=12.5)
+ggsave("./figures/empirical/ancestral_states_on_phylogeny.png",dpi = 900, bg = 'white',plot = tracing_states_on_tree,width=11,height=11)
 ```
