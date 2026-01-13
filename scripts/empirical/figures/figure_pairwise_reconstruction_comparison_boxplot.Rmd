@@ -226,21 +226,21 @@ y_axis_plot <- ggplot(A$data, aes(y = !!A$mapping$y)) +
   )
 
 # 2. Modify plots A, B, and C to remove their y-axes and legends.
-A_main <- A + labs(tag = "A") +
+A_main <- A + labs(tag = "A)") +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         legend.position = "none",
         plot.tag = element_text(size = 16))
 
-B_main <- B + labs(tag = "B") +
+B_main <- B + labs(tag = "B)") +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         legend.position = "none",
         plot.tag = element_text(size = 16))
 
-C_main <- C + labs(tag = "C") +
+C_main <- C + labs(tag = "C)") +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),

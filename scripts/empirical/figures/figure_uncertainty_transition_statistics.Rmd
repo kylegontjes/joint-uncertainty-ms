@@ -84,7 +84,7 @@ transitional_data <- lapply(colnames(transition_data_simple),FUN=function(x){
     figure
   }
   
-}) %>% cowplot::plot_grid(plotlist = .,labels = "AUTO",label_size = 16)
+}) %>% cowplot::plot_grid(plotlist = .,labels = paste0(LETTERS[1:length(colnames(transition_data_simple))],")"),label_size = 16,hjust = -0.33 )
 
 transitional_data
 ```
