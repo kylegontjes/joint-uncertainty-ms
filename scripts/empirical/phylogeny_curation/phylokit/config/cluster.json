@@ -1,0 +1,15 @@
+{
+    "__default__": 
+    {
+     "account": "esnitkin1",
+     "partition": "standard",
+     "nodes": 1,
+     "procs": 19,
+     "pmem": "5g",
+     "walltime": "100:00:00",
+     "email": "kgontjes@umich.edu",
+     "mail_type": "BEGIN,FAIL",
+     "output": "logs/cluster/{rule}.{wildcards}.out",
+     "error": "logs/cluster/{rule}.{wildcards}.err"
+    }
+}

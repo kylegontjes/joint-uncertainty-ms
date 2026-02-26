@@ -1,0 +1,731 @@
+IQ-TREE multicore version 2.4.0 for Linux x86 64-bit built Feb 12 2025
+Developed by Bui Quang Minh, Nguyen Lam Tung, Olga Chernomor, Heiko Schmidt,
+Dominik Schrempf, Michael Woodhams, Ly Trong Nhan, Thomas Wong
+
+Host:    gl3020.arc-ts.umich.edu (AVX512, FMA3, 186 GB RAM)
+Command: iqtree -s results/gubbins_masked/Penn_KPC_ST258_gubbins_masked_var_sites.fa -nt AUTO -m MFP -B 5000 -o PCMP_H243 -nstop 500 -pre results/IQtree/Penn_KPC_ST258
+Seed:    327857 (Using SPRNG - Scalable Parallel Random Number Generator)
+Time:    Sun Feb 23 23:46:30 2025
+Kernel:  AVX+FMA - auto-detect threads (19 CPU cores detected)
+
+Reading alignment file results/gubbins_masked/Penn_KPC_ST258_gubbins_masked_var_sites.fa ... Fasta format detected
+Reading fasta file: done in 0.165898 secs using 64.95% CPU
+Alignment most likely contains DNA/RNA sequences
+Alignment has 415 sequences with 26466 columns, 4510 distinct patterns
+2059 parsimony-informative, 24407 singleton sites, 0 constant sites
+                             Gap/Ambiguity  Composition  p-value
+Analyzing sequences: done in 0.00601462 secs using 99.52% CPU
+   1  gi|661922017|gb|CP008827.1|    0.01%    passed     99.50%
+   2  PCMP_H100                      2.38%    passed     99.75%
+   3  PCMP_H101                      0.18%    passed     99.90%
+   4  PCMP_H103                      1.80%    passed     99.08%
+   5  PCMP_H104                      2.12%    passed     99.69%
+   6  PCMP_H105                      0.13%    passed     99.96%
+   7  PCMP_H106                      0.36%    passed     99.88%
+   8  PCMP_H107                      2.33%    passed     99.62%
+   9  PCMP_H108                      0.06%    passed     99.99%
+  10  PCMP_H109                      1.07%    passed     98.60%
+  11  PCMP_H10                       0.29%    passed     99.89%
+  12  PCMP_H110                      0.13%    passed     99.97%
+  13  PCMP_H111                      2.31%    passed     99.62%
+  14  PCMP_H112                      2.37%    passed     99.84%
+  15  PCMP_H113                      0.12%    passed     99.85%
+  16  PCMP_H115                      0.15%    passed     99.72%
+  17  PCMP_H116                      1.46%    passed     99.65%
+  18  PCMP_H117                      0.28%    passed     99.66%
+  19  PCMP_H118                      2.29%    passed     99.39%
+  20  PCMP_H119                      0.36%    passed     99.88%
+  21  PCMP_H11                       0.12%    passed     99.97%
+  22  PCMP_H120                      0.38%    passed     99.43%
+  23  PCMP_H121                      0.22%    passed     99.99%
+  24  PCMP_H122                      0.53%    passed     99.35%
+  25  PCMP_H123                      2.08%    passed     99.96%
+  26  PCMP_H124                      0.21%    passed     99.98%
+  27  PCMP_H125                      2.32%    passed     99.34%
+  28  PCMP_H12                       0.21%    passed     99.96%
+  29  PCMP_H130                      2.00%    passed     99.69%
+  30  PCMP_H131                      0.32%    passed     99.84%
+  31  PCMP_H132                      0.21%    passed     99.92%
+  32  PCMP_H133                      1.05%    passed     99.93%
+  33  PCMP_H134                      0.80%    passed     99.54%
+  34  PCMP_H135                      0.19%    passed     99.77%
+  35  PCMP_H136                      0.23%    passed     99.94%
+  36  PCMP_H137                      2.34%    passed     99.67%
+  37  PCMP_H138                      2.09%    passed     99.99%
+  38  PCMP_H13                       0.31%    passed     99.79%
+  39  PCMP_H140                      2.16%    passed     99.82%
+  40  PCMP_H141                      2.10%    passed     99.95%
+  41  PCMP_H142                      2.03%    passed     99.95%
+  42  PCMP_H143                      1.20%    passed     99.60%
+  43  PCMP_H144                      0.60%    passed     99.96%
+  44  PCMP_H145                      3.28%    passed     97.48%
+  45  PCMP_H146                      0.59%    passed     99.53%
+  46  PCMP_H147                      1.37%    passed     99.21%
+  47  PCMP_H148                      2.34%    passed     99.38%
+  48  PCMP_H149                      2.31%    passed     99.91%
+  49  PCMP_H14                       2.32%    passed     98.86%
+  50  PCMP_H150                      2.32%    passed     99.49%
+  51  PCMP_H151                      2.23%    passed     99.45%
+  52  PCMP_H152                      2.50%    passed     99.88%
+  53  PCMP_H153                      2.49%    passed     99.93%
+  54  PCMP_H154                      0.32%    passed     99.80%
+  55  PCMP_H155                      2.12%    passed     99.55%
+  56  PCMP_H156                      0.17%    passed     99.55%
+  57  PCMP_H157                      2.33%    passed     99.77%
+  58  PCMP_H158                      2.33%    passed     99.93%
+  59  PCMP_H159                      3.26%    passed     93.68%
+  60  PCMP_H15                       2.23%    passed     99.99%
+  61  PCMP_H160                      0.32%    passed     99.95%
+  62  PCMP_H161                      2.11%    passed     99.73%
+  63  PCMP_H162                      2.33%    passed     99.51%
+  64  PCMP_H163                      0.57%    passed     99.50%
+  65  PCMP_H165                      0.33%    passed     99.87%
+  66  PCMP_H166                      2.33%    passed     99.90%
+  67  PCMP_H167                      3.45%    passed     99.46%
+  68  PCMP_H168                      2.11%    passed     99.76%
+  69  PCMP_H169                      0.29%    passed     99.88%
+  70  PCMP_H16                       0.29%    passed     99.97%
+  71  PCMP_H170                      2.33%    passed     99.76%
+  72  PCMP_H171                      1.57%    passed     99.59%
+  73  PCMP_H172                      2.34%    passed     99.77%
+  74  PCMP_H173                      2.39%    passed     99.90%
+  75  PCMP_H174                      2.30%    passed     99.86%
+  76  PCMP_H175                      0.64%    passed     99.19%
+  77  PCMP_H176                      0.19%    passed     99.88%
+  78  PCMP_H177                      0.20%    passed     99.80%
+  79  PCMP_H178                      0.14%    passed     99.95%
+  80  PCMP_H179                      0.06%    passed     99.69%
+  81  PCMP_H17                       0.19%    passed    100.00%
+  82  PCMP_H181                      2.31%    passed     99.51%
+  83  PCMP_H182                      0.33%    passed     99.93%
+  84  PCMP_H183                      0.32%    passed     99.97%
+  85  PCMP_H184                      0.53%    passed     99.47%
+  86  PCMP_H186                      0.35%    passed     99.70%
+  87  PCMP_H187                      2.52%    passed     99.32%
+  88  PCMP_H18                       2.29%    passed     99.77%
+  89  PCMP_H191                      2.33%    passed     99.93%
+  90  PCMP_H192                      0.25%    passed     99.90%
+  91  PCMP_H193                      2.32%    passed     99.83%
+  92  PCMP_H194                      0.18%    passed     99.89%
+  93  PCMP_H195                      2.13%    passed     99.60%
+  94  PCMP_H196                      2.35%    passed     99.69%
+  95  PCMP_H197                      0.34%    passed     99.74%
+  96  PCMP_H198                      0.26%    passed     99.91%
+  97  PCMP_H199                      0.36%    passed     99.98%
+  98  PCMP_H19                       3.43%    passed     99.39%
+  99  PCMP_H1                        0.32%    passed     99.77%
+ 100  PCMP_H200                      0.13%    passed     99.97%
+ 101  PCMP_H201                      2.35%    passed     99.82%
+ 102  PCMP_H202                      0.19%    passed     99.82%
+ 103  PCMP_H204                      0.10%    passed     99.87%
+ 104  PCMP_H205                      0.56%    passed     99.84%
+ 105  PCMP_H206                      0.16%    passed     99.83%
+ 106  PCMP_H207                      2.50%    passed     99.84%
+ 107  PCMP_H208                      2.34%    passed     99.93%
+ 108  PCMP_H209                      0.15%    passed     99.94%
+ 109  PCMP_H210                      1.75%    passed     97.30%
+ 110  PCMP_H211                      1.93%    passed     99.29%
+ 111  PCMP_H212                      2.29%    passed     99.29%
+ 112  PCMP_H213                      0.20%    passed     99.99%
+ 113  PCMP_H214                      0.20%    passed     99.91%
+ 114  PCMP_H215                      2.32%    passed     99.73%
+ 115  PCMP_H216                      0.37%    passed     99.80%
+ 116  PCMP_H218                      0.57%    passed     99.74%
+ 117  PCMP_H219                      0.19%    passed     99.96%
+ 118  PCMP_H21                       2.13%    passed     99.90%
+ 119  PCMP_H220                      2.33%    passed     99.45%
+ 120  PCMP_H221                      0.36%    passed     99.73%
+ 121  PCMP_H222                      0.58%    passed     99.37%
+ 122  PCMP_H223                      2.54%    passed     99.96%
+ 123  PCMP_H224                      2.32%    passed     99.28%
+ 124  PCMP_H225                      2.34%    passed     99.79%
+ 125  PCMP_H226                      0.19%    passed     99.95%
+ 126  PCMP_H227                      0.20%    passed    100.00%
+ 127  PCMP_H229                      0.57%    passed     99.82%
+ 128  PCMP_H22                       0.22%    passed     99.99%
+ 129  PCMP_H230                      2.13%    passed     99.29%
+ 130  PCMP_H231                      2.32%    passed     99.83%
+ 131  PCMP_H232                      2.13%    passed     99.63%
+ 132  PCMP_H233                      0.18%    passed     99.91%
+ 133  PCMP_H234                      1.28%    passed     98.99%
+ 134  PCMP_H235                      0.13%    passed    100.00%
+ 135  PCMP_H236                      0.58%    passed     99.81%
+ 136  PCMP_H237                      0.14%    passed     99.97%
+ 137  PCMP_H238                      0.58%    passed     99.84%
+ 138  PCMP_H239                      0.17%    passed     99.89%
+ 139  PCMP_H23                       2.34%    passed     99.69%
+ 140  PCMP_H240                      0.42%    passed     99.87%
+ 141  PCMP_H241                      0.58%    passed     99.92%
+ 142  PCMP_H242                      2.12%    passed     99.86%
+ 143  PCMP_H243                      2.66%    failed      1.22%
+ 144  PCMP_H246                      2.13%    passed     99.85%
+ 145  PCMP_H247                      0.18%    passed     99.91%
+ 146  PCMP_H249                      3.42%    passed     97.43%
+ 147  PCMP_H250                      2.42%    passed     99.78%
+ 148  PCMP_H251                      0.15%    passed     99.97%
+ 149  PCMP_H252                      0.59%    passed     99.18%
+ 150  PCMP_H253                      2.34%    passed     99.77%
+ 151  PCMP_H254                      2.34%    passed     99.74%
+ 152  PCMP_H255                      2.34%    passed     99.62%
+ 153  PCMP_H256                      0.59%    passed     99.54%
+ 154  PCMP_H257                      0.33%    passed     99.76%
+ 155  PCMP_H258                      1.82%    passed     99.69%
+ 156  PCMP_H259                      0.26%    passed     99.96%
+ 157  PCMP_H261                      2.35%    passed     99.90%
+ 158  PCMP_H262                      1.52%    passed     99.17%
+ 159  PCMP_H264                      0.23%    passed     99.98%
+ 160  PCMP_H265                      0.35%    passed     99.71%
+ 161  PCMP_H266                      0.61%    passed     99.50%
+ 162  PCMP_H267                      0.06%    passed     99.78%
+ 163  PCMP_H268                      0.06%    passed     99.77%
+ 164  PCMP_H269                      2.42%    passed     99.33%
+ 165  PCMP_H26                       0.73%    passed     99.51%
+ 166  PCMP_H270                      2.12%    passed     99.40%
+ 167  PCMP_H271                      2.12%    passed     99.00%
+ 168  PCMP_H272                      0.34%    passed     99.86%
+ 169  PCMP_H273                      3.27%    passed     95.73%
+ 170  PCMP_H274                      0.60%    passed     98.25%
+ 171  PCMP_H275                      0.22%    passed     99.96%
+ 172  PCMP_H276                      2.32%    passed     99.92%
+ 173  PCMP_H277                      0.19%    passed     99.90%
+ 174  PCMP_H278                      0.24%    passed     99.96%
+ 175  PCMP_H27                       0.22%    passed     99.97%
+ 176  PCMP_H280                      0.34%    passed     99.81%
+ 177  PCMP_H281                      2.10%    passed     99.93%
+ 178  PCMP_H282                      3.54%    passed     98.00%
+ 179  PCMP_H283                      0.13%    passed     99.99%
+ 180  PCMP_H284                      0.07%    passed     99.93%
+ 181  PCMP_H285                      2.31%    passed     99.52%
+ 182  PCMP_H286                      0.22%    passed     99.99%
+ 183  PCMP_H287                      2.50%    passed     99.88%
+ 184  PCMP_H288                      0.06%    passed     99.76%
+ 185  PCMP_H289                      0.56%    passed     99.57%
+ 186  PCMP_H290                      0.15%    passed     99.94%
+ 187  PCMP_H291                      2.39%    passed     99.87%
+ 188  PCMP_H292                      2.34%    passed     99.74%
+ 189  PCMP_H293                      3.51%    passed     98.72%
+ 190  PCMP_H294                      0.06%    passed     99.78%
+ 191  PCMP_H295                      0.35%    passed     99.89%
+ 192  PCMP_H296                      2.63%    passed     96.64%
+ 193  PCMP_H297                      2.42%    passed     99.60%
+ 194  PCMP_H299                      0.90%    passed     99.57%
+ 195  PCMP_H2                        1.43%    passed     97.62%
+ 196  PCMP_H300                      0.22%    passed     99.92%
+ 197  PCMP_H301                      2.34%    passed     99.70%
+ 198  PCMP_H302                      0.06%    passed     99.77%
+ 199  PCMP_H303                      2.31%    passed     99.73%
+ 200  PCMP_H305                      2.30%    passed     99.46%
+ 201  PCMP_H306                      0.31%    passed     99.74%
+ 202  PCMP_H307                      2.36%    passed     99.73%
+ 203  PCMP_H308                      3.54%    passed     98.13%
+ 204  PCMP_H309                      0.13%    passed     99.92%
+ 205  PCMP_H30                       2.40%    passed     99.68%
+ 206  PCMP_H311                      0.16%    passed     99.93%
+ 207  PCMP_H312                      0.15%    passed     99.90%
+ 208  PCMP_H313                      2.36%    passed     99.56%
+ 209  PCMP_H314                      1.87%    passed     99.61%
+ 210  PCMP_H315                      0.35%    passed     99.79%
+ 211  PCMP_H316                      1.68%    passed     98.82%
+ 212  PCMP_H317                      3.30%    passed     95.30%
+ 213  PCMP_H318                      3.57%    passed     98.66%
+ 214  PCMP_H319                      0.36%    passed     99.84%
+ 215  PCMP_H31                       0.17%    passed     99.90%
+ 216  PCMP_H320                      2.35%    passed     99.76%
+ 217  PCMP_H322                      0.20%    passed     99.99%
+ 218  PCMP_H323                      2.38%    passed     99.48%
+ 219  PCMP_H325                      0.30%    passed     82.85%
+ 220  PCMP_H326                      0.58%    passed     99.83%
+ 221  PCMP_H327                      0.93%    passed     99.80%
+ 222  PCMP_H328                      0.20%    passed     99.85%
+ 223  PCMP_H329                      0.06%    passed     99.77%
+ 224  PCMP_H32                       2.34%    passed     99.74%
+ 225  PCMP_H330                      0.62%    passed     99.72%
+ 226  PCMP_H331                      0.26%    passed    100.00%
+ 227  PCMP_H332                      0.06%    passed     99.79%
+ 228  PCMP_H335                      2.34%    passed     99.68%
+ 229  PCMP_H337                      1.74%    passed     98.38%
+ 230  PCMP_H338                      0.06%    passed     99.97%
+ 231  PCMP_H339                      0.20%    passed     99.90%
+ 232  PCMP_H33                       0.22%    passed     99.98%
+ 233  PCMP_H340                      0.33%    passed     99.77%
+ 234  PCMP_H342                      3.80%    passed     98.31%
+ 235  PCMP_H343                      0.13%    passed     99.96%
+ 236  PCMP_H345                      2.33%    passed     99.77%
+ 237  PCMP_H346                      0.42%    passed     99.93%
+ 238  PCMP_H347                      0.25%    passed     99.65%
+ 239  PCMP_H348                      0.74%    passed     99.26%
+ 240  PCMP_H349                      3.06%    passed     99.47%
+ 241  PCMP_H34                       0.44%    passed     99.11%
+ 242  PCMP_H350                      2.32%    passed     99.86%
+ 243  PCMP_H351                      0.06%    passed     99.74%
+ 244  PCMP_H353                      2.13%    passed     99.68%
+ 245  PCMP_H354                      0.83%    passed     99.92%
+ 246  PCMP_H355                      0.17%    passed     99.93%
+ 247  PCMP_H356                      0.53%    passed     99.14%
+ 248  PCMP_H357                      0.62%    passed     99.75%
+ 249  PCMP_H359                      2.33%    passed     99.80%
+ 250  PCMP_H35                       0.06%    passed     99.76%
+ 251  PCMP_H360                      2.32%    passed     99.62%
+ 252  PCMP_H361                      1.22%    passed     99.66%
+ 253  PCMP_H362                      0.56%    passed     99.58%
+ 254  PCMP_H365                      2.19%    passed     99.97%
+ 255  PCMP_H367                      1.99%    passed     99.81%
+ 256  PCMP_H36                       1.09%    passed     98.56%
+ 257  PCMP_H370                      0.62%    passed     99.79%
+ 258  PCMP_H371                      0.06%    passed     99.70%
+ 259  PCMP_H372                      2.34%    passed     99.73%
+ 260  PCMP_H373                      0.23%    passed     99.93%
+ 261  PCMP_H374                      0.20%    passed    100.00%
+ 262  PCMP_H375                      0.68%    passed     99.74%
+ 263  PCMP_H376                      2.12%    passed     99.96%
+ 264  PCMP_H377                      2.34%    passed     99.64%
+ 265  PCMP_H378                      0.50%    passed     99.83%
+ 266  PCMP_H379                      0.20%    passed     99.93%
+ 267  PCMP_H37                       3.40%    passed     97.89%
+ 268  PCMP_H380                      0.22%    passed     99.93%
+ 269  PCMP_H381                      0.21%    passed     99.89%
+ 270  PCMP_H382                      0.22%    passed     99.99%
+ 271  PCMP_H383                      1.51%    passed     99.28%
+ 272  PCMP_H384                      2.44%    passed     99.92%
+ 273  PCMP_H385                      0.22%    passed     99.98%
+ 274  PCMP_H386                      2.34%    passed     99.49%
+ 275  PCMP_H387                      0.20%    passed     99.99%
+ 276  PCMP_H388                      1.27%    passed     96.34%
+ 277  PCMP_H389                      0.43%    passed     99.89%
+ 278  PCMP_H38                       0.59%    passed     99.45%
+ 279  PCMP_H390                      2.32%    passed     99.72%
+ 280  PCMP_H391                      2.38%    passed     99.43%
+ 281  PCMP_H392                      2.12%    passed     99.96%
+ 282  PCMP_H393                      0.13%    passed     99.77%
+ 283  PCMP_H394                      0.68%    passed     99.31%
+ 284  PCMP_H395                      0.23%    passed     99.95%
+ 285  PCMP_H396                      2.31%    passed     99.52%
+ 286  PCMP_H397                      0.06%    passed     99.80%
+ 287  PCMP_H398                      0.55%    passed     99.36%
+ 288  PCMP_H399                      1.61%    passed     99.23%
+ 289  PCMP_H39                       0.22%    passed     99.98%
+ 290  PCMP_H3                        0.11%    passed     99.94%
+ 291  PCMP_H400                      1.88%    passed     99.72%
+ 292  PCMP_H401                      2.34%    passed     99.76%
+ 293  PCMP_H402                      0.20%    passed     99.97%
+ 294  PCMP_H404                      0.25%    passed     99.98%
+ 295  PCMP_H405                      1.37%    passed     99.89%
+ 296  PCMP_H406                      0.20%    passed     99.93%
+ 297  PCMP_H407                      3.44%    passed     98.47%
+ 298  PCMP_H408                      2.33%    passed     99.63%
+ 299  PCMP_H409                      0.15%    passed     99.86%
+ 300  PCMP_H40                       1.59%    passed     99.55%
+ 301  PCMP_H410                      0.89%    passed     99.70%
+ 302  PCMP_H411                      0.33%    passed     81.24%
+ 303  PCMP_H412                      2.29%    passed     99.92%
+ 304  PCMP_H413                      2.34%    passed     99.82%
+ 305  PCMP_H414                      2.51%    passed     99.95%
+ 306  PCMP_H415                      2.32%    passed     99.48%
+ 307  PCMP_H416                      3.58%    passed     98.87%
+ 308  PCMP_H417                      0.23%    passed     99.95%
+ 309  PCMP_H418                      0.23%    passed     99.92%
+ 310  PCMP_H41                       0.29%    passed     99.83%
+ 311  PCMP_H420                      0.45%    passed     99.55%
+ 312  PCMP_H421                      0.40%    passed     99.91%
+ 313  PCMP_H422                      0.59%    passed     98.83%
+ 314  PCMP_H423                      1.86%    passed     99.70%
+ 315  PCMP_H424                      0.67%    passed     99.62%
+ 316  PCMP_H425                      0.74%    passed     99.28%
+ 317  PCMP_H426                      2.34%    passed     99.55%
+ 318  PCMP_H427                      0.20%    passed     99.99%
+ 319  PCMP_H428                      2.34%    passed     99.81%
+ 320  PCMP_H429                      2.32%    passed     99.83%
+ 321  PCMP_H42                       0.29%    passed     99.86%
+ 322  PCMP_H430                      2.51%    passed     99.79%
+ 323  PCMP_H431                      0.61%    passed     99.30%
+ 324  PCMP_H432                      0.61%    passed     99.49%
+ 325  PCMP_H433                      1.38%    passed     99.90%
+ 326  PCMP_H434                      0.54%    passed     99.42%
+ 327  PCMP_H436                      0.53%    passed     98.75%
+ 328  PCMP_H437                      0.13%    passed     99.96%
+ 329  PCMP_H438                      0.07%    passed     99.97%
+ 330  PCMP_H439                      0.35%    passed     99.98%
+ 331  PCMP_H43                       1.81%    passed     98.65%
+ 332  PCMP_H440                      1.10%    passed     99.96%
+ 333  PCMP_H441                      0.42%    passed     99.72%
+ 334  PCMP_H442                      2.13%    passed     99.70%
+ 335  PCMP_H443                      0.66%    passed     99.49%
+ 336  PCMP_H444                      2.38%    passed     99.77%
+ 337  PCMP_H445                      0.23%    passed     99.95%
+ 338  PCMP_H446                      2.29%    passed     99.84%
+ 339  PCMP_H447                      2.30%    passed     99.37%
+ 340  PCMP_H448                      1.61%    passed     99.34%
+ 341  PCMP_H44                       3.28%    passed     97.90%
+ 342  PCMP_H450                      3.29%    passed     98.56%
+ 343  PCMP_H453                      1.22%    passed     99.60%
+ 344  PCMP_H454                      0.42%    passed     99.43%
+ 345  PCMP_H455                      0.33%    passed     99.81%
+ 346  PCMP_H456                      0.35%    passed     99.67%
+ 347  PCMP_H457                      0.14%    passed     99.98%
+ 348  PCMP_H458                      0.23%    passed     99.97%
+ 349  PCMP_H459                      2.32%    passed     99.48%
+ 350  PCMP_H460                      0.20%    passed     99.92%
+ 351  PCMP_H461                      0.20%    passed     99.94%
+ 352  PCMP_H462                      2.34%    passed     99.34%
+ 353  PCMP_H464                      2.34%    passed     99.64%
+ 354  PCMP_H465                      0.40%    passed     99.53%
+ 355  PCMP_H466                      0.09%    passed     99.98%
+ 356  PCMP_H467                      2.30%    passed     99.89%
+ 357  PCMP_H468                      0.42%    passed     99.91%
+ 358  PCMP_H469                      2.34%    passed     99.85%
+ 359  PCMP_H46                       0.19%    passed     99.91%
+ 360  PCMP_H470                      0.16%    passed     99.70%
+ 361  PCMP_H471                      0.46%    passed     99.78%
+ 362  PCMP_H473                      2.24%    passed     99.90%
+ 363  PCMP_H474                      0.06%    passed     99.89%
+ 364  PCMP_H475                      0.60%    passed     99.59%
+ 365  PCMP_H477                      0.34%    passed     99.72%
+ 366  PCMP_H478                      0.21%    passed    100.00%
+ 367  PCMP_H479                      2.49%    passed     97.64%
+ 368  PCMP_H480                      0.09%    passed    100.00%
+ 369  PCMP_H481                      0.27%    passed     99.96%
+ 370  PCMP_H482                      0.23%    passed     99.97%
+ 371  PCMP_H48                       0.23%    passed     99.97%
+ 372  PCMP_H49                       0.24%    passed     99.88%
+ 373  PCMP_H4                        0.37%    passed     99.80%
+ 374  PCMP_H52                       2.27%    passed     99.95%
+ 375  PCMP_H54                       0.49%    passed     99.87%
+ 376  PCMP_H56                       2.07%    passed     99.60%
+ 377  PCMP_H59                       0.25%    passed     99.90%
+ 378  PCMP_H5                        1.81%    passed     99.87%
+ 379  PCMP_H60                       0.62%    passed     99.88%
+ 380  PCMP_H61                       0.17%    passed     99.96%
+ 381  PCMP_H65                       0.16%    passed     99.71%
+ 382  PCMP_H66                       0.14%    passed     99.96%
+ 383  PCMP_H68                       1.72%    passed     99.04%
+ 384  PCMP_H69                       2.34%    passed     99.81%
+ 385  PCMP_H70                       0.23%    passed     99.95%
+ 386  PCMP_H71                       1.44%    passed     99.85%
+ 387  PCMP_H72                       0.23%    passed     99.99%
+ 388  PCMP_H73                       3.54%    passed     97.69%
+ 389  PCMP_H74                       2.32%    passed     99.60%
+ 390  PCMP_H75                       0.20%    passed     99.87%
+ 391  PCMP_H76                       1.21%    passed     98.26%
+ 392  PCMP_H77                       1.69%    passed     99.41%
+ 393  PCMP_H78                       2.34%    passed     99.86%
+ 394  PCMP_H79                       0.28%    passed     99.94%
+ 395  PCMP_H7                        0.54%    passed     99.62%
+ 396  PCMP_H81                       2.54%    passed     99.10%
+ 397  PCMP_H82                       0.15%    passed     99.87%
+ 398  PCMP_H83                       0.06%    passed     99.73%
+ 399  PCMP_H84                       2.48%    passed     99.95%
+ 400  PCMP_H85                       0.45%    passed     99.74%
+ 401  PCMP_H86                       0.06%    passed     99.93%
+ 402  PCMP_H87                       2.38%    passed     99.80%
+ 403  PCMP_H88                       2.51%    passed     99.91%
+ 404  PCMP_H89                       0.20%    passed     99.99%
+ 405  PCMP_H8                        2.29%    passed     99.53%
+ 406  PCMP_H90                       0.06%    passed     99.95%
+ 407  PCMP_H91                       0.40%    passed     99.94%
+ 408  PCMP_H93                       2.10%    passed     99.84%
+ 409  PCMP_H94                       0.23%    passed     99.78%
+ 410  PCMP_H95                       2.38%    passed     99.53%
+ 411  PCMP_H96                       2.30%    passed     99.59%
+ 412  PCMP_H97                       3.54%    passed     97.76%
+ 413  PCMP_H98                       2.37%    passed     99.85%
+ 414  PCMP_H99                       0.17%    passed     99.85%
+ 415  PCMP_H9                        1.10%    passed     99.83%
+****  TOTAL                          1.21%  1 sequences failed composition chi2 test (p-value<5%; df=3)
+NOTE: PCMP_H387 is identical to PCMP_H213 but kept for subsequent analysis
+NOTE: PCMP_H329 is identical to PCMP_H302 but kept for subsequent analysis
+
+
+Create initial parsimony tree by phylogenetic likelihood library (PLL)... 1.391 seconds
+Measuring multi-threading efficiency up to 19 CPU cores
+Increase to 10 rounds for branch lengths
+4 trees examined
+Threads: 1 / Time: 19.872 sec / Speedup: 1.000 / Efficiency: 100% / LogL: -287776
+Threads: 2 / Time: 10.728 sec / Speedup: 1.852 / Efficiency: 93% / LogL: -287776
+Threads: 3 / Time: 8.258 sec / Speedup: 2.406 / Efficiency: 80% / LogL: -287776
+Threads: 4 / Time: 8.585 sec / Speedup: 2.315 / Efficiency: 58% / LogL: -287776
+Threads: 5 / Time: 8.346 sec / Speedup: 2.381 / Efficiency: 48% / LogL: -287776
+BEST NUMBER OF THREADS: 3
+
+Perform fast likelihood tree search using GTR+ASC+G model...
+Estimate model parameters (epsilon = 5.000)
+Perform nearest neighbor interchange...
+Estimate model parameters (epsilon = 1.000)
+1. Initial log-likelihood: -99659.683
+Optimal log-likelihood: -99658.511
+Rate parameters:  A-C: 0.99757  A-G: 3.95863  A-T: 0.81968  C-G: 0.64141  C-T: 3.98674  G-T: 1.00000
+Base frequencies:  A: 0.228  C: 0.272  G: 0.277  T: 0.223
+Gamma shape alpha: 36.438
+Parameters optimization took 1 rounds (1.563 sec)
+Time for fast ML tree search: 20.299 seconds
+
+NOTE: ModelFinder requires 693 MB RAM!
+ModelFinder will test up to 484 DNA models (sample size: 26466 epsilon: 0.100) ...
+ No. Model         -LnL         df  AIC          AICc         BIC
+  1  GTR+F         114936.314   835 231542.627   231597.099   238375.947
+  2  GTR+F+ASC     99661.395    835 200992.791   201047.263   207826.110
+  3  GTR+F+G4      114939.333   836 231550.666   231605.270   238392.169
+  4  GTR+F+ASC+G4  99659.770    836 200991.540   201046.145   207833.043
+  5  GTR+F+R2      114936.658   837 231547.315   231602.053   238397.002
+  6  GTR+F+R3      114936.564   839 231551.128   231606.131   238417.182
+ 14  GTR+F+ASC+R2  99328.135    837 200330.270   200385.008   207179.957
++R3 reinitialized from +R2 with factor 0.500
++R3 reinitialized from +R2 with factor 0.250
++R3 reinitialized from +R2 with factor 0.125
++R3 reinitialized from +R2 with factor 0.062
++R3 reinitialized from +R2 with factor 0.031
+WARNING: Log-likelihood -99407.4 of GTR+F+ASC+R3 worse than GTR+F+ASC+R2 -99328.1
+ 15  GTR+F+ASC+R3  99407.411    839 200492.822   200547.826   207358.876
+ 23  SYM           117154.212   832 235972.425   236026.500   242781.193
+ 24  SYM+ASC       100085.804   832 201835.608   201889.683   208644.376
+ 26  SYM+ASC+G4    100043.059   833 201752.118   201806.325   208569.070
+ 36  SYM+ASC+R2    99825.063    834 201318.126   201372.466   208143.262
+ 37  SYM+ASC+R3    99786.853    836 201245.706   201300.311   208087.209
+ 45  TVM+F         117125.626   834 235919.252   235973.591   242744.388
+ 46  TVM+F+ASC     100083.002   834 201834.004   201888.344   208659.140
+ 48  TVM+F+ASC+G4  100038.471   835 201746.941   201801.413   208580.261
+ 58  TVM+F+ASC+R2  99816.424    836 201304.849   201359.454   208146.352
+ 59  TVM+F+ASC+R3  99760.913    838 201197.827   201252.697   208055.697
+ 67  TVMe          117127.449   831 235916.899   235970.842   242717.484
+ 68  TVMe+ASC      100084.273   831 201830.546   201884.489   208631.131
+ 70  TVMe+ASC+G4   100041.640   832 201747.281   201801.356   208556.049
+ 80  TVMe+ASC+R2   99823.443    833 201312.885   201367.093   208129.837
+ 81  TVMe+ASC+R3   99762.426    835 201194.852   201249.324   208028.171
+ 89  TIM3+F        117271.443   833 236208.887   236263.094   243025.839
+ 90  TIM3+F+ASC    100176.811   833 202019.622   202073.830   208836.575
+ 92  TIM3+F+ASC+G4 100133.334   834 201934.669   201989.008   208759.805
+102  TIM3+F+ASC+R2 99912.627    835 201495.254   201549.727   208328.574
+103  TIM3+F+ASC+R3 99848.341    837 201370.682   201425.419   208220.368
+111  TIM3e         117276.326   830 236212.653   236266.464   243005.054
+112  TIM3e+ASC     100176.763   830 202013.525   202067.337   208805.926
+114  TIM3e+ASC+G4  100134.342   831 201930.684   201984.627   208731.269
+124  TIM3e+ASC+R2  99917.984    832 201499.968   201554.043   208308.737
+125  TIM3e+ASC+R3  99855.351    834 201378.701   201433.041   208203.837
+133  TIM2+F        117283.594   833 236233.187   236287.395   243050.140
+134  TIM2+F+ASC    100179.898   833 202025.796   202080.003   208842.748
+136  TIM2+F+ASC+G4 100136.189   834 201940.378   201994.717   208765.514
+146  TIM2+F+ASC+R2 99915.090    835 201500.180   201554.652   208333.499
+147  TIM2+F+ASC+R3 99852.094    837 201378.189   201432.926   208227.875
+155  TIM2e         117285.716   830 236231.433   236285.244   243023.834
+156  TIM2e+ASC     100173.306   830 202006.613   202060.424   208799.014
+158  TIM2e+ASC+G4  100130.946   831 201923.891   201977.835   208724.476
+168  TIM2e+ASC+R2  99915.828    832 201495.656   201549.731   208304.424
+169  TIM2e+ASC+R3  99852.349    834 201372.697   201427.037   208197.833
+177  TIM+F         117211.237   833 236088.474   236142.681   242905.426
+178  TIM+F+ASC     100093.064   833 201852.129   201906.336   208669.081
+180  TIM+F+ASC+G4  100046.970   834 201761.940   201816.280   208587.076
+190  TIM+F+ASC+R2  99828.374    835 201326.749   201381.221   208160.068
+191  TIM+F+ASC+R3  99764.634    837 201203.269   201258.006   208052.956
+199  TIMe          117089.486   830 235838.972   235892.783   242631.373
+200  TIMe+ASC      100079.848   830 201819.697   201873.508   208612.098
+202  TIMe+ASC+G4   100040.778   831 201743.557   201797.500   208544.142
+212  TIMe+ASC+R2   99820.933    832 201305.866   201359.941   208114.635
+213  TIMe+ASC+R3   99757.392    834 201182.784   201237.123   208007.920
+221  TPM3u+F       117161.068   832 235986.135   236040.210   242794.904
+222  TPM3u+F+ASC   100161.470   832 201986.941   202041.016   208795.710
+224  TPM3u+F+ASC+G4 100121.729   833 201909.459   201963.666   208726.411
+234  TPM3u+F+ASC+R2 99898.895    834 201465.791   201520.130   208290.926
+235  TPM3u+F+ASC+R3 99832.860    836 201337.720   201392.325   208179.224
+243  TPM3          117167.629   829 235993.258   236046.938   242777.476
+244  TPM3+ASC      100165.850   829 201989.701   202043.381   208773.918
+246  TPM3+ASC+G4   100127.510   830 201915.020   201968.832   208707.422
+256  TPM3+ASC+R2   99910.410    831 201482.820   201536.763   208283.405
+257  TPM3+ASC+R3   99845.262    833 201356.525   201410.732   208173.477
+265  TPM2u+F       117175.475   832 236014.950   236069.025   242823.718
+266  TPM2u+F+ASC   100166.352   832 201996.703   202050.779   208805.472
+268  TPM2u+F+ASC+G4 100127.491   833 201920.982   201975.190   208737.935
+278  TPM2u+F+ASC+R2 99904.800    834 201477.599   201531.939   208302.735
+279  TPM2u+F+ASC+R3 99839.100    836 201350.200   201404.805   208191.703
+287  TPM2          117177.122   829 236012.245   236065.925   242796.463
+288  TPM2+ASC      100162.874   829 201983.748   202037.428   208767.966
+290  TPM2+ASC+G4   100124.458   830 201908.916   201962.728   208701.318
+300  TPM2+ASC+R2   99907.384    831 201476.768   201530.711   208277.353
+301  TPM2+ASC+R3   99841.880    833 201349.759   201403.967   208166.712
+309  K3Pu+F        117103.400   832 235870.800   235924.875   242679.569
+310  K3Pu+F+ASC    100077.612   832 201819.224   201873.299   208627.993
+312  K3Pu+F+ASC+G4 100036.651   833 201739.301   201793.509   208556.253
+322  K3Pu+F+ASC+R2 99814.988    834 201297.976   201352.316   208123.112
+323  K3Pu+F+ASC+R3 99750.601    836 201173.203   201227.807   208014.706
+331  K3P           116623.447   829 234904.893   234958.573   241689.111
+332  K3P+ASC       99995.899    829 201649.798   201703.478   208434.016
+334  K3P+ASC+G4    99966.620    830 201593.240   201647.052   208385.641
+344  K3P+ASC+R2    99745.537    831 201153.074   201207.018   207953.659
+345  K3P+ASC+R3    99672.378    833 201010.756   201064.964   207827.708
+353  TN+F          116764.751   832 235193.502   235247.577   242002.271
+354  TN+F+ASC      100090.517   832 201845.035   201899.110   208653.803
+356  TN+F+ASC+G4   100065.815   833 201797.630   201851.838   208614.583
+366  TN+F+ASC+R2   99841.471    834 201350.942   201405.281   208176.078
+367  TN+F+ASC+R3   99765.618    836 201203.236   201257.841   208044.739
+375  TNe           116741.920   829 235141.839   235195.519   241926.057
+376  TNe+ASC       100082.543   829 201823.086   201876.766   208607.304
+378  TNe+ASC+G4    100051.635   830 201763.271   201817.082   208555.672
+388  TNe+ASC+R2    99833.294    831 201328.589   201382.532   208129.174
+389  TNe+ASC+R3    99760.872    833 201187.744   201241.952   208004.697
+397  HKY+F         116765.478   831 235192.955   235246.898   241993.540
+398  HKY+F+ASC     100089.989   831 201841.979   201895.922   208642.564
+400  HKY+F+ASC+G4  100065.229   832 201794.457   201848.532   208603.226
+410  HKY+F+ASC+R2  99837.979    833 201341.957   201396.164   208158.909
+411  HKY+F+ASC+R3  99764.384    835 201198.767   201253.239   208032.087
+419  K2P           116741.947   828 235139.895   235193.443   241915.929
+420  K2P+ASC       100085.026   828 201826.053   201879.601   208602.087
+422  K2P+ASC+G4    100053.931   829 201765.863   201819.543   208550.081
+432  K2P+ASC+R2    99836.157    830 201332.315   201386.126   208124.716
+433  K2P+ASC+R3    99762.801    832 201189.601   201243.677   207998.370
+441  F81+F         119434.533   830 240529.065   240582.877   247321.467
+442  F81+F+ASC     107157.643   830 215975.285   216029.097   222767.687
+444  F81+F+ASC+G4  107128.431   831 215918.863   215972.806   222719.448
+454  F81+F+ASC+R2  106905.108   832 215474.216   215528.292   222282.985
+455  F81+F+ASC+R3  106830.059   834 215328.117   215382.457   222153.253
+463  JC            117831.203   827 237316.405   237369.822   244084.256
+464  JC+ASC        106741.418   827 215136.837   215190.254   221904.687
+466  JC+ASC+G4     106735.313   828 215126.627   215180.175   221902.661
+476  JC+ASC+R2     106489.921   829 214637.841   214691.521   221422.059
+477  JC+ASC+R3     106401.175   831 214464.350   214518.294   221264.935
+Akaike Information Criterion:           GTR+F+ASC+R2
+Corrected Akaike Information Criterion: GTR+F+ASC+R2
+Bayesian Information Criterion:         GTR+F+ASC+R2
+Best-fit model: GTR+F+ASC+R2 chosen according to BIC
+
+All model information printed to results/IQtree/Penn_KPC_ST258.model.gz
+CPU time for ModelFinder: 1655.715 seconds (0h:27m:35s)
+Wall-clock time for ModelFinder: 569.920 seconds (0h:9m:29s)
+Generating 5000 samples for ultrafast bootstrap (seed: 327857)...
+
+NOTE: 207 MB RAM (0 GB) is required!
+Estimate model parameters (epsilon = 0.100)
+1. Initial log-likelihood: -106582.531
+2. Current log-likelihood: -99397.944
+Optimal log-likelihood: -99397.919
+Rate parameters:  A-C: 0.98175  A-G: 3.90251  A-T: 0.81279  C-G: 0.64059  C-T: 3.92772  G-T: 1.00000
+Base frequencies:  A: 0.228  C: 0.272  G: 0.277  T: 0.223
+Site proportion and rates:  (0.999,0.912) (0.001,89.235)
+Parameters optimization took 2 rounds (3.133 sec)
+Wrote distance file to... 
+Computing ML distances based on estimated model parameters...
+Calculating distance matrix: done in 0.462058 secs using 273.1% CPU
+Computing ML distances took 0.481060 sec (of wall-clock time) 1.282458 sec (of CPU time)
+Setting up auxiliary I and S matrices: done in 0.00160848 secs using 242% CPU
+Computing RapidNJ tree took 0.083789 sec (of wall-clock time) 0.133816 sec (of CPU time)
+Log-likelihood of RapidNJ tree: -100176.861
+--------------------------------------------------------------------
+|             INITIALIZING CANDIDATE TREE SET                      |
+--------------------------------------------------------------------
+Generating 98 parsimony trees... 145.913 second
+Computing log-likelihood of 98 initial trees ... 17.738 seconds
+Current best score: -99397.917
+
+Do NNI search on 20 best initial trees
+Estimate model parameters (epsilon = 0.100)
+BETTER TREE FOUND at iteration 1: -99397.917
+Iteration 10 / LogL: -99448.829 / Time: 0h:17m:3s
+Iteration 20 / LogL: -99443.965 / Time: 0h:22m:49s
+Finish initializing candidate tree set (20)
+Current best tree score: -99397.917 / CPU time: 789.920
+Number of iterations: 20
+--------------------------------------------------------------------
+|               OPTIMIZING CANDIDATE TREE SET                      |
+--------------------------------------------------------------------
+Iteration 30 / LogL: -99464.511 / Time: 0h:23m:19s (3h:44m:29s left)
+Iteration 40 / LogL: -99490.223 / Time: 0h:23m:49s (2h:49m:23s left)
+Iteration 50 / LogL: -99503.323 / Time: 0h:24m:20s (2h:16m:34s left)
+Log-likelihood cutoff on original alignment: -99528.911
+Iteration 60 / LogL: -99582.189 / Time: 0h:24m:55s (1h:55m:19s left)
+Iteration 70 / LogL: -99488.080 / Time: 0h:25m:28s (1h:39m:45s left)
+Iteration 80 / LogL: -99548.305 / Time: 0h:25m:58s (1h:27m:49s left)
+Iteration 90 / LogL: -99565.324 / Time: 0h:26m:34s (1h:18m:50s left)
+Iteration 100 / LogL: -99453.019 / Time: 0h:27m:2s (1h:11m:1s left)
+Log-likelihood cutoff on original alignment: -99528.911
+NOTE: Bootstrap correlation coefficient of split occurrence frequencies: 1.000
+Iteration 110 / LogL: -99541.568 / Time: 0h:27m:38s (1h:5m:5s left)
+Iteration 120 / LogL: -99518.839 / Time: 0h:28m:11s (0h:59m:50s left)
+Iteration 130 / LogL: -99455.188 / Time: 0h:28m:40s (0h:55m:9s left)
+Iteration 140 / LogL: -99527.094 / Time: 0h:29m:13s (0h:51m:14s left)
+Iteration 150 / LogL: -99578.344 / Time: 0h:29m:42s (0h:47m:37s left)
+Log-likelihood cutoff on original alignment: -99528.911
+Iteration 160 / LogL: -99547.847 / Time: 0h:30m:19s (0h:44m:40s left)
+Iteration 170 / LogL: -99729.510 / Time: 0h:30m:53s (0h:41m:53s left)
+Iteration 180 / LogL: -99488.607 / Time: 0h:31m:21s (0h:39m:11s left)
+Iteration 190 / LogL: -99520.357 / Time: 0h:31m:58s (0h:36m:58s left)
+Iteration 200 / LogL: -99507.041 / Time: 0h:32m:32s (0h:34m:51s left)
+Log-likelihood cutoff on original alignment: -99528.911
+NOTE: Bootstrap correlation coefficient of split occurrence frequencies: 1.000
+Iteration 210 / LogL: -99485.606 / Time: 0h:33m:11s (0h:32m:59s left)
+Iteration 220 / LogL: -99557.739 / Time: 0h:33m:40s (0h:31m:0s left)
+Iteration 230 / LogL: -99455.419 / Time: 0h:34m:15s (0h:29m:18s left)
+Iteration 240 / LogL: -99494.096 / Time: 0h:34m:51s (0h:27m:41s left)
+Iteration 250 / LogL: -99462.791 / Time: 0h:35m:17s (0h:26m:0s left)
+Log-likelihood cutoff on original alignment: -99528.911
+Iteration 260 / LogL: -99472.063 / Time: 0h:35m:54s (0h:24m:34s left)
+Iteration 270 / LogL: -99499.223 / Time: 0h:36m:29s (0h:23m:10s left)
+Iteration 280 / LogL: -99612.041 / Time: 0h:37m:1s (0h:21m:48s left)
+Iteration 290 / LogL: -99770.740 / Time: 0h:37m:31s (0h:20m:27s left)
+Iteration 300 / LogL: -99556.199 / Time: 0h:38m:6s (0h:19m:13s left)
+Log-likelihood cutoff on original alignment: -99528.911
+NOTE: Bootstrap correlation coefficient of split occurrence frequencies: 1.000
+Iteration 310 / LogL: -99512.799 / Time: 0h:38m:45s (0h:18m:5s left)
+Iteration 320 / LogL: -99452.285 / Time: 0h:39m:16s (0h:16m:53s left)
+Iteration 330 / LogL: -99537.981 / Time: 0h:39m:48s (0h:15m:45s left)
+Iteration 340 / LogL: -99485.242 / Time: 0h:40m:25s (0h:14m:41s left)
+Iteration 350 / LogL: -99611.831 / Time: 0h:40m:50s (0h:13m:33s left)
+Log-likelihood cutoff on original alignment: -99528.911
+Iteration 360 / LogL: -99510.398 / Time: 0h:41m:29s (0h:12m:33s left)
+Iteration 370 / LogL: -99765.448 / Time: 0h:41m:59s (0h:11m:32s left)
+Iteration 380 / LogL: -99492.199 / Time: 0h:42m:30s (0h:10m:32s left)
+Iteration 390 / LogL: -99500.268 / Time: 0h:43m:1s (0h:9m:34s left)
+Iteration 400 / LogL: -99482.580 / Time: 0h:43m:35s (0h:8m:37s left)
+Log-likelihood cutoff on original alignment: -99528.911
+NOTE: Bootstrap correlation coefficient of split occurrence frequencies: 1.000
+Iteration 410 / LogL: -99493.916 / Time: 0h:44m:16s (0h:7m:44s left)
+Iteration 420 / LogL: -99459.557 / Time: 0h:44m:49s (0h:6m:49s left)
+Iteration 430 / LogL: -99449.347 / Time: 0h:45m:27s (0h:5m:57s left)
+Iteration 440 / LogL: -99548.961 / Time: 0h:45m:54s (0h:5m:3s left)
+Iteration 450 / LogL: -99489.630 / Time: 0h:46m:27s (0h:4m:11s left)
+Log-likelihood cutoff on original alignment: -99528.911
+Iteration 460 / LogL: -99497.759 / Time: 0h:47m:8s (0h:3m:21s left)
+Iteration 470 / LogL: -99451.761 / Time: 0h:47m:42s (0h:2m:31s left)
+Iteration 480 / LogL: -99593.153 / Time: 0h:48m:16s (0h:1m:41s left)
+Iteration 490 / LogL: -99494.765 / Time: 0h:48m:50s (0h:0m:53s left)
+Iteration 500 / LogL: -99490.689 / Time: 0h:49m:18s (0h:0m:4s left)
+Log-likelihood cutoff on original alignment: -99528.911
+NOTE: Bootstrap correlation coefficient of split occurrence frequencies: 1.000
+TREE SEARCH COMPLETED AFTER 502 ITERATIONS / Time: 0h:49m:30s
+
+--------------------------------------------------------------------
+|                    FINALIZING TREE SEARCH                        |
+--------------------------------------------------------------------
+Performs final model parameters optimization
+Estimate model parameters (epsilon = 0.010)
+1. Initial log-likelihood: -99397.918
+Optimal log-likelihood: -99397.918
+Rate parameters:  A-C: 0.98147  A-G: 3.90229  A-T: 0.81251  C-G: 0.64086  C-T: 3.92756  G-T: 1.00000
+Base frequencies:  A: 0.228  C: 0.272  G: 0.277  T: 0.223
+Site proportion and rates:  (0.999,0.912) (0.001,89.226)
+Parameters optimization took 1 rounds (0.768 sec)
+BEST SCORE FOUND : -99397.918
+Creating bootstrap support values...
+Split supports printed to NEXUS file results/IQtree/Penn_KPC_ST258.splits.nex
+Total tree length: 0.052
+
+Total number of iterations: 502
+CPU time used for tree search: 6625.396 sec (1h:50m:25s)
+Wall-clock time used for tree search: 2390.389 sec (0h:39m:50s)
+Total CPU time used: 8314.090 sec (2h:18m:34s)
+Total wall-clock time used: 2977.369 sec (0h:49m:37s)
+
+Computing bootstrap consensus tree...
+Reading input file results/IQtree/Penn_KPC_ST258.splits.nex...
+415 taxa and 1289 splits.
+Consensus tree written to results/IQtree/Penn_KPC_ST258.contree
+Reading input trees file results/IQtree/Penn_KPC_ST258.contree
+Log-likelihood of consensus tree: -99503.209
+
+Analysis results written to: 
+  IQ-TREE report:                results/IQtree/Penn_KPC_ST258.iqtree
+  Maximum-likelihood tree:       results/IQtree/Penn_KPC_ST258.treefile
+  Likelihood distances:          results/IQtree/Penn_KPC_ST258.mldist
+
+Ultrafast bootstrap approximation results written to:
+  Split support values:          results/IQtree/Penn_KPC_ST258.splits.nex
+  Consensus tree:                results/IQtree/Penn_KPC_ST258.contree
+  Screen log file:               results/IQtree/Penn_KPC_ST258.log
+
+Date and Time: Mon Feb 24 00:36:14 2025

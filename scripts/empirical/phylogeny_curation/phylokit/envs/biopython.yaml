@@ -1,0 +1,11 @@
+name: biopython
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python
+  - pandas
+  - biopython
+  - snp-sites
+  - snakemake

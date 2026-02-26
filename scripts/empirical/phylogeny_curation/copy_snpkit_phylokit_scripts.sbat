@@ -1,0 +1,43 @@
+#!/bin/sh
+# Job name
+#SBATCH --job-name=copy_phylogeny
+# User info
+#SBATCH --mail-user=kgontjes@umich.edu
+#SBATCH --mail-type=BEGIN,END
+#SBATCH --export=ALL
+#SBATCH --partition=standard
+#SBATCH --account=esnitkin1
+#SBATCH --output=copy_phylogeny_curation_scripts.out
+#SBATCH --nodes=1  --ntasks=1 --cpus-per-task=1 --mem=50g --time=0:05:00 
+
+# Scripts
+## SNPKIT
+cd /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms/scripts/empirical/phylogeny_curation/snpkit
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/snpkit_*.sh .
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/setup/ST258_and_second_closest_nonST258_genome.txt . 
+
+## Phylokit
+cd /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms/scripts/empirical/phylogeny_curation/phylokit
+cp -r /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/config . 
+cp -r /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/envs .
+cp -r /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/logs .
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/phylokit.sbat .
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/phylokit.smk .
+cp -r /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/slurm_out .
+cp -r /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/wrapper_functions .
+
+# Results
+## Gubbins
+cd /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms/data/empirical/phylogeny_curation/gubbins
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/results/gubbins/Penn_KPC_ST258.recombination_predictions.gff .
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/results/gubbins/Penn_KPC_ST258.recombination_predictions.embl .
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/results/gubbins/Penn_KPC_ST258.summary_of_snp_distribution.vcf . 
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/results/gubbins/Penn_KPC_ST258.log .
+
+## Gubbins masked
+cd /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms/data/empirical/phylogeny_curation/gubbins_masked
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/results/gubbins_masked/Penn_KPC_ST258_gubbins_masked_var_sites.fa .
+
+## IQtree
+cd /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Analysis/Phyloaware/joint-uncertainty-ms/data/empirical/phylogeny_curation/IQtree
+cp /nfs/turbo/umms-esnitkin/Project_Penn_KPC/Sequence_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/results/IQtree/* .

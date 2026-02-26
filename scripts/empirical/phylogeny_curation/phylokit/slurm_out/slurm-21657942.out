@@ -1,0 +1,26 @@
+Config file config/config.yaml is extended by additional config specified via the command line.
+Building DAG of jobs...
+Your conda installation is not configured to use strict channel priorities. This is however crucial for having robust and correct environments (for details, see https://conda-forge.org/docs/user/tipsandtricks.html). Please consider to configure strict priorities by executing 'conda config --set channel_priority strict'.
+Using shell: /bin/bash
+Provided cores: 19
+Rules claiming more threads will be scaled down.
+Provided resources: mem_mb=1000, mem_mib=954, disk_mb=1000, disk_mib=954
+Select jobs to execute...
+
+[Sun Feb 23 23:44:29 2025]
+rule mask_gubbins:
+    input: results/gubbins/Penn_KPC_ST258.recombination_predictions.gff
+    output: results/gubbins_masked/Penn_KPC_ST258_gubbins_masked.fa, results/gubbins_masked/Penn_KPC_ST258_masked_recomb_positions.txt, results/gubbins_masked/Penn_KPC_ST258_gubbins_masked_var_sites.fa
+    jobid: 0
+    reason: Forced execution
+    wildcards: prefix=Penn_KPC_ST258
+    resources: mem_mb=1000, mem_mib=954, disk_mb=1000, disk_mib=954, tmpdir=/tmp
+
+Activating conda environment: .snakemake/conda/8a4557b45002fc0ac9539505faa2b3d5_
+Activating conda environment: .snakemake/conda/8a4557b45002fc0ac9539505faa2b3d5_
+Not cleaning up /gpfs/accounts/esnitkin_root/esnitkin1/kgontjes/Project_Penn_KPC/Sequencing_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/phylokit/.snakemake/scripts/tmpxwxih1z3.wrapper.py
+[Sun Feb 23 23:46:00 2025]
+Finished job 0.
+1 of 1 steps (100%) done
+Config: {'prefix': 'Penn_KPC_ST258', 'alignment': '/scratch/esnitkin_root/esnitkin1/kgontjes/Project_Penn_KPC/Sequencing_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/gubbins/2025_02_23_21_11_49_KPNIH1_genome_aln_w_alt_allele_unmapped.fa', 'threads': 18, 'first_tree_algorithm': 'fasttree', 'first_model': 'JC', 'outgroup': 'PCMP_H243', 'gubbins_dir': 'results/gubbins', 'tree_args': ' --threads 18', 'iqtree_model': 'MFP', 'bootstrap_count': 5000, 'num_unsuccessful_iterations': 500, 'iqtree_dir': 'results/IQtree'}
+PREFIX: Penn_KPC_ST258

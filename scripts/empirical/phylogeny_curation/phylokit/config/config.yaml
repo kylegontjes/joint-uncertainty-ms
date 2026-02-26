@@ -1,0 +1,17 @@
+# General information 
+prefix: Penn_KPC_ST258 
+ 
+# Gubbins
+alignment: /scratch/esnitkin_root/esnitkin1/kgontjes/Project_Penn_KPC/Sequencing_data/variant_calling/2025-02-17_snpkit_Penn_KPC_ST258/output_files/2025_02_23_21_11_49_core_results/gubbins/2025_02_23_21_11_49_KPNIH1_genome_aln_w_alt_allele_unmapped.fa
+threads: 18
+first_tree_algorithm: fasttree
+first_model: JC
+outgroup: PCMP_H243
+gubbins_dir: results/gubbins
+tree_args: " --threads 18"
+
+# IQtree parameters
+iqtree_model: MFP
+bootstrap_count: 5000
+num_unsuccessful_iterations: 500
+iqtree_dir: results/IQtree
