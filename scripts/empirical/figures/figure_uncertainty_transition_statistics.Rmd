@@ -67,7 +67,7 @@ colnames(transition_data_simple) <- c("Transitions","Gain Events","Gain Events (
 ```
 
 ## Create figures
-```{r,fig.width=11,fig.height=8.8}
+```{r,fig.width=10.5,fig.height=8.4}
 transitional_data <- lapply(colnames(transition_data_simple),FUN=function(x){
   # Number of bins
   num_bins = length(unique(transition_data_simple[[x]])) 
@@ -84,12 +84,12 @@ transitional_data <- lapply(colnames(transition_data_simple),FUN=function(x){
     figure
   }
   
-}) %>% cowplot::plot_grid(plotlist = .,labels = paste0(LETTERS[1:length(colnames(transition_data_simple))],")"),label_size = 16,hjust = -0.33 )
+}) %>% cowplot::plot_grid(plotlist = .,labels = paste0(LETTERS[1:length(colnames(transition_data_simple))],")"),label_size = 16,hjust = -0.275 )
 
 transitional_data
 ```
 
 # Save cowplot
 ```{r, save figure}
-ggsave("./figures/empirical/phyloAMR_alternative_reconstruction_transition_statistics.png", dpi = 900, bg = 'white', plot = transitional_data, width=11, height=8.8)
+ggsave("./figures/empirical/phyloAMR_alternative_reconstruction_transition_statistics.png", dpi = 900, bg = 'white', plot = transitional_data, width=10.5, height=8.4)
 ```
