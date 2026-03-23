@@ -221,7 +221,7 @@ merged_legends_2 <- packLegend(
 
 # Save figures
 ```{r, save figures}
-png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_synchronous_gain_events_heatmap.png", width=8.5, height=6.8, units="in", res=900)
+png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_synchronous_gain_events_heatmap.png", width=8.75, height=7, units="in", res=900)
 draw(
   A,
   heatmap_legend_list = list(merged_legends),
@@ -229,7 +229,7 @@ draw(
 )
 dev.off()
 
-png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_synchronous_loss_events_heatmap.png", width=8.5, height=6.8, units="in", res=900)
+png("./figures/empirical/pairwise_reconstruction_synchronous_transition_comparisons_synchronous_loss_events_heatmap.png", width=8.75, height=7, units="in", res=900)
 draw(
   B,
   heatmap_legend_list = list(merged_legends),
