@@ -34,13 +34,13 @@ recode_genotypes <- function(genotypes){
                 "Overall" = "Overall",
                 "AA552" = "AA552 blaKPC-containing plasmid",
                 'OmpK36_c25t'='25 cytosine-to-thymine transition in ompK36',
-                'OmpK36GD'='GD insertion in loop 3 of ompK36',
-                'OmpK36TD'='TD insertion in loop 3 of ompK36',  
+                'OmpK36GD'='GD insertion in loop 3 of OmpK36',
+                'OmpK36TD'='TD insertion in loop 3 of OmpK36',  
                 'OmpK36_promoter_IS'='Insertion sequence at promoter of ompK36',
                 "OmpK36_disruptive" = "Putative function-altering variant in ompK36",
                 'PBP_any'='Penicillin-binding-protein mutant',
-                'RamR'='Putative function-altering variant in ramR efflux pump regulator',
-                "RamA"='Putative function-altering variant in ramA efflux pump activator') 
+                'RamR'='Putative function-altering variant in ramR (efflux pump regulator)',
+                "RamA"='Putative function-altering variant in ramA (efflux pump activator)') 
 }
 
 collapse_PFAV <- function(genotypes){
